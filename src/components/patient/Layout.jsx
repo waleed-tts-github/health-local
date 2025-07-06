@@ -1,222 +1,381 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
-  Calendar, 
-  Users, 
+  Home, 
   FileText, 
-  LogOut,
-  Search,
-  Bell,
-  Menu,
-  User,
-  Pill,
-  TestTube,
-  Heart,
-  CreditCard,
-  Wallet,
-  Droplets,
-  Globe,
-  Mail,
-  HelpCircle,
-  Lock,
-  FileCheck,
-  MessageCircle,
-  Share2
+  Calendar, 
+  TestTube, 
+  User, 
+  CreditCard, 
+  Wallet, 
+  Heart, 
+  Users, 
+  HelpCircle, 
+  MessageCircle, 
+  Globe, 
+  Lock, 
+  FileText as FileIcon, 
+  Send, 
+  UserPlus, 
+  LogOut, 
+  Bell, 
+  Menu 
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState('Home');
+  const [openDropdown, setOpenDropdown] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const menuItems = [
+    { name: 'Home', icon: Home, path: '/patient/home' },
+    {
+      name: 'EHR',
+      icon: FileText,
+      subItems: [
+        { name: 'Appointment Record', icon: Calendar, path: '/patient/appointments' },
+        { name: 'Prescriptions', icon: FileText, path: '/patient/prescriptions' },
+        { name: 'Lab Reports', icon: TestTube },
+        { name: 'Health Profile', icon: User, path: '/patient/health-profile' },
+      ],
+    },
+    {
+      name: 'Payment Management',
+      icon: CreditCard,
+      subItems: [
+        { name: 'Virtual Wallet', icon: Wallet },
+        { name: 'Transaction History', icon: FileIcon },
+      ],
+    },
+    {
+      name: 'FAN Volunteer',
+      icon: Heart,
+      subItems: [
+        { name: 'Blood Donations', icon: Heart },
+        { name: 'Find Volunteers', icon: Users },
+      ],
+    },
+    {
+      name: 'Need Help',
+      icon: HelpCircle,
+      subItems: [
+        { name: 'Get In Touch', icon: MessageCircle },
+        { name: 'Support & FAQ', icon: HelpCircle },
+        { name: 'App Language', icon: Globe },
+        { name: 'Privacy And Policy', icon: Lock },
+        { name: 'Terms And Conditions', icon: FileIcon },
+      ],
+    },
+    { name: 'Send Feedback', icon: Send },
+    { name: 'Refer A Friend', icon: UserPlus },
+    { name: 'Logout', icon: LogOut },
+  ];
+
+  useEffect(() => {
+    // Find the matching menu item or sub-item based on the current route
+    let newActiveItem = 'Home';
+    let newOpenDropdown = null;
+
+    menuItems.forEach((item) => {
+      if (item.path === location.pathname) {
+        newActiveItem = item.name;
+      } else if (item.subItems) {
+        item.subItems.forEach((subItem) => {
+          if (subItem.path === location.pathname) {
+            newActiveItem = subItem.name;
+            newOpenDropdown = item.name; // Expand the parent dropdown
+          }
+        });
+      }
+    });
+
+    setActiveItem(newActiveItem);
+    setOpenDropdown(newOpenDropdown);
+  }, [location.pathname]);
+
+  const toggleDropdown = (itemName) => {
+    setOpenDropdown(openDropdown === itemName ? null : itemName);
+  };
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const handleNavigation = (item) => {
+    setActiveItem(item.name);
+    if (item.path) {
+      navigate(item.path);
+    }
+    if (!item.subItems) {
+      setIsDrawerOpen(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br font-inter from-indigo-50 via-white to-purple-50">
-      <div className="flex min-h-screen shadow-2xl backdrop-blur-xl bg-white/20">
-        {/* Sidebar/Drawer */}
-        <div className={`
-          fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white/80 backdrop-blur-xl border-r border-white/30 flex flex-col
-          transition-transform duration-300 ease-in-out
-          ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}>
-          {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
-          
-          {/* Logo Section */}
-          <div className="p-6 relative z-10">
-            <div className="flex items-center space-x-3">
+    <div className="flex font-poppins h-screen bg-gray-50">
+      <style>
+        {`
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+          }
+        `}
+      </style>
+
+      {/* Sidebar for larger screens */}
+      <div className="hidden md:block relative w-64 bg-green-600 rounded-lg h-[850px] z-10">
+        {/* Sidebar Header */}
+        <div className="p-6 border-b border-green-500">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-green-600 rounded"></div>
+            </div>
+            <h1 className="text-white font-bold text-xl">Angil Clinic</h1>
+          </div>
+        </div>
+
+        {/* Menu Items */}
+        <nav className="mt-6 relative z-20">
+          {menuItems.map((item) => (
+            <div key={item.name} className="relative">
+              {/* Main Menu Item */}
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <div className="w-7 h-7 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                    <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
-                  </div>
-                </div>
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                </div>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Angil Clinic</h1>
-                <p className="text-xs text-gray-500 font-medium">Your Health Partner</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Navigation Menu */}
-          <nav className="flex-1 px-5 py-3 relative z-10">
-            <div className="space-y-2">
-              <NavItem icon={User} label="Profile" />
-              <NavItem icon={FileText} label="Medical Records" />
-              <NavItem icon={Calendar} label="Appointments" count="12" active />
-              <NavItem icon={Pill} label="Prescriptions" />
-              <NavItem icon={TestTube} label="Lab Results" count="24" />
-              <NavItem icon={Heart} label="Health Tracker" />
-              <NavItem icon={CreditCard} label="Payments" />
-              <NavItem icon={Wallet} label="Wallet" />
-              <NavItem icon={Users} label="Support Groups" count="8" />
-              <NavItem icon={Droplets} label="Blood Donations" />
-              <NavItem icon={Search} label="Find Doctors" />
-              <NavItem icon={Globe} label="Language" />
-              <NavItem icon={Mail} label="Contact Us" />
-              <NavItem icon={HelpCircle} label="Help Center" />
-              <NavItem icon={Lock} label="Privacy" />
-              <NavItem icon={FileCheck} label="Terms" />
-              <NavItem icon={MessageCircle} label="Feedback" />
-              <NavItem icon={Share2} label="Refer a Friend" />
-            </div>
-          </nav>
-
-          {/* Logout */}
-          <div className="p-5 relative z-10">
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-1 border border-white/40">
-              <NavItem icon={LogOut} label="Logout" />
-            </div>
-          </div>
-        </div>
-
-        {/* Drawer Overlay for Mobile */}
-        {isDrawerOpen && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-            onClick={toggleDrawer}
-          ></div>
-        )}
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl">
-          {/* Top Navigation */}
-          <header className="bg-white/80 backdrop-blur-xl border-b border-white/30 px-6 py-5">
-            <div className="flex items-center justify-between">
-              {/* Left side */}
-              <div className="flex items-center space-x-5">
-                <button 
-                  className="p-2 hover:bg-white/60 rounded-xl transition-all duration-300 lg:hidden backdrop-blur-sm"
-                  onClick={toggleDrawer}
+                {activeItem === item.name && (
+                  <>
+                    {/* Main white background for active item */}
+                    <div className="absolute inset-y-0 left-4 w-72 bg-white rounded-l-2xl z-10"></div>
+                    {/* Top curved notch */}
+                    <div className="absolute -top-5 right-0 w-8 h-5 z-20">
+                      <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
+                      <div className="absolute bottom-0 left-0 w-full h-full bg-green-600 rounded-br-2xl"></div>
+                    </div>
+                    {/* Bottom curved notch */}
+                    <div className="absolute -bottom-5 right-0 w-8 h-5 z-20">
+                      <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
+                      <div className="absolute top-0 left-0 w-full h-full bg-green-600 rounded-tr-2xl"></div>
+                    </div>
+                  </>
+                )}
+                <button
+                  onClick={() => {
+                    if (item.subItems) {
+                      toggleDropdown(item.name);
+                    } else {
+                      handleNavigation(item);
+                    }
+                  }}
+                  className={`relative z-30 w-full flex items-center px-6 py-4 text-left transition-all duration-300 group ${
+                    activeItem === item.name 
+                      ? 'text-green-600' 
+                      : 'text-white hover:text-green-200 hover:transform hover:translate-x-1'
+                  } ${item.name === 'Logout' ? 'text-red-500 hover:text-red-400' : ''}`}
                 >
-                  <Menu className="w-4 h-4 text-gray-600" />
+                  <item.icon className={`w-5 h-5 mr-4 transition-colors duration-300  ${
+                    activeItem === item.name 
+                      ? item.name === 'Logout' 
+                        ? 'text-red-500' 
+                        : 'text-green-600' 
+                      : 'text-white group-hover:text-green-200'
+                  }`} />
+                  <span className={`font-medium transition-colors duration-300 ${
+                    activeItem === item.name 
+                      ? item.name === 'Logout' 
+                        ? 'text-red-500 font-semibold' 
+                        : 'text-green-600 font-semibold' 
+                      : 'text-white group-hover:text-green-200'
+                  }`}>
+                    {item.name}
+                  </span>
                 </button>
-                <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">My Dashboard</h2>
-                  <p className="text-xs text-gray-500 mt-1">Manage your health journey</p>
-                </div>
               </div>
-              
-              {/* Right side */}
+
+              {/* Dropdown for sub-items */}
+              {item.subItems && openDropdown === item.name && (
+                <div className="ml-8 relative z-30">
+                  {item.subItems.map((subItem) => (
+                    <div key={subItem.name} className="relative">
+                      {activeItem === subItem.name && (
+                        <>
+                          {/* White background for active sub-item */}
+                          <div className="absolute inset-y-0 left-4 w-64 bg-white rounded-l-2xl z-20"></div>
+                          {/* Top curved notch for sub-item */}
+                          <div className="absolute -top-5 right-0 w-8 h-5 z-30">
+                            <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
+                            <div className="absolute bottom-0 left-0 w-full h-full bg-green-600 rounded-br-2xl"></div>
+                          </div>
+                          {/* Bottom curved notch for sub-item */}
+                          <div className="absolute -bottom-5 right-0 w-8 h-5 z-30">
+                            <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
+                            <div className="absolute top-0 left-0 w-full h-full bg-green-600 rounded-tr-2xl"></div>
+                          </div>
+                        </>
+                      )}
+                      <button
+                        onClick={() => handleNavigation(subItem)}
+                        className={`relative z-40 w-full flex items-center px-6 py-3 text-left transition-all duration-300 group ${
+                          activeItem === subItem.name 
+                            ? 'text-green-600' 
+                            : 'text-white hover:text-green-200 hover:transform hover:translate-x-1'
+                        }`}
+                      >
+                        <subItem.icon className={`w-4 h-4 mr-3 transition-colors duration-300 ${
+                          activeItem === subItem.name ? 'text-green-600' : 'text-white group-hover:text-green-200'
+                        }`} />
+                        <span className={`font-medium text-sm transition-colors duration-300 ${
+                          activeItem === subItem.name ? 'text-green-600 font-semibold' : 'text-white group-hover:text-green-200'
+                        }`}>
+                          {subItem.name}
+                        </span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+      </div>
+
+      {/* Drawer for smaller screens */}
+      <div
+        className={`fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-green-600 to-green-700 transform ${
+          isDrawerOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:hidden transition-transform duration-300 ease-in-out z-20 overflow-y-auto custom-scrollbar`}
+      >
+        {/* Drawer Header */}
+        <div className="p-6 border-b border-green-500">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-green-600 rounded"></div>
+            </div>
+            <h1 className="text-white font-bold text-xl">Patient Portal</h1>
+          </div>
+        </div>
+
+        {/* Drawer Menu Items */}
+        <nav className="mt-6">
+          {menuItems.map((item) => (
+            <div key={item.name}>
+              <button
+                onClick={() => {
+                  if (item.subItems) {
+                    toggleDropdown(item.name);
+                  } else {
+                    handleNavigation(item);
+                  }
+                }}
+                className={`w-full flex items-center px-6 py-4 text-left transition-all duration-300 ${
+                  activeItem === item.name 
+                    ? item.name === 'Logout' 
+                      ? 'text-red-500 bg-white' 
+                      : 'text-green-600 bg-white' 
+                    : 'text-white hover:text-green-200'
+                }`}
+              >
+                <item.icon className={`w-5 h-5 mr-4 transition-colors duration-300 ${
+                  activeItem === item.name 
+                    ? item.name === 'Logout' 
+                      ? 'text-red-500' 
+                      : 'text-green-600' 
+                    : 'text-white hover:text-green-200'
+                }`} />
+                <span className={`font-medium transition-colors duration-300 ${
+                  activeItem === item.name 
+                    ? item.name === 'Logout' 
+                      ? 'text-red-500 font-semibold' 
+                      : 'text-green-600 font-semibold' 
+                    : 'text-white hover:text-green-200'
+                }`}>
+                  {item.name}
+                </span>
+              </button>
+              {item.subItems && openDropdown === item.name && (
+                <div className="ml-8">
+                  {item.subItems.map((subItem) => (
+                    <button
+                      key={subItem.name}
+                      onClick={() => handleNavigation(subItem)}
+                      className={`w-full flex items-center px-6 py-3 text-left transition-all duration-300 ${
+                        activeItem === subItem.name 
+                          ? 'text-green-600 bg-white' 
+                          : 'text-white hover:text-green-200'
+                      }`}
+                    >
+                      <subItem.icon className={`w-4 h-4 mr-3 transition-colors duration-300 ${
+                        activeItem === subItem.name ? 'text-green-600' : 'text-white hover:text-green-200'
+                      }`} />
+                      <span className={`font-medium text-sm transition-colors duration-300 ${
+                        activeItem === subItem.name ? 'text-green-600 font-semibold' : 'text-white hover:text-green-200'
+                      }`}>
+                        {subItem.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Navbar */}
+        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between w-full">
+            {/* Drawer Toggle Button for Mobile */}
+            <button className="md:hidden p-2 text-gray-600 hover:text-gray-900" onClick={toggleDrawer}>
+              <Menu className="w-6 h-6" />
+            </button>
+
+            {/* Right side - Notifications and Profile */}
+            <div className="flex items-center space-x-4 ml-auto">
+              <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                <Bell className="w-6 h-6" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+              </button>
               <div className="flex items-center space-x-3">
-                {/* Search Bar */}
-                <div className="relative hidden md:block">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl"></div>
-                  <div className="relative bg-white/70 backdrop-blur-sm rounded-xl border border-white/40 shadow-lg">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search doctors, appointments..."
-                      className="pl-10 pr-5 py-3 w-80 bg-transparent placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 rounded-xl transition-all text-sm"
-                    />
-                  </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-900">John Doe</p>
+                  <p className="text-xs text-gray-500">Patient</p>
                 </div>
-
-                {/* Notifications */}
                 <div className="relative">
-                  <button className="p-3 hover:bg-white/60 rounded-xl transition-all duration-300 relative bg-white/40 backdrop-blur-sm border border-white/40 shadow-lg">
-                    <Bell className="w-5 h-5 text-gray-600" />
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg animate-bounce">
-                      3
-                    </div>
-                  </button>
-                </div>
-
-                {/* Profile Avatar */}
-                <div className="flex items-center space-x-3 pl-5 border-l border-white/30">
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold text-gray-900">Sarah Wilson</p>
-                    <p className="text-xs text-gray-500">Patient</p>
-                  </div>
-                  <button className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-75 group-hover:opacity-100 transition-all duration-300"></div>
-                    <div className="relative bg-white/90 backdrop-blur-sm rounded-xl p-1 border border-white/40">
-                      <img
-                        src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=40&h=40&fit=crop&crop=face&facepad=2"
-                        alt="Profile"
-                        className="w-10 h-10 rounded-lg object-cover"
-                      />
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white shadow-lg"></div>
-                    </div>
-                  </button>
+                  <img
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-green-500 transition-colors cursor-pointer"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
                 </div>
               </div>
             </div>
-          </header>
-
-          {/* Main Content Area */}
-          <main className="flex-1 p-6">
-            <div className="max-w-7xl mx-auto">
-              {children}
-            </div>
-          </main>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const NavItem = ({ icon: Icon, label, count, active = false }) => {
-  return (
-    <div className={`relative group cursor-pointer ${
-      active ? 'transform scale-105' : ''
-    }`}>
-      <div className={`absolute inset-0 rounded-xl transition-all duration-300 ${
-        active 
-          ? 'bg-gradient-to-r from-blue-500 to-purple-600 opacity-100 shadow-lg' 
-          : 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100'
-      }`}></div>
-      <div className={`relative flex items-center justify-between px-5 py-3 rounded-xl transition-all duration-300 ${
-        active 
-          ? 'bg-white/90 backdrop-blur-sm text-white shadow-lg border border-white/40' 
-          : 'bg-white/40 backdrop-blur-sm hover:bg-white/60 border border-white/30'
-      }`}>
-        <div className="flex items-center space-x-3">
-          <div className={`p-2 rounded-lg transition-all duration-300 ${
-            active 
-              ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' 
-              : 'bg-white/60 text-gray-600 group-hover:bg-white/80'
-          }`}>
-            <Icon className="w-4 h-4" />
           </div>
-          <span className={`font-semibold transition-all duration-300 text-sm ${
-            active ? 'text-gray-900' : 'text-gray-700 group-hover:text-gray-900'
-          }`}>{label}</span>
-        </div>
-        {count && (
-          <div className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
-            active 
-              ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
-              : 'bg-white/60 text-gray-600 group-hover:bg-white/80'
-          }`}>
-            {count}
-          </div>
-        )}
+        </header>
+
+        {/* Main Content - Render Children */}
+        <main className="flex-1 bg-white relative z-10">
+          {children}
+        </main>
       </div>
+
+      {/* Overlay for drawer on mobile */}
+      {isDrawerOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-10"
+          onClick={toggleDrawer}
+        ></div>
+      )}
     </div>
   );
 };

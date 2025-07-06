@@ -1,25 +1,43 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/patient/Layout';
 import Home from './pages/patient/Home';
+import DoctorProfile from './pages/patient/DoctorProfile';
+import AppointmentRecord from './pages/patient/AppointmentRecord';
+import Prescriptions from './pages/patient/Prescriptions';
+import LabReports from './pages/patient/LabReports';
+import PatientSignup from './pages/patient/SignUp';
+import HealthProfile from './pages/patient/HealthProfile';
+import ScrollToTopCustom from './components/ScrollToTopCustom';
 
 const App = () => {
   return (
     <BrowserRouter>
+    <ScrollToTopCustom/>
       <Routes>
         <Route
           path="/patient/*"
           element={
-            <Layout>
-              <Routes>
-                <Route path="home" element={<Home />} />
-                {/* Add other patient routes here as needed */}
-                <Route path="appointments" element={<div>Appointments Page</div>} />
-                <Route path="profile" element={<div>Profile Page</div>} />
-              </Routes>
-            </Layout>
+            <Routes>
+              <Route
+                path="*"
+                element={
+                  <Layout>
+                    <Routes>
+                      <Route path="home" element={<Home />} />
+                      <Route path="doctor-profile/:id" element={<DoctorProfile />} />
+                      <Route path="appointments" element={<AppointmentRecord />} />
+                      <Route path="profile" element={<div>Profile Page</div>} />
+                      <Route path="prescriptions" element={<Prescriptions />} />
+                      <Route path="lab-reports" element={<LabReports />} />
+                      <Route path='health-profile' element={<HealthProfile/>}></Route>
+                    </Routes>
+                  </Layout>
+                }
+              />
+              <Route path="sign-up" element={<PatientSignup />} />
+            </Routes>
           }
         />
-        {/* Add other top-level routes if needed (e.g., login, admin) */}
         <Route path="/" element={<div>Landing Page</div>} />
       </Routes>
     </BrowserRouter>
