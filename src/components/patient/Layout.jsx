@@ -28,6 +28,7 @@ const Layout = ({ children }) => {
   const [activeItem, setActiveItem] = useState('Home');
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const menuItems = [
     { name: 'Home', icon: Home, path: '/patient/home' },
@@ -53,8 +54,8 @@ const Layout = ({ children }) => {
       name: 'FAN Volunteer',
       icon: Heart,
       subItems: [
-        { name: 'Blood Donations', icon: Heart },
-        { name: 'Find Volunteers', icon: Users },
+        { name: 'Blood Donations', icon: Heart, path: '/patient/blood-donations' },
+        { name: 'Find Volunteers', icon: Users, path: '/patient/blood-volunteers' },
       ],
     },
     {
@@ -113,6 +114,10 @@ const Layout = ({ children }) => {
     }
   };
 
+  const toggleAnonymous = () => {
+    setIsAnonymous(!isAnonymous);
+  };
+
   return (
     <div className="flex font-poppins h-screen bg-gray-50">
       <style>
@@ -130,6 +135,62 @@ const Layout = ({ children }) => {
           .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
           }
+          
+          /* Toggle Switch Styles */
+          .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 32px;
+            height: 16px;
+          }
+          
+          .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+          }
+          
+          .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #e5e7eb;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+          }
+          
+          .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 2px;
+            bottom: 2px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+          }
+          
+          input:checked + .toggle-slider {
+            background: #10b981;
+          }
+          
+          input:checked + .toggle-slider:before {
+            transform: translateX(16px);
+          }
+          
+          .sidebar-toggle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            padding: 8px 0;
+            margin-top: 8px;
+          }
         `}
       </style>
 
@@ -142,6 +203,26 @@ const Layout = ({ children }) => {
               <div className="w-6 h-6 bg-green-600 rounded"></div>
             </div>
             <h1 className="text-white font-bold text-xl">Angil Clinic</h1>
+          </div>
+          
+          {/* Toggle in Sidebar */}
+          <div className="sidebar-toggle-container">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-white">
+                User Name/Anonymous
+              </span>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={isAnonymous}
+                  onChange={toggleAnonymous}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+            <span className="text-xs text-green-200">
+              Switch To Hide You're Identity
+            </span>
           </div>
         </div>
 
@@ -261,6 +342,26 @@ const Layout = ({ children }) => {
             </div>
             <h1 className="text-white font-bold text-xl">Patient Portal</h1>
           </div>
+          
+          {/* Toggle in Drawer */}
+          <div className="sidebar-toggle-container">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-white">
+                User Name/Anonymous
+              </span>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={isAnonymous}
+                  onChange={toggleAnonymous}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+            <span className="text-xs text-green-200">
+              Switch To Hide You're Identity
+            </span>
+          </div>
         </div>
 
         {/* Drawer Menu Items */}
@@ -347,12 +448,17 @@ const Layout = ({ children }) => {
               </button>
               <div className="flex items-center space-x-3">
                 <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">John Doe</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {isAnonymous ? 'Anonymous User' : 'John Doe'}
+                  </p>
                   <p className="text-xs text-gray-500">Patient</p>
                 </div>
                 <div className="relative">
                   <img
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={isAnonymous 
+                      ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    }
                     alt="Profile"
                     className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-green-500 transition-colors cursor-pointer"
                   />

@@ -11,20 +11,31 @@ import {
   Clock,
   CheckCircle,
   ArrowRight,
-  Shield
+  Shield,
+  User,
+  Star as StarIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DoctorList from '../../components/patient/DoctorList';
 
 const Home = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('Angel Doctors');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
+  const [selectedGender, setSelectedGender] = useState('All');
+  const [selectedRating, setSelectedRating] = useState('All');
+  const [selectedAvailability, setSelectedAvailability] = useState('All');
+  const [selectedExperience, setSelectedExperience] = useState('All');
   const [likedDoctors, setLikedDoctors] = useState(new Set());
 
   const specialties = ['All', 'Cardiology', 'Dermatology', 'Neurology', 'Pediatrics', 'Orthopedics'];
   const locations = ['All', 'Lahore', 'Karachi', 'Islamabad', 'Rawalpindi', 'Faisalabad'];
+  const genders = ['All', 'Male', 'Female'];
+  const ratings = ['All', '4.5+', '4.0+', '3.5+'];
+  const availabilities = ['All', 'Available Today', 'Available Tomorrow'];
+  const experiences = ['All', '10+ years', '5+ years', '1+ years'];
 
   const doctors = [
     {
@@ -42,7 +53,9 @@ const Home = () => {
       responseTime: '1 hour',
       availability: 'Available Today',
       level: 'Top Rated',
-      completedConsultations: 245
+      completedConsultations: 245,
+      isAngel: true,
+      gender: 'Female'
     },
     {
       id: 2,
@@ -59,7 +72,9 @@ const Home = () => {
       responseTime: '30 mins',
       availability: 'Available Tomorrow',
       level: 'Level 2',
-      completedConsultations: 189
+      completedConsultations: 189,
+      isAngel: false,
+      gender: 'Male'
     },
     {
       id: 4,
@@ -76,7 +91,9 @@ const Home = () => {
       responseTime: '45 mins',
       availability: 'Available Today',
       level: 'Level 2',
-      completedConsultations: 167
+      completedConsultations: 167,
+      isAngel: true,
+      gender: 'Male'
     },
     {
       id: 5,
@@ -93,7 +110,9 @@ const Home = () => {
       responseTime: '1 hour',
       availability: 'Available Tomorrow',
       level: 'Top Rated',
-      completedConsultations: 298
+      completedConsultations: 298,
+      isAngel: false,
+      gender: 'Female'
     }
   ];
 
@@ -102,8 +121,17 @@ const Home = () => {
                          doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesSpecialty = selectedSpecialty === 'All' || doctor.specialty === selectedSpecialty;
     const matchesLocation = selectedLocation === 'All' || doctor.location === selectedLocation;
+    const matchesGender = selectedGender === 'All' || doctor.gender === selectedGender;
+    const matchesRating = selectedRating === 'All' || doctor.rating >= parseFloat(selectedRating);
+    const matchesAvailability = selectedAvailability === 'All' || doctor.availability === selectedAvailability;
+    const matchesExperience = selectedExperience === 'All' || 
+                            (selectedExperience === '10+ years' && doctor.experience >= 10) ||
+                            (selectedExperience === '5+ years' && doctor.experience >= 5) ||
+                            (selectedExperience === '1+ years' && doctor.experience >= 1);
+    const matchesTab = activeTab === 'Angel Doctors' ? doctor.isAngel : !doctor.isAngel;
     
-    return matchesSearch && matchesSpecialty && matchesLocation;
+    return matchesSearch && matchesSpecialty && matchesLocation && matchesGender && 
+           matchesRating && matchesAvailability && matchesExperience && matchesTab;
   });
 
   const toggleLike = (doctorId) => {
@@ -122,6 +150,25 @@ const Home = () => {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           <div className="py-4">
+            {/* Tabs */}
+            <div className="flex space-x-4 mb-6">
+              {['Angel Doctors', 'Private Doctors'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-3 rounded-full font-bold text-base transition-all duration-300 shadow-md ${
+                    activeTab === tab
+                      ? 'bg-green-500 text-white shadow-lg scale-105'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
+                  } flex items-center gap-2`}
+                >
+                  {tab === 'Angel Doctors' && <Award className="w-5 h-5" />}
+                  {tab === 'Private Doctors' && <Shield className="w-5 h-5" />}
+                  {tab}
+                </button>
+              ))}
+            </div>
+
             {/* Search Bar */}
             <div className="relative mb-4">
               <div className="flex items-center">
@@ -148,7 +195,7 @@ const Home = () => {
                 onChange={(e) => setSelectedSpecialty(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
               >
-                <option value="All">Category</option>
+                <option value="All">Specialty</option>
                 {specialties.slice(1).map(specialty => (
                   <option key={specialty} value={specialty}>{specialty}</option>
                 ))}
@@ -165,27 +212,54 @@ const Home = () => {
                 ))}
               </select>
 
+              <select
+                value={selectedGender}
+                onChange={(e) => setSelectedGender(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
+              >
+                <option value="All">Gender</option>
+                {genders.slice(1).map(gender => (
+                  <option key={gender} value={gender}>{gender}</option>
+                ))}
+              </select>
+
+              <select
+                value={selectedRating}
+                onChange={(e) => setSelectedRating(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
+              >
+                <option value="All">Rating</option>
+                {ratings.slice(1).map(rating => (
+                  <option key={rating} value={rating}>{rating}</option>
+                ))}
+              </select>
+
+              <select
+                value={selectedAvailability}
+                onChange={(e) => setSelectedAvailability(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
+              >
+                <option value="All">Availability</option>
+                {availabilities.slice(1).map(availability => (
+                  <option key={availability} value={availability}>{availability}</option>
+                ))}
+              </select>
+
+              <select
+                value={selectedExperience}
+                onChange={(e) => setSelectedExperience(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
+              >
+                <option value="All">Experience</option>
+                {experiences.slice(1).map(experience => (
+                  <option key={experience} value={experience}>{experience}</option>
+                ))}
+              </select>
+
               <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:border-gray-400 transition-colors flex items-center gap-2">
                 <Filter className="w-4 h-4" />
                 More filters
               </button>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex space-x-6 border-b border-gray-200">
-              {['Angel Doctors', 'Private Doctors'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab
-                      ? 'border-green-500 text-green-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
             </div>
           </div>
         </div>
@@ -211,129 +285,13 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Doctors Grid - Fiverr Style */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDoctors.map((doctor) => (
-            <div key={doctor.id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer">
-              {/* Image Section */}
-              <div className="relative">
-                <img
-                  src={doctor.image}
-                  alt={doctor.name}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <button 
-                  onClick={() => toggleLike(doctor.id)}
-                  className="absolute top-3 right-3 p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
-                >
-                  <Heart className={`w-4 h-4 transition-colors ${
-                    likedDoctors.has(doctor.id) ? 'text-red-500 fill-current' : 'text-gray-600'
-                  }`} />
-                </button>
-                
-                <div className="absolute top-3 left-3">
-                  <span className="bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
-                    {doctor.specialty}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content Section */}
-              <div className="p-5">
-                {/* Doctor Header */}
-                <div className="flex items-start gap-3 mb-4">
-                  <img
-                    src={doctor.image}
-                    alt={doctor.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-gray-900 text-base truncate">{doctor.name}</h3>
-                      {doctor.isVerified && (
-                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      )}
-                    </div>
-                    <p className="text-green-600 text-sm font-medium">{doctor.specialty}</p>
-                  </div>
-                </div>
-
-                {/* Service Description */}
-                <p className="text-gray-700 text-sm mb-4 line-clamp-2 leading-relaxed">
-                  {doctor.description}
-                </p>
-
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">
-                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                  <span className="text-sm font-semibold text-gray-900">{doctor.rating}</span>
-                  <span className="text-sm text-gray-500">({doctor.reviews} reviews)</span>
-                </div>
-
-                {/* Location and Experience */}
-                <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span>{doctor.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span>{doctor.experience} years exp</span>
-                  </div>
-                </div>
-
-                {/* Price and CTA */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase mb-1">Starting at</p>
-                    <p className="text-xl font-bold text-gray-900">₨{doctor.price.toLocaleString()}</p>
-                  </div>
-                  <button onClick={()=>{navigate("/patient/doctor-profile/1")}} className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
-                    View Profile
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* No Results */}
-        {filteredDoctors.length === 0 && (
-          <div className="text-center py-16">
-            <div className="max-w-md mx-auto">
-              <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No services found</h3>
-              <p className="text-gray-600 mb-6">Try adjusting your search or filter to find what you're looking for.</p>
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedSpecialty('All');
-                  setSelectedLocation('All');
-                }}
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-              >
-                Clear All Filters
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Pagination - Fiverr Style */}
-        {filteredDoctors.length > 0 && (
-          <div className="flex items-center justify-center mt-12">
-            <div className="flex items-center gap-2">
-              <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:border-gray-400 transition-colors">
-                Previous
-              </button>
-              <button className="px-3 py-2 bg-green-500 text-white rounded-lg text-sm">1</button>
-              <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:border-gray-400 transition-colors">2</button>
-              <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:border-gray-400 transition-colors">3</button>
-              <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:border-gray-400 transition-colors">
-                Next
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Doctor List Component */}
+        <DoctorList
+          filteredDoctors={filteredDoctors}
+          likedDoctors={likedDoctors}
+          toggleLike={toggleLike}
+          navigate={navigate}
+        />
       </div>
     </div>
   );

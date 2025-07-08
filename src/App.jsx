@@ -8,6 +8,8 @@ import LabReports from './pages/patient/LabReports';
 import PatientSignup from './pages/patient/SignUp';
 import HealthProfile from './pages/patient/HealthProfile';
 import ScrollToTopCustom from './components/ScrollToTopCustom';
+import BloodVolunteers from './pages/patient/BloodVolunteers';
+import BloodDonations from './pages/patient/BloodDonations';
 
 const App = () => {
   return (
@@ -30,6 +32,8 @@ const App = () => {
                       <Route path="prescriptions" element={<Prescriptions />} />
                       <Route path="lab-reports" element={<LabReports />} />
                       <Route path='health-profile' element={<HealthProfile/>}></Route>
+                      <Route path='blood-volunteers' element={<BloodVolunteers/>}></Route>
+                      <Route path='blood-donations' element={<BloodDonations/>}></Route>
                     </Routes>
                   </Layout>
                 }

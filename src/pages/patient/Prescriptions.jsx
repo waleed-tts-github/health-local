@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Filter, Calendar, Clock, User, FileText, X, ChevronDown, Trash2, Printer } from 'lucide-react';
 import BackButton from '../../components/BackButton';
-import PrescriptionDetailsModal from '../../components/patient/PrescriptionDetailsModel';
-
+import PrescriptionDetailsModal from '../../components/patient/PrescriptionDetailsModel'
 const Prescriptions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
@@ -253,102 +252,96 @@ const Prescriptions = () => {
         {/* Back Button */}
         <BackButton />
         
-        {/* Header Section */}
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 mb-8">
-          <div className="p-8">
-            <div className="flex flex-col gap-6">
-              <div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">My Prescriptions</h1>
-                <p className="text-gray-600">Manage and view your medical prescriptions</p>
-              </div>
-              
+<div className="pb-8">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">My Prescriptions</h1>
+            <p className="text-lg text-gray-600 max-w-2xl">
+              Manage and track your prescriptions.
+            </p>
+          </div>
+
+          {/* Search and Filters Section */}
+          <div className="bg-green-500 rounded-2xl shadow-sm border border-gray-200 p-6 lg:p-8">
+            <div className="flex flex-col lg:flex-row gap-6">
               {/* Search Bar */}
-              <div className="relative max-w-md">
-                <Search className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search by doctor, diagnosis..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white border-2 border-emerald-500 rounded-full focus:ring-2 focus:ring-emerald-500 focus:border-emerald-600 transition-all outline-none shadow-lg"
-                />
+              <div className="flex-1 max-w-md">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by doctor name..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:border-white  text-sm bg-gray-50 focus:bg-white transition-all duration-200"
+                    aria-label="Search by doctor name"
+                  />
+                </div>
               </div>
 
-              {/* Filter Dropdown */}
-              <div className="flex flex-wrap gap-3">
+              {/* Filter Controls */}
+              <div className="flex flex-wrap items-center gap-4">
+                {/* Quick Filter Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg border border-emerald-300"
+                    className={`flex items-center space-x-3 px-6 py-4 border rounded-xl transition-all duration-200 text-sm font-medium min-w-[160px] ${
+                      activeFilter 
+                        ? 'bg-green-50 border-green-200 text-green-700' 
+                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                    aria-label="Toggle quick filter dropdown"
                   >
-                    <Calendar className="w-5 h-5" />
-                    <span className="font-medium">{activeFilter ? activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1) : 'Filter by Date'}</span>
-                    <ChevronDown className="w-4 h-4" />
+                    <Filter className="h-4 w-4" />
+                    <span>
+                      {activeFilter 
+                        ? `${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}` 
+                        : 'Quick Filter'
+                      }
+                    </span>
+                    <ChevronDown className="h-4 w-4" />
                   </button>
-                  
                   {showFilterDropdown && (
-                    <div className="absolute top-full mt-2 right-0 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-48 z-10">
-                      <div className="space-y-2">
-                        <button
-                          onClick={() => handleQuickFilter('today')}
-                          className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                            activeFilter === 'today'
-                              ? 'bg-emerald-600 text-white'
-                              : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                          }`}
-                        >
-                          Today
-                        </button>
-                        <button
-                          onClick={() => handleQuickFilter('week')}
-                          className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                            activeFilter === 'week'
-                              ? 'bg-emerald-600 text-white'
-                              : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                          }`}
-                        >
-                          Last 7 Days
-                        </button>
-                        <button
-                          onClick={() => handleQuickFilter('month')}
-                          className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                            activeFilter === 'month'
-                              ? 'bg-emerald-600 text-white'
-                              : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                          }`}
-                        >
-                          Last 30 Days
-                        </button>
-                        <button
-                          onClick={() => handleQuickFilter('3months')}
-                          className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                            activeFilter === '3months'
-                              ? 'bg-emerald-600 text-white'
-                              : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                          }`}
-                        >
-                          Last 3 Months
-                        </button>
+                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-2 w-56 z-20">
+                      <div className="space-y-1">
+                        {[
+                          { key: 'today', label: 'Today' },
+                          { key: 'week', label: 'Last 7 Days' },
+                          { key: 'month', label: 'Last 30 Days' },
+                          { key: '3months', label: 'Last 3 Months' }
+                        ].map(filter => (
+                          <button
+                            key={filter.key}
+                            onClick={() => handleQuickFilter(filter.key)}
+                            className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              activeFilter === filter.key
+                                ? 'bg-green-50 text-green-700'
+                                : 'text-gray-600 hover:bg-gray-50'
+                            }`}
+                            aria-label={`Filter by ${filter.label}`}
+                          >
+                            {filter.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Custom Date Range */}
+                {/* Date Range Picker */}
                 <div className="relative">
                   <button
                     onClick={() => setShowDatePicker(!showDatePicker)}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg border border-emerald-300"
+                    className="flex items-center space-x-3 px-6 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 text-sm font-medium text-gray-700 bg-white min-w-[160px]"
+                    aria-label="Toggle date range picker"
                   >
-                    <Calendar className="w-5 h-5" />
-                    <span className="font-medium">Date Range</span>
-                    <ChevronDown className="w-4 h-4" />
+                    <Calendar className="h-4 w-4" />
+                    <span>Date Range</span>
+                    <ChevronDown className="h-4 w-4" />
                   </button>
-                  
                   {showDatePicker && (
-                    <div className="absolute top-full mt-2 right-0 bg-white rounded-2xl shadow-xl border border-gray-100 p-6 w-80 z-10">
-                      <div className="space-y-4">
-                        <h3 className="font-semibold text-gray-900 mb-3">Filter by Date Range</h3>
+                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-6 w-80 z-20">
+                      <div className="space-y-6">
+                        <h3 className="text-sm font-semibold text-gray-900">Filter by Date Range</h3>
                         <div className="grid grid-cols-1 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
@@ -366,24 +359,26 @@ const Prescriptions = () => {
                               placeholder="End Date"
                             />
                           </div>
-                          <div className="flex gap-2 pt-2">
-                            <button
-                              onClick={() => setShowDatePicker(false)}
-                              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-full transition-colors text-sm"
-                            >
-                              Apply
-                            </button>
-                            <button
-                              onClick={() => {
-                                setStartDate(null);
-                                setEndDate(null);
-                                setShowDatePicker(false);
-                              }}
-                              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-full transition-colors text-sm"
-                            >
-                              Clear
-                            </button>
-                          </div>
+                        </div>
+                        <div className="flex gap-3 pt-2">
+                          <button
+                            onClick={() => setShowDatePicker(false)}
+                            className="flex-1 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 text-sm font-medium"
+                            aria-label="Apply date range filter"
+                          >
+                            Apply Filter
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStartDate(null);
+                              setEndDate(null);
+                              setShowDatePicker(false);
+                            }}
+                            className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 text-sm font-medium"
+                            aria-label="Clear date range filter"
+                          >
+                            Clear
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -394,13 +389,34 @@ const Prescriptions = () => {
                 {(activeFilter || startDate || endDate) && (
                   <button
                     onClick={clearFilters}
-                    className="px-6 py-3 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-all border border-red-200 font-medium"
+                    className="flex items-center space-x-2 px-6 py-4 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all duration-200 text-sm font-medium border border-red-200"
+                    aria-label="Clear all filters"
                   >
-                    Clear All
+                    <X className="h-4 w-4" />
+                    <span>Clear All</span>
                   </button>
                 )}
               </div>
             </div>
+
+            {/* Active Filters Display */}
+            {(activeFilter || startDate || endDate) && (
+              <div className="mt-6 pt-6 border-t border-gray-100">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm text-gray-600 mr-3">Active filters:</span>
+                  {activeFilter && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      {activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}
+                    </span>
+                  )}
+                  {startDate && endDate && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {startDate} to {endDate}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -455,7 +471,7 @@ const Prescriptions = () => {
                 <div className="flex gap-2 mt-auto">
                   <button
                     onClick={() => handleViewPrescription(prescription)}
-                    className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium text-sm py-3 px-4 rounded-full transition-all duration-200 transform group-hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                    className="flex-1 bg-green-500 text-white font-medium text-sm py-3 px-4 rounded-full transition-all duration-200 transform group-hover:scale-105 shadow-lg flex items-center justify-center gap-2"
                   >
                     <FileText className="w-4 h-4" />
                     View Prescription
