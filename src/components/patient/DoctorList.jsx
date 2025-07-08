@@ -99,7 +99,7 @@ const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate }) => 
                   <p className="text-xl font-bold text-gray-900">₨{doctor.price.toLocaleString()}</p>
                 </div>
                 <button
-                  onClick={() => navigate(`/patient/doctor-profile/${doctor.id}`)}
+                  onClick={() => navigate(`/patient/doctors/${doctor.id}`)}
                   className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
                 >
                   View Profile
