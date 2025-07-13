@@ -13,7 +13,8 @@ import {
   ArrowRight,
   Shield,
   User,
-  Star as StarIcon
+  Star as StarIcon,
+  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DoctorList from '../../components/patient/DoctorList';
@@ -29,6 +30,7 @@ const Home = () => {
   const [selectedAvailability, setSelectedAvailability] = useState('All');
   const [selectedExperience, setSelectedExperience] = useState('All');
   const [likedDoctors, setLikedDoctors] = useState(new Set());
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   const specialties = ['All', 'Cardiology', 'Dermatology', 'Neurology', 'Pediatrics', 'Orthopedics'];
   const locations = ['All', 'Lahore', 'Karachi', 'Islamabad', 'Rawalpindi', 'Faisalabad'];
@@ -144,10 +146,18 @@ const Home = () => {
     setLikedDoctors(newLiked);
   };
 
+  const openFilterModal = () => {
+    setIsFilterModalOpen(true);
+  };
+
+  const closeFilterModal = () => {
+    setIsFilterModalOpen(false);
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen bg-white transition-all duration-300 ${isFilterModalOpen ? 'mt-[-100px]' : ''}`}>
       {/* Fiverr-style Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           <div className="py-4">
             {/* Tabs */}
@@ -194,85 +204,130 @@ const Home = () => {
                 <button className="ml-3 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
                   Search
                 </button>
+                <button 
+                  onClick={openFilterModal}
+                  className="ml-3 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2"
+                >
+                  <Filter className="w-4 h-4" />
+                  Filters
+                </button>
               </div>
-            </div>
-
-            {/* Filters Row */}
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <select
-                value={selectedSpecialty}
-                onChange={(e) => setSelectedSpecialty(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
-              >
-                <option value="All">Specialty</option>
-                {specialties.slice(1).map(specialty => (
-                  <option key={specialty} value={specialty}>{specialty}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
-              >
-                <option value="All">Location</option>
-                {locations.slice(1).map(location => (
-                  <option key={location} value={location}>{location}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedGender}
-                onChange={(e) => setSelectedGender(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
-              >
-                <option value="All">Gender</option>
-                {genders.slice(1).map(gender => (
-                  <option key={gender} value={gender}>{gender}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedRating}
-                onChange={(e) => setSelectedRating(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
-              >
-                <option value="All">Rating</option>
-                {ratings.slice(1).map(rating => (
-                  <option key={rating} value={rating}>{rating}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedAvailability}
-                onChange={(e) => setSelectedAvailability(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
-              >
-                <option value="All">Availability</option>
-                {availabilities.slice(1).map(availability => (
-                  <option key={availability} value={availability}>{availability}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedExperience}
-                onChange={(e) => setSelectedExperience(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white"
-              >
-                <option value="All">Experience</option>
-                {experiences.slice(1).map(experience => (
-                  <option key={experience} value={experience}>{experience}</option>
-                ))}
-              </select>
-
-              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:border-gray-400 transition-colors flex items-center gap-2">
-                <Filter className="w-4 h-4" />
-                More filters
-              </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Filter Modal */}
+      {isFilterModalOpen && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-green-100/30">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-base font-bold text-green-700">Filter Doctors</h3>
+              <button 
+                onClick={closeFilterModal}
+                className="p-2 bg-green-100/80 hover:bg-green-200/80 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110"
+              >
+                <X className="w-5 h-5 text-green-700" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-xs font-semibold text-gray-900 mb-1">Specialty</label>
+                <select
+                  value={selectedSpecialty}
+                  onChange={(e) => setSelectedSpecialty(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+                >
+                  {specialties.map(specialty => (
+                    <option key={specialty} value={specialty}>{specialty}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-900 mb-1">Location</label>
+                <select
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+                >
+                  {locations.map(location => (
+                    <option key={location} value={location}>{location}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-900 mb-1">Gender</label>
+                <select
+                  value={selectedGender}
+                  onChange={(e) => setSelectedGender(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+                >
+                  {genders.map(gender => (
+                    <option key={gender} value={gender}>{gender}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-900 mb-1">Rating</label>
+                <select
+                  value={selectedRating}
+                  onChange={(e) => setSelectedRating(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+                >
+                  {ratings.map(rating => (
+                    <option key={rating} value={rating}>{rating}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-900 mb-1">Availability</label>
+                <select
+                  value={selectedAvailability}
+                  onChange={(e) => setSelectedAvailability(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+                >
+                  {availabilities.map(availability => (
+                    <option key={availability} value={availability}>{availability}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-900 mb-1">Experience</label>
+                <select
+                  value={selectedExperience}
+                  onChange={(e) => setSelectedExperience(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+                >
+                  {experiences.map(experience => (
+                    <option key={experience} value={experience}>{experience}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={closeFilterModal}
+                className="px-6 py-3 bg-gray-50 border border-gray-100 text-gray-900 text-sm font-semibold rounded-lg hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={closeFilterModal}
+                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Results Section */}
       <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6">

@@ -202,7 +202,7 @@ const Layout = ({ children }) => {
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
               <div className="w-6 h-6 bg-green-600 rounded"></div>
             </div>
-            <h1 className="text-white font-bold text-xl">Angil Clinic</h1>
+            <h1 className="text-white font-bold text-xl">Angill Healthcare</h1>
           </div>
           
           {/* Toggle in Sidebar */}

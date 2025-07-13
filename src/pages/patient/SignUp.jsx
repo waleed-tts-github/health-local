@@ -29,10 +29,36 @@ const PatientSignup = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+
+    if (name === 'phone') {
+      // Allow only digits and limit to 11 characters
+      const cleanedValue = value.replace(/\D/g, '').slice(0, 11);
+      setFormData(prev => ({
+        ...prev,
+        [name]: cleanedValue
+      }));
+    } else if (name === 'cnic') {
+      // Allow digits and hyphens, format as 5-7-1
+      let cleanedValue = value.replace(/[^0-9-]/g, '');
+      if (cleanedValue.length > 5 && cleanedValue[5] !== '-') {
+        cleanedValue = cleanedValue.slice(0, 5) + '-' + cleanedValue.slice(5);
+      }
+      if (cleanedValue.length > 13 && cleanedValue[13] !== '-') {
+        cleanedValue = cleanedValue.slice(0, 13) + '-' + cleanedValue.slice(13);
+      }
+      cleanedValue = cleanedValue.slice(0, 15); // Limit to 14 characters (5+1+7+1)
+      setFormData(prev => ({
+        ...prev,
+        [name]: cleanedValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
+    // Clear error for the field being edited
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleFileChange = (e) => {
@@ -42,27 +68,46 @@ const PatientSignup = () => {
         ...prev,
         photo: file
       }));
+      setErrors(prev => ({ ...prev, photo: '' }));
     }
   };
 
   const validateStep = (step) => {
     const newErrors = {};
-    
+
     if (step === 1) {
-      if (!formData.firstName) newErrors.firstName = 'First name is required';
-      if (!formData.lastName) newErrors.lastName = 'Last name is required';
-      if (!formData.email) newErrors.email = 'Email is required';
-      if (!formData.password) newErrors.password = 'Password is required';
-      if (formData.password !== formData.confirmPassword) {
+      if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+      if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+      if (!formData.email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        newErrors.email = 'Invalid email format';
+      }
+      if (!formData.password) {
+        newErrors.password = 'Password is required';
+      } else if (formData.password.length < 6) {
+        newErrors.password = 'Password must be at least 6 characters';
+      }
+      if (!formData.confirmPassword) {
+        newErrors.confirmPassword = 'Confirm password is required';
+      } else if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Passwords do not match';
       }
     } else if (step === 2) {
       if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
-      if (!formData.cnic) newErrors.cnic = 'CNIC is required';
-      if (!formData.phone) newErrors.phone = 'Phone number is required';
+      if (!formData.cnic) {
+        newErrors.cnic = 'CNIC is required';
+      } else if (!/^\d{5}-\d{7}-\d{1}$/.test(formData.cnic)) {
+        newErrors.cnic = 'CNIC must be in the format 12345-1234567-1';
+      }
+      if (!formData.phone) {
+        newErrors.phone = 'Phone number is required';
+      } else if (!/^\d{11}$/.test(formData.phone)) {
+        newErrors.phone = 'Phone number must be exactly 11 digits';
+      }
       if (!formData.gender) newErrors.gender = 'Gender is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -75,6 +120,7 @@ const PatientSignup = () => {
 
   const handlePrevious = () => {
     setCurrentStep(currentStep - 1);
+    setErrors({}); // Clear errors when going back
   };
 
   const handleSubmit = () => {
@@ -96,7 +142,7 @@ const PatientSignup = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">ANGILL</h1>
-              <p className="text-emerald-100 text-xs">Every illness deserves an angil</p>
+              <p className="text-emerald-100 text-xs">Every illness deserves an angel</p>
             </div>
           </div>
           <h2 className="text-2xl font-bold text-white mb-4 leading-tight">
@@ -111,7 +157,7 @@ const PatientSignup = () => {
 
       {/* Form Section (Right 80%) */}
       <div className="w-full md:w-4/5 flex items-start justify-center py-6 px-3 mt-[-10px]">
-        <div className="w-full bg-white rounded-3xl shadow-xl border border-gray-100 p-4 md:p-6">
+        <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl border border-gray-100 p-4 md:p-6">
           <div className="text-center mb-4">
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Create Your Account</h3>
             <p className="text-gray-600 text-base">Join our healthcare community in just a few steps</p>
@@ -133,7 +179,7 @@ const PatientSignup = () => {
                         currentStep > step.id 
                           ? 'bg-white text-emerald-600' 
                           : currentStep === step.id 
-                          ? 'bg-white text-emerald-626' 
+                          ? 'bg-white text-emerald-600' 
                           : 'bg-gray-200 text-gray-400'
                       }`}>
                         {currentStep > step.id ? (
@@ -198,7 +244,7 @@ const PatientSignup = () => {
                       }`}
                       placeholder="Enter your last name"
                     />
-                    {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>}
+                    {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
                   </div>
                 </div>
 
@@ -302,9 +348,7 @@ const PatientSignup = () => {
                         name="dateOfBirth"
                         value={formData.dateOfBirth}
                         onChange={handleInputChange}
-                        className={`w-full pl-11 pr-5 py-3 bg-gray-50 border-
-
-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 shadow-sm hover:shadow-md ${
+                        className={`w-full pl-11 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 shadow-sm hover:shadow-md ${
                           errors.dateOfBirth ? 'border-red-400' : ''
                         }`}
                       />
@@ -324,7 +368,7 @@ const PatientSignup = () => {
                         className={`w-full pl-11 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
                           errors.cnic ? 'border-red-400' : ''
                         }`}
-                        placeholder="12345-1234567-1"
+                        placeholder="34604-0515319-5"
                       />
                     </div>
                     {errors.cnic && <p className="text-red-500 text-xs mt-1">{errors.cnic}</p>}
@@ -344,7 +388,7 @@ const PatientSignup = () => {
                         className={`w-full pl-11 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
                           errors.phone ? 'border-red-400' : ''
                         }`}
-                        placeholder="+92 300 1234567"
+                        placeholder="03001234567"
                       />
                     </div>
                     {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
@@ -467,7 +511,7 @@ const PatientSignup = () => {
               </div>
               
               <button
-                onClick={() => window.location.href = '/patient/home'}
+                onClick={() => window.location.href = '/patient'}
                 className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white py-3 px-6 rounded-full font-bold text-base hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
               >
                 Access Your Dashboard

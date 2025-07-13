@@ -10,6 +10,8 @@ import HealthProfile from './pages/patient/HealthProfile';
 import ScrollToTopCustom from './components/ScrollToTopCustom';
 import BloodVolunteers from './pages/patient/BloodVolunteers';
 import BloodDonations from './pages/patient/BloodDonations';
+import VirtualWallet from './pages/patient/VirtualWallet';
+import Landing from './pages/patient/Landing';
 
 const App = () => {
   return (
@@ -25,6 +27,7 @@ const App = () => {
                 element={
                   <Layout>
                     <Routes>
+                      <Route path='' element={<Landing/>}></Route>
                       <Route path="home" element={<Home />} />
                       <Route path="doctors/:doctorId" element={<DoctorProfile />} />
                       <Route path="appointments" element={<AppointmentRecord />} />
@@ -34,6 +37,7 @@ const App = () => {
                       <Route path='health-profile' element={<HealthProfile/>}></Route>
                       <Route path='blood-volunteers' element={<BloodVolunteers/>}></Route>
                       <Route path='blood-donations' element={<BloodDonations/>}></Route>
+                      <Route path='virtual-wallet' element={<VirtualWallet/>}></Route>
                     </Routes>
                   </Layout>
                 }
