@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Search, Heart, Star, MapPin, Calendar, CheckCircle, Award, Shield } from 'lucide-react';
+import { BookingContext } from '../../contexts/BookingContext';
 
-const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate }) => {
+const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate, resetFilters }) => {
+  const { setCurrentModal } = useContext(BookingContext);
+
   return (
     <div>
       {/* Doctors Grid */}
@@ -64,7 +67,13 @@ const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate }) => 
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                     )}
                   </div>
-                  <p className="text-green-600 text-sm font-medium">{doctor.specialty}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-green-600 text-sm font-medium">{doctor.specialty}</p>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 uppercase mb-1">Starting at</p>
+                      <p className="text-lg font-bold text-gray-900">₨{doctor.price.toLocaleString()}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -92,17 +101,19 @@ const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate }) => 
                 </div>
               </div>
 
-              {/* Price and CTA */}
+              {/* CTA Section */}
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase mb-1">Starting at</p>
-                  <p className="text-xl font-bold text-gray-900">₨{doctor.price.toLocaleString()}</p>
-                </div>
                 <button
                   onClick={() => navigate(`/patient/doctors/${doctor.id}`)}
-                  className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
+                  className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
                 >
                   View Profile
+                </button>
+                <button
+                  onClick={() => setCurrentModal('connect')}
+                  className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  Select
                 </button>
               </div>
             </div>
@@ -118,15 +129,7 @@ const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate }) => 
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No services found</h3>
             <p className="text-gray-600 mb-6">Try adjusting your search or filter to find what you're looking for.</p>
             <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedSpecialty('All');
-                setSelectedLocation('All');
-                setSelectedGender('All');
-                setSelectedRating('All');
-                setSelectedAvailability('All');
-                setSelectedExperience('All');
-              }}
+              onClick={resetFilters}
               className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
               Clear All Filters
@@ -135,7 +138,7 @@ const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate }) => 
         </div>
       )}
 
-      {/* Pagination */}
+      /* Pagination */
       {filteredDoctors.length > 0 && (
         <div className="flex items-center justify-center mt-12">
           <div className="flex items-center gap-2">
