@@ -174,7 +174,7 @@ const Home = () => {
   };
 
   const handleBack = () => {
-    navigate("/patient",{replace:true}); // Navigate to the previous page
+    navigate("/patient",{replace:true});
   };
 
   return (
@@ -230,48 +230,53 @@ const Home = () => {
           `}
         </style>
 
-        {/* Fiverr-style Header */}
+        {/* Responsive Header */}
         <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 lg:px-6">
-            <div className="py-4">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+            <div className="py-3 sm:py-4">
               {/* Header with Back Button and Tabs */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center mb-3 sm:mb-4">
                 <button
                   onClick={handleBack}
-                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center gap-1 sm:gap-2 text-gray-600 hover:text-gray-900 p-1 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <ArrowLeft className="w-5 h-5" />
-                  <span className="text-sm font-medium">Back</span>
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="text-xs sm:text-sm font-medium">Back</span>
                 </button>
-                <div className="flex space-x-4">
-                  {['Angel Doctors', 'Private Doctors'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`px-6 py-3 rounded-full font-bold text-base transition-all duration-300 shadow-md ${
-                        activeTab === tab
-                          ? 'bg-green-500 text-white shadow-lg scale-105'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
-                      } flex items-center gap-2`}
-                    >
-                      {tab === 'Angel Doctors' && <Award className="w-5 h-5" />}
-                      {tab === 'Private Doctors' && <Shield className="w-5 h-5" />}
-                      {tab}
-                    </button>
-                  ))}
+                
+                {/* Centered Responsive Tabs */}
+                <div className="flex-1 flex justify-center">
+                  <div className="flex space-x-2 sm:space-x-4">
+                    {['Angel Doctors', 'Private Doctors'].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-full font-semibold sm:font-bold text-xs sm:text-sm md:text-base transition-all duration-300 shadow-md ${
+                          activeTab === tab
+                            ? 'bg-green-500 text-white shadow-lg transform scale-105'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
+                        } flex items-center gap-1 sm:gap-2`}
+                      >
+                        {tab === 'Angel Doctors' && <Award className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
+                        {tab === 'Private Doctors' && <Shield className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
+                        <span className="hidden sm:inline">{tab}</span>
+                        <span className="sm:hidden">{tab === 'Angel Doctors' ? 'Angel' : 'Private'}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* Fee Information and Favorites Toggle */}
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-green-700 text-sm font-bold bg-green-100 px-4 py-2 rounded-lg shadow-sm">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
+                <p className="text-green-700 text-xs sm:text-sm font-bold bg-green-100 px-2 sm:px-4 py-1 sm:py-2 rounded-lg shadow-sm">
                   {activeTab === 'Angel Doctors'
-                    ? 'Angel Doctors have a fixed fees structure'
-                    : 'Private Doctors have their own fees'}
+                    ? 'Angel Doctors have fixed fees'
+                    : 'Private Doctors have own fees'}
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 self-end sm:self-auto">
                   <span className="text-xs font-medium text-gray-900">
-                    Show Favorites
+                    <span className="hidden sm:inline">Show </span>Favorites
                   </span>
                   <label className="toggle-switch">
                     <input
@@ -284,56 +289,61 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Search Bar */}
+              {/* Responsive Search Bar */}
               <div className="relative mb-4">
-                <div className="flex items-center">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-0">
                   <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                     <input
                       type="text"
-                      placeholder="Search for any medical service..."
+                      placeholder="Search medical services..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 text-gray-700 placeholder-gray-500"
+                      className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 text-sm sm:text-base text-gray-700 placeholder-gray-500"
                     />
                   </div>
-                  <button className="ml-3 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
-                    Search
-                  </button>
-                  <button
-                    onClick={openFilterModal}
-                    className="ml-3 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2"
-                  >
-                    <Filter className="w-4 h-4" />
-                    Filters
-                  </button>
+                  
+                  {/* Mobile: Stack buttons vertically, Desktop: Side by side */}
+                  <div className="flex gap-2 sm:ml-3">
+                    <button className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 rounded-lg font-medium transition-colors text-sm sm:text-base">
+                      Search
+                    </button>
+                    <button
+                      onClick={openFilterModal}
+                      className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+                    >
+                      <Filter className="w-4 h-4" />
+                      <span className="hidden sm:inline">Filters</span>
+                      <span className="sm:hidden">Filter</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Filter Modal */}
+        {/* Responsive Filter Modal */}
         {isFilterModalOpen && (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
-            <div className="bg-white/90 backdrop-blur-xl rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-green-100/30">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-base font-bold text-green-700">Filter Doctors</h3>
+            <div className="bg-white/90 backdrop-blur-xl rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl border border-green-100/30">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h3 className="text-sm sm:text-base font-bold text-green-700">Filter Doctors</h3>
                 <button
                   onClick={closeFilterModal}
                   className="p-2 bg-green-100/80 hover:bg-green-200/80 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110"
                 >
-                  <X className="w-5 h-5 text-green-700" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-green-700" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div>
                   <label className="block text-xs font-semibold text-gray-900 mb-1">Specialty</label>
                   <select
                     value={selectedSpecialty}
                     onChange={(e) => setSelectedSpecialty(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
                   >
                     {specialties.map((specialty) => (
                       <option key={specialty} value={specialty}>
@@ -348,7 +358,7 @@ const Home = () => {
                   <select
                     value={selectedLocation}
                     onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
                   >
                     {locations.map((location) => (
                       <option key={location} value={location}>
@@ -363,7 +373,7 @@ const Home = () => {
                   <select
                     value={selectedGender}
                     onChange={(e) => setSelectedGender(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
                   >
                     {genders.map((gender) => (
                       <option key={gender} value={gender}>
@@ -378,7 +388,7 @@ const Home = () => {
                   <select
                     value={selectedRating}
                     onChange={(e) => setSelectedRating(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
                   >
                     {ratings.map((rating) => (
                       <option key={rating} value={rating}>
@@ -393,7 +403,7 @@ const Home = () => {
                   <select
                     value={selectedAvailability}
                     onChange={(e) => setSelectedAvailability(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
                   >
                     {availabilities.map((availability) => (
                       <option key={availability} value={availability}>
@@ -408,7 +418,7 @@ const Home = () => {
                   <select
                     value={selectedExperience}
                     onChange={(e) => setSelectedExperience(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
                   >
                     {experiences.map((experience) => (
                       <option key={experience} value={experience}>
@@ -422,13 +432,13 @@ const Home = () => {
               <div className="flex justify-end gap-3">
                 <button
                   onClick={closeFilterModal}
-                  className="px-6 py-3 bg-gray-50 border border-gray-100 text-gray-900 text-sm font-semibold rounded-lg hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-50 border border-gray-100 text-gray-900 text-xs sm:text-sm font-semibold rounded-lg hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={closeFilterModal}
-                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   Apply Filters
                 </button>
@@ -437,16 +447,16 @@ const Home = () => {
           </div>
         )}
 
-        {/* Results Section */}
-        <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6">
-          <div className="flex items-center justify-between mb-6">
+        {/* Responsive Results Section */}
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">{activeTab}</h1>
-              <p className="text-gray-600 text-sm mt-1">{filteredDoctors.length} services available</p>
+              <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">{activeTab}</h1>
+              <p className="text-gray-600 text-xs sm:text-sm mt-1">{filteredDoctors.length} services available</p>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Sort by:</span>
-              <select className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500 bg-white">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-xs sm:text-sm text-gray-600">Sort by:</span>
+              <select className="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-green-500 bg-white">
                 <option>Relevance</option>
                 <option>Best Selling</option>
                 <option>Newest</option>

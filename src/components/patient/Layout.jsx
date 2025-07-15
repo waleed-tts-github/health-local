@@ -6,7 +6,6 @@ import {
   Calendar, 
   TestTube, 
   User, 
-  CreditCard, 
   Wallet, 
   Heart, 
   Users, 
@@ -42,14 +41,7 @@ const Layout = ({ children }) => {
         { name: 'Health Profile', icon: User, path: '/patient/health-profile' },
       ],
     },
-    {
-      name: 'Payment Management',
-      icon: CreditCard,
-      subItems: [
-        { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
-        { name: 'Transaction History', icon: FileIcon },
-      ],
-    },
+    { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
     {
       name: 'FAN Volunteer',
       icon: Heart,
@@ -296,7 +288,6 @@ const Layout = ({ children }) => {
                             <div className="absolute bottom-0 left-0 w-full h-full bg-green-600 rounded-br-2xl"></div>
                           </div>
                           {/* Bottom curved notch for sub-item */}
-
                           <div className="absolute -bottom-5 right-0 w-8 h-5 z-30">
                             <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
                             <div className="absolute top-0 left-0 w-full h-full bg-green-600 rounded-tr-2xl"></div>
