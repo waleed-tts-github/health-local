@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, User, Mail, Phone, Calendar, CreditCard, Camera, Heart, Check, Shield, Edit2 } from 'lucide-react';
-import logo from '../../assets/group.png';
+import logo from '../../assets/Group.png';
 
 const PatientSignup = () => {
   const [formData, setFormData] = useState({

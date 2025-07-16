@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import logo from '../../assets/group.png';
+import logo from '../../assets/Group.png';
 import { 
   Home, 
   FileText, 
