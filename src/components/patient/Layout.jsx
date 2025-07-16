@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import logo from '../../assets/logo.png'
+import logo from '../../assets/group.png';
 import { 
   Home, 
   FileText, 
@@ -68,7 +68,6 @@ const Layout = ({ children }) => {
   ];
 
   useEffect(() => {
-    // Find the matching menu item or sub-item based on the current route
     let newActiveItem = 'Home';
     let newOpenDropdown = null;
 
@@ -79,7 +78,7 @@ const Layout = ({ children }) => {
         item.subItems.forEach((subItem) => {
           if (subItem.path === location.pathname) {
             newActiveItem = subItem.name;
-            newOpenDropdown = item.name; // Expand the parent dropdown
+            newOpenDropdown = item.name;
           }
         });
       }
@@ -129,7 +128,6 @@ const Layout = ({ children }) => {
             background: rgba(255, 255, 255, 0.5);
           }
           
-          /* Toggle Switch Styles */
           .toggle-switch {
             position: relative;
             display: inline-block;
@@ -157,7 +155,7 @@ const Layout = ({ children }) => {
           
           .toggle-slider:before {
             position: absolute;
-            content: "";
+            content: '';
             height: 12px;
             width: 12px;
             left: 2px;
@@ -190,21 +188,22 @@ const Layout = ({ children }) => {
       {/* Sidebar for larger screens */}
       <div className="hidden md:block relative w-64 bg-green-600 rounded-lg h-[850px] z-10">
         {/* Sidebar Header */}
-        <div className="p-6 border-b border-green-500">
-          <div className="flex items-center space-x-3">
-            <div className="w-22 h-22  rounded-lg flex items-center justify-center">
-              
-                <img src={logo}/>
-              
-            </div>
-            <h1 className="text-white font-bold text-lg">Angill Healthcare</h1>
+        <div className="p-6 border-b border-green-500 flex flex-col items-center">
+          <div className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0">
+            <img src={logo} alt="Logo" className="w-full h-full object-contain"/>
           </div>
+          <div className="mt-2 text-center">
+            <h1 className="text-white font-bold text-sm">ANGILL HEALTHCARE</h1>
+          </div>
+<p className="text-white italic font-light text-xs" style={{ color: '#FFFFFF' }}>
+  Every illness deserves an angel.
+</p>
           
           {/* Toggle in Sidebar */}
           <div className="sidebar-toggle-container">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-white">
-                User Name/Anonymous
+                Anonymous
               </span>
               <label className="toggle-switch">
                 <input 
@@ -216,7 +215,7 @@ const Layout = ({ children }) => {
               </label>
             </div>
             <span className="text-xs text-green-200">
-              Switch To Hide You're Identity
+              Switch To Hide Your Identity
             </span>
           </div>
         </div>
@@ -229,14 +228,11 @@ const Layout = ({ children }) => {
               <div className="relative">
                 {activeItem === item.name && (
                   <>
-                    {/* Main white background for active item */}
                     <div className="absolute inset-y-0 left-4 w-72 bg-white rounded-l-2xl z-10"></div>
-                    {/* Top curved notch */}
                     <div className="absolute -top-5 right-0 w-8 h-5 z-20">
                       <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
                       <div className="absolute bottom-0 left-0 w-full h-full bg-green-600 rounded-br-2xl"></div>
                     </div>
-                    {/* Bottom curved notch */}
                     <div className="absolute -bottom-5 right-0 w-8 h-5 z-20">
                       <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
                       <div className="absolute top-0 left-0 w-full h-full bg-green-600 rounded-tr-2xl"></div>
@@ -257,7 +253,7 @@ const Layout = ({ children }) => {
                       : 'text-white hover:text-green-200 hover:transform hover:translate-x-1'
                   } ${item.name === 'Logout' ? 'text-red-500 hover:text-red-400' : ''}`}
                 >
-                  <item.icon className={`w-5 h-5 mr-4 transition-colors duration-300  ${
+                  <item.icon className={`w-5 h-5 mr-4 transition-colors duration-300 ${
                     activeItem === item.name 
                       ? item.name === 'Logout' 
                         ? 'text-red-500' 
@@ -283,14 +279,11 @@ const Layout = ({ children }) => {
                     <div key={subItem.name} className="relative">
                       {activeItem === subItem.name && (
                         <>
-                          {/* White background for active sub-item */}
                           <div className="absolute inset-y-0 left-4 w-64 bg-white rounded-l-2xl z-20"></div>
-                          {/* Top curved notch for sub-item */}
                           <div className="absolute -top-5 right-0 w-8 h-5 z-30">
                             <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
                             <div className="absolute bottom-0 left-0 w-full h-full bg-green-600 rounded-br-2xl"></div>
                           </div>
-                          {/* Bottom curved notch for sub-item */}
                           <div className="absolute -bottom-5 right-0 w-8 h-5 z-30">
                             <div className="absolute top-0 left-0 w-full h-full bg-gray-50"></div>
                             <div className="absolute top-0 left-0 w-full h-full bg-green-600 rounded-tr-2xl"></div>
@@ -330,19 +323,22 @@ const Layout = ({ children }) => {
         } md:hidden transition-transform duration-300 ease-in-out z-20 overflow-y-auto custom-scrollbar`}
       >
         {/* Drawer Header */}
-        <div className="p-6 border-b border-green-500">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <div className="w-6 h-6 bg-green-600 rounded"></div>
-            </div>
-            <h1 className="text-white font-bold text-xl">Patient Portal</h1>
+        <div className="p-6 border-b border-green-500 flex flex-col items-center">
+          <div className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0">
+            <img src={logo} alt="Logo" className="w-full h-full object-contain"/>
           </div>
+          <div className="mt-2 text-center">
+            <h1 className="text-white font-bold text-sm">ANGILL HEALTHCARE</h1>
+          </div>
+          <p className="text-white italic font-light text-xs" style={{ color: '#FFFFFF' }}>
+  Every illness deserves an angel.
+</p>
           
           {/* Toggle in Drawer */}
           <div className="sidebar-toggle-container">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-white">
-                User Name/Anonymous
+                Anonymous
               </span>
               <label className="toggle-switch">
                 <input 
@@ -354,7 +350,7 @@ const Layout = ({ children }) => {
               </label>
             </div>
             <span className="text-xs text-green-200">
-              Switch To Hide You're Identity
+              Switch To Hide Your Identity
             </span>
           </div>
         </div>
@@ -430,12 +426,10 @@ const Layout = ({ children }) => {
         {/* Navbar */}
         <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between w-full">
-            {/* Drawer Toggle Button for Mobile */}
             <button className="md:hidden p-2 text-gray-600 hover:text-gray-900" onClick={toggleDrawer}>
               <Menu className="w-6 h-6" />
             </button>
 
-            {/* Right side - Notifications and Profile */}
             <div className="flex items-center space-x-4 ml-auto">
               <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                 <Bell className="w-6 h-6" />
@@ -451,8 +445,8 @@ const Layout = ({ children }) => {
                 <div className="relative">
                   <img
                     src={isAnonymous 
-                      ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+                      : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                     }
                     alt="Profile"
                     className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-green-500 transition-colors cursor-pointer"
@@ -464,13 +458,11 @@ const Layout = ({ children }) => {
           </div>
         </header>
 
-        {/* Main Content - Render Children */}
         <main className="flex-1 bg-white relative z-10">
           {children}
         </main>
       </div>
 
-      {/* Overlay for drawer on mobile */}
       {isDrawerOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-10"

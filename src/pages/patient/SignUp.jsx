@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, User, Mail, Phone, Calendar, CreditCard, Camera, Heart, Check, Shield, Edit2 } from 'lucide-react';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/group.png';
 
 const PatientSignup = () => {
   const [formData, setFormData] = useState({
@@ -32,14 +32,12 @@ const PatientSignup = () => {
     const { name, value, type, checked } = e.target;
 
     if (name === 'phone') {
-      // Allow only digits and limit to 11 characters
       const cleanedValue = value.replace(/\D/g, '').slice(0, 11);
       setFormData(prev => ({
         ...prev,
         [name]: cleanedValue
       }));
     } else if (name === 'cnic') {
-      // Allow digits and hyphens, format as 5-7-1
       let cleanedValue = value.replace(/[^0-9-]/g, '');
       if (cleanedValue.length > 5 && cleanedValue[5] !== '-') {
         cleanedValue = cleanedValue.slice(0, 5) + '-' + cleanedValue.slice(5);
@@ -47,7 +45,7 @@ const PatientSignup = () => {
       if (cleanedValue.length > 13 && cleanedValue[13] !== '-') {
         cleanedValue = cleanedValue.slice(0, 13) + '-' + cleanedValue.slice(13);
       }
-      cleanedValue = cleanedValue.slice(0, 15); // Limit to 14 characters (5+1+7+1)
+      cleanedValue = cleanedValue.slice(0, 15);
       setFormData(prev => ({
         ...prev,
         [name]: cleanedValue
@@ -58,7 +56,6 @@ const PatientSignup = () => {
         [name]: type === 'checkbox' ? checked : value
       }));
     }
-    // Clear error for the field being edited
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
@@ -121,7 +118,7 @@ const PatientSignup = () => {
 
   const handlePrevious = () => {
     setCurrentStep(currentStep - 1);
-    setErrors({}); // Clear errors when going back
+    setErrors({});
   };
 
   const handleSubmit = () => {
@@ -137,14 +134,16 @@ const PatientSignup = () => {
       <div className="hidden md:block w-full md:w-1/6 bg-gradient-to-br from-emerald-600 to-green-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative z-10 flex flex-col h-full p-6">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-22 h-22 flex items-center justify-center">
-              <img src={logo} alt="ANGILL Logo" />
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-13 h-13 flex items-center justify-center">
+              <img src={logo} alt="ANGILL Logo" className="w-full h-full object-contain"/>
             </div>
-            <div>
+            <div className="mt-2 text-center">
               <h1 className="text-xl font-bold text-white">ANGILL</h1>
-              <p className="text-emerald-100 text-xs">Every illness deserves an angel</p>
             </div>
+             <p className="text-white italic font-light text-xs" style={{ color: '#FFFFFF' }}>
+  Every illness deserves an angel.
+</p>
           </div>
           <h2 className="text-2xl font-bold text-white mb-4 leading-tight">
             Your Health,<br />
@@ -185,8 +184,7 @@ const PatientSignup = () => {
                       }`}>
                         {currentStep > step.id ? (
                           <Check className="w-4 h-4" />
-                        ) : (
-                          <IconComponent className="w-4 h-4" />
+                        ) : (                          <IconComponent className="w-4 h-4" />
                         )}
                       </div>
                       <div className="hidden md:block">
@@ -292,7 +290,7 @@ const PatientSignup = () => {
                     {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                   </div>
 
-                  <div className="space-y-1">
+                 seconds                  <div className="space-y-1">
                     <label className="text-sm font-bold text-gray-700 block">Confirm Password</label>
                     <div className="relative">
                       <input
