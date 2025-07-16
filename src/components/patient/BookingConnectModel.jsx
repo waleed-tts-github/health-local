@@ -7,6 +7,7 @@ const BookingConnectModal = () => {
     currentModal,
     closeModal,
     handleLiveConnect,
+    handleBookingConfirm,
     handleScheduleAppointment,
   } = useContext(BookingContext);
 
@@ -115,7 +116,7 @@ const BookingConnectModal = () => {
               </div>
               <div className="flex justify-end">
                 <button
-                  onClick={() => handleScheduleAppointment(availableTimes[selectedTimeIndex])}
+                  onClick={handleBookingConfirm}
                   className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2 px-4 rounded-xl font-medium text-xs transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 backdrop-blur-sm"
                 >
                   Send Request

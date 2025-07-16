@@ -3,7 +3,7 @@ import { Heart, User, Shield, LogOut, ArrowLeft, X, Check, ChevronRight, Plus } 
 import consultationBg from '../../assets/consultationpagebg.png';
 import AddDependent from '../../components/patient/AddDependent';
 import HealthComplaint from '../../components/patient/HealthComplaint';
-import { useConsultationFlow } from '../../contexts/ConsulationFlowContext'
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const Landing = () => {
   const {
@@ -115,8 +115,8 @@ const Landing = () => {
           </h1>
           <p className="text-gray-600">
             {selectedService === 'private' 
-              ? 'Our certified board of general practitioners and specialist doctors conduct medical consultations at their own prices.' 
-              : 'Our certified board of general practitioners and specialist doctors conduct medical consultations at a fixed price.'}
+              ? 'Choose an approved private doctor of your choice from anywhere in Pakistan. Consultation fees may vary based on the doctor\'s qualifications and expertise' 
+              : 'Our verified board of general practitioners and specialist doctors offer medical consultations at a fixed, transparent price.'}
           </p>
         </div>
 
@@ -151,114 +151,106 @@ const Landing = () => {
     </div>
   );
 
-  // Step 3: Patient Selection
+  // Step 3: Patient Selection (Redesigned as a Full Page)
   const PatientSelection = () => (
     <div className="min-h-screen bg-white p-8">
-      <div className="max-w-4xl mx-auto opacity-20 pointer-events-none">
-        <div className="text-center mb-6">
-          <h1 className="text-xl font-bold text-green-700">
-            {selectedService === 'angill' ? 'Angill Doctors' : selectedService === 'private' ? ' Private Doctors' : 'Angill Cyber Clinics'}
-          </h1>
-        </div>
-        <div className="bg-white/20 backdrop-blur-xl rounded-2xl overflow-hidden border border-green-300/20">
-          <div className="relative h-60 flex items-center justify-center bg-green-200/10">
-            <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-teal-500/20 animate-pulse-slow"></div>
-            <div className="relative z-20 text-center text-white">
-              <button className="bg-white/30 backdrop-blur-md text-green-700 px-4 py-1 rounded-full font-bold text-xs mb-2 hover:bg-white/40 transition-all duration-300">
-                Proceed For
-              </button>
-              <h2 className="text-2xl font-extralight text-white/40 tracking-widest">Emergency</h2>
-            </div>
-          </div>
-        </div>
+      {/* Header */}
+      <div className="bg-white p-4 border-b border-gray-200 flex items-center justify-start">
+        <button 
+          onClick={goBack}
+          className="p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 text-green-600" />
+        </button>
       </div>
 
-      <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl max-w-md w-full p-6 shadow-2xl border border-green-100/30">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-base font-bold text-green-700">Who Needs Help?</h3>
-            <button 
-              onClick={resetFlow}
-              className="p-2 bg-green-100/80 hover:bg-green-200/80 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110"
-            >
-              <X className="w-5 h-5 text-green-700" />
-            </button>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        <div className="max-w-4xl mx-auto w-full">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-green-700">
+              {selectedService === 'angill' ? 'Angill Doctors' : selectedService === 'private' ? 'Private Doctors' : 'Angill Cyber Clinics'}
+            </h1>
+            <p className="text-gray-600 text-base mt-2">Select who needs medical assistance</p>
           </div>
 
-          <div className="space-y-3 mb-4">
-            <div 
-              onClick={() => handleDependentSelect('Niaz Zardari')}
-              className="bg-gradient-to-r from-green-500/80 to-teal-500/80 p-3 rounded-xl text-white cursor-pointer hover:from-green-600/90 hover:to-teal-600/90 transition-all duration-300 shadow-md hover:shadow-lg"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-white/30 rounded-full flex items-center justify-center mr-3">
-                    <User className="w-5 h-5 text-white" />
+          <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl mb-8 border border-green-100/50 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">Who Needs Help?</h2>
+            <div className="space-y-4">
+              <div 
+                onClick={() => handleDependentSelect('Niaz Zardari')}
+                className="bg-gradient-to-r from-green-500/80 to-teal-500/80 p-4 rounded-xl text-white cursor-pointer hover:from-green-600/90 hover:to-teal-600/90 transition-all duration-300 shadow-md hover:shadow-lg"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-white/30 rounded-full flex items-center justify-center mr-4">
+                      <User className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="font-medium text-base">Niaz Zardari</span>
                   </div>
-                  <span className="font-medium text-sm">Niaz Zardari</span>
+                  <div className="w-6 h-6 bg-white/30 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
                 </div>
-                <div className="w-5 h-5 bg-white/30 rounded-full flex items-center justify-center">
-                  <Check className="w-3 h-3 text-white" />
+              </div>
+
+              <div className="text-center py-3">
+                <span className="text-base font-bold text-gray-400">OR</span>
+              </div>
+
+              <div className="bg-white/50 p-4 rounded-xl transition-colors duration-300 border border-green-100/30 backdrop-blur-sm">
+                <div className="flex items-center justify-between cursor-pointer mb-4">
+                  <span className="font-medium text-base text-green-700">Dependents</span>
+                  <ChevronRight className="w-6 h-6 text-gray-400" />
+                </div>
+                <div className="space-y-3">
+                  <div 
+                    onClick={() => handleDependentSelect('Ali Zardari')}
+                    className="flex items-center p-3 bg-green-50/50 rounded-lg hover:bg-green-100/50 transition-colors duration-300 cursor-pointer"
+                  >
+                    <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center mr-4">
+                      <User className="w-6 h-6 text-green-600" />
+                    </div>
+                    <span className="text-base text-gray-700">Ali Zardari</span>
+                  </div>
+                  <div 
+                    onClick={() => handleDependentSelect('Sara Zardari')}
+                    className="flex items-center p-3 bg-green-50/50 rounded-lg hover:bg-green-100/50 transition-colors duration-300 cursor-pointer"
+                  >
+                    <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center mr-4">
+                      <User className="w-6 h-6 text-green-600" />
+                    </div>
+                    <span className="text-base text-gray-700">Sara Zardari</span>
+                  </div>
+                  <button 
+                    onClick={handleAddDependentClick}
+                    className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-3 rounded-lg font-medium text-base transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Add Dependent
+                  </button>
                 </div>
               </div>
             </div>
 
-            <div className="text-center py-2">
-              <span className="text-sm font-bold text-gray-400">OR</span>
+            <div className="bg-red-50/80 border border-red-200/50 rounded-xl p-3 mt-6">
+              <p className="text-red-600 text-sm font-light">*Add children under 18 and dependents</p>
             </div>
 
-            <div className="bg-white/50 hover:bg-white/70 p-3 rounded-xl transition-colors duration-300 border border-green-100/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between cursor-pointer">
-                <span className="font-medium text-sm text-green-700">Dependents</span>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-              <div className="mt-3 space-y-2">
-                <div 
-                  onClick={() => handleDependentSelect('Ali Zardari')}
-                  className="flex items-center p-2 bg-green-50/50 rounded-lg hover:bg-green-100/50 transition-colors duration-300 cursor-pointer"
-                >
-                  <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center mr-3">
-                    <User className="w-5 h-5 text-green-600" />
-                  </div>
-                  <span className="text-sm text-gray-700">Ali Zardari</span>
-                </div>
-                <div 
-                  onClick={() => handleDependentSelect('Sara Zardari')}
-                  className="flex items-center p-2 bg-green-50/50 rounded-lg hover:bg-green-100/50 transition-colors duration-300 cursor-pointer"
-                >
-                  <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center mr-3">
-                    <User className="w-5 h-5 text-green-600" />
-                  </div>
-                  <span className="text-sm text-gray-700">Sara Zardari</span>
-                </div>
-                <button 
-                  onClick={handleAddDependentClick}
-                  className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2 rounded-lg font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Dependent
-                </button>
-              </div>
+            <div className="flex gap-4 mt-8">
+              <button 
+                onClick={resetFlow}
+                className="flex-1 bg-green-100/80 hover:bg-green-200/80 text-green-700 py-3 rounded-xl font-medium text-base transition-colors duration-300 shadow-md hover:shadow-md"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => handleDependentSelect('Niaz Zardari')}
+                className="flex-1 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-3 rounded-xl font-medium text-base transition-all duration-300 shadow-md hover:shadow-lg"
+              >
+                Continue
+              </button>
             </div>
-          </div>
-
-          <div className="bg-red-50/80 border border-red-200/50 rounded-xl p-2 mb-4 backdrop-blur-sm">
-            <p className="text-red-600 text-xs font-light">*Add children under 18 and dependents</p>
-          </div>
-
-          <div className="flex gap-3">
-            <button 
-              onClick={resetFlow}
-              className="flex-1 bg-green-100/80 hover:bg-green-200/80 text-green-700 py-2 rounded-xl font-medium text-sm transition-colors duration-300"
-            >
-              Cancel
-            </button>
-            <button 
-              onClick={() => handleDependentSelect('Niaz Zardari')}
-              className="flex-1 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2 rounded-xl font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg"
-            >
-              Continue
-            </button>
           </div>
         </div>
       </div>

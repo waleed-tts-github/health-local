@@ -48,6 +48,10 @@ export const BookingProvider = ({ children }) => {
     setCurrentModal('success');
   };
 
+  const handleBookingConfirm=()=>{
+    setCurrentModal("confirmed")
+  }
+
   const closeModal = () => {
     setCurrentModal(null);
   };
@@ -61,6 +65,7 @@ export const BookingProvider = ({ children }) => {
     setTimeMinutes,
     timeSeconds,
     setTimeSeconds,
+    handleBookingConfirm,
     queueWaitTime,
     formatTime,
     handleLiveConnect,

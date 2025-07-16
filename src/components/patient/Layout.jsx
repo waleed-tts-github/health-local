@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import logo from '../../assets/logo.png'
 import { 
   Home, 
   FileText, 
@@ -191,10 +192,12 @@ const Layout = ({ children }) => {
         {/* Sidebar Header */}
         <div className="p-6 border-b border-green-500">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <div className="w-6 h-6 bg-green-600 rounded"></div>
+            <div className="w-22 h-22  rounded-lg flex items-center justify-center">
+              
+                <img src={logo}/>
+              
             </div>
-            <h1 className="text-white font-bold text-xl">Angill Healthcare</h1>
+            <h1 className="text-white font-bold text-lg">Angill Healthcare</h1>
           </div>
           
           {/* Toggle in Sidebar */}

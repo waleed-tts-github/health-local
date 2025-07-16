@@ -4,9 +4,7 @@ import { BookingContext } from '../../contexts/BookingContext';
 
 const ConfirmedModal = () => {
   const { currentModal, closeModal, handleDoctorConfirm } = useContext(BookingContext);
-
   if (currentModal !== 'confirmed') return null;
-
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-green-900/60 via-green-800/50 to-emerald-900/60 backdrop-blur-md flex items-center justify-center z-50 px-4">
       <div className="bg-green-50/20 backdrop-blur-2xl rounded-3xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl border border-green-200/30 overflow-y-auto sm:overflow-visible relative">
