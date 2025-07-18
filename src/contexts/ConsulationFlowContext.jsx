@@ -17,6 +17,9 @@ export const ConsultationFlowProvider = ({ children }) => {
   const handleConsultationClick = () => {
     setCurrentStep(3);
   };
+  const handleShowHealthComplaint=()=>{
+    setCurrentStep(5)
+  }
 
   const resetFlow = () => {
     setCurrentStep(1);
@@ -64,6 +67,7 @@ export const ConsultationFlowProvider = ({ children }) => {
   return (
     <ConsultationFlowContext.Provider
       value={{
+        handleShowHealthComplaint,
         currentStep,
         setCurrentStep,
         selectedService,

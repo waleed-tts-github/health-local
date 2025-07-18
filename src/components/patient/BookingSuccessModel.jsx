@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import { X, CheckCircle } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
-
 const SuccessModal = () => {
-  const { currentModal, closeModal } = useContext(BookingContext);
+  const { currentModal, closeModal,handleNextInLine } = useContext(BookingContext);
 
   if (currentModal !== 'success') return null;
 
@@ -59,7 +58,7 @@ const SuccessModal = () => {
           {/* Button */}
           <div className="px-6 pb-6">
             <button
-              onClick={closeModal}
+              onClick={handleNextInLine}
               className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-3 rounded-xl font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm"
             >
               Ok

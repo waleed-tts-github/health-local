@@ -94,10 +94,9 @@ const BookingConnectModal = () => {
 
             {/* Schedule Appointment Section */}
             <div className="w-full bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20">
-              <h4 className="text-sm font-bold text-white bg-white/20 py-1.5 px-3 rounded-full backdrop-blur-sm text-center mb-2">
-                Schedule An Appointment For Today?
-              </h4>
-              <p className="text-white/80 text-[10px] text-center mb-2">Slide to select a time for your appointment later today</p>
+              <h6 className="text-sm font-bold text-white bg-white/20 py-1.5 px-3 rounded-full backdrop-blur-sm text-center mb-2">
+              Slide to select a time for your appointment later today
+              </h6>
               <div className="text-lg font-bold text-white mb-2 text-center">
                 {availableTimes.length > 0 ? formatTime(availableTimes[selectedTimeIndex]) : 'Loading...'}
               </div>
@@ -124,18 +123,16 @@ const BookingConnectModal = () => {
               </div>
             </div>
 
-            {/* Book Tomorrow & Onwards button */}
-            <button
-              onClick={handleScheduleAppointment}
-              className="w-full bg-white/20 hover:bg-white/30 border border-white/20 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 flex items-center justify-center gap-1.5 backdrop-blur-sm shadow-md hover:shadow-lg transform hover:scale-105"
-            >
-              <Calendar className="w-4 h-4" />
-              Schedule an appointment for any day from tomorrow onward
-            </button>
-
-            {/* Note */}
-            <div className="w-full bg-white/10 border border-white/20 rounded-xl p-1.5 backdrop-blur-sm">
-              <p className="text-white/80 text-xs font-light text-center">
+            {/* Book Tomorrow & Onwards button with disclaimer */}
+            <div className="w-full bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20">
+              <button
+                onClick={handleScheduleAppointment}
+                className="w-full bg-white/20 hover:bg-white/30 border border-white/20 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 flex items-center justify-center gap-1.5 backdrop-blur-sm shadow-md hover:shadow-lg transform hover:scale-105"
+              >
+                <Calendar className="w-4 h-4" />
+                Schedule an appointment for any day from tomorrow onward
+              </button>
+              <p className="text-red-500 text-xs font-light text-center mt-2">
                 *Physical Appointment Can Only Be Booked For Private Doctors*
               </p>
             </div>

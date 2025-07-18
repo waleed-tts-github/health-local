@@ -51,6 +51,15 @@ export const BookingProvider = ({ children }) => {
   const handleBookingConfirm=()=>{
     setCurrentModal("confirmed")
   }
+  const handleNextInLine =()=>{
+    setCurrentModal("nextInLine")
+  }
+  const handleJoinMeeting = ()=>{
+    setCurrentModal("meeting")
+  }
+  const handleGiveFeedback = ()=>{
+    setCurrentModal("feedback")
+  }
 
   const closeModal = () => {
     setCurrentModal(null);
@@ -62,9 +71,12 @@ export const BookingProvider = ({ children }) => {
     selectedTime,
     setSelectedTime,
     timeMinutes,
+    handleGiveFeedback,
     setTimeMinutes,
     timeSeconds,
     setTimeSeconds,
+    handleNextInLine,
+    handleJoinMeeting,
     handleBookingConfirm,
     queueWaitTime,
     formatTime,

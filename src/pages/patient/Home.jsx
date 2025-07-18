@@ -24,6 +24,9 @@ import QueueModal from '../../components/patient/QueueModel'
 import PaymentModal from '../../components/patient/PaymentModel'
 import SuccessModal from '../../components/patient/BookingSuccessModel'
 import BookAppointmentModal from '../../components/patient/BookingAppointmentModel'
+import MeetingModal from '../../components/patient/MeetingModel';
+import NextInLineModal from '../../components/patient/NextInLineModel';
+import FeedbackModal from '../../components/patient/FeedbackModel';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -482,7 +485,10 @@ const Home = () => {
         <QueueModal />
         <PaymentModal />
         <SuccessModal />
+        <FeedbackModal/>
         <BookAppointmentModal />
+        <NextInLineModal/>
+        <MeetingModal/>
       </div>
     </BookingProvider>
   );
