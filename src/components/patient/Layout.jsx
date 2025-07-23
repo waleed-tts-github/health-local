@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/Group.png';
 import { 
@@ -19,7 +19,9 @@ import {
   UserPlus, 
   LogOut, 
   Bell, 
-  Menu 
+  Menu,
+  Settings,
+  ChevronDown
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -29,9 +31,11 @@ const Layout = ({ children }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef(null);
 
   const menuItems = [
-    { name: 'Home', icon: Home, path: '/patient/home' },
+    { name: 'Home', icon: Home, path: '/patient' },
     {
       name: 'EHR',
       icon: FileText,
@@ -68,11 +72,11 @@ const Layout = ({ children }) => {
   ];
 
   useEffect(() => {
-    let newActiveItem = 'Home';
+    let newActiveItem = location.pathname === '/patient' ? 'Home' : '';
     let newOpenDropdown = null;
 
     menuItems.forEach((item) => {
-      if (item.path === location.pathname) {
+      if (item.path === location.pathname && item.path !== '/patient') {
         newActiveItem = item.name;
       } else if (item.subItems) {
         item.subItems.forEach((subItem) => {
@@ -87,6 +91,17 @@ const Layout = ({ children }) => {
     setActiveItem(newActiveItem);
     setOpenDropdown(newOpenDropdown);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const toggleDropdown = (itemName) => {
     setOpenDropdown(openDropdown === itemName ? null : itemName);
@@ -108,6 +123,13 @@ const Layout = ({ children }) => {
 
   const toggleAnonymous = () => {
     setIsAnonymous(!isAnonymous);
+  };
+
+  const handleProfileNavigation = (path) => {
+    setIsProfileDropdownOpen(false);
+    if (path) {
+      navigate(path);
+    }
   };
 
   return (
@@ -187,6 +209,13 @@ const Layout = ({ children }) => {
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
             image-rendering: pixelated;
+          }
+
+          .profile-dropdown {
+            min-width: 200px;
+            right: 0;
+            top: 100%;
+            margin-top: 8px;
           }
         `}
       </style>
@@ -473,24 +502,56 @@ const Layout = ({ children }) => {
                 <Bell className="w-6 h-6" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </button>
-              <div className="flex items-center space-x-3">
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">
-                    {isAnonymous ? 'Anonymous User' : 'John Doe'}
-                  </p>
-                  <p className="text-xs text-gray-500">Patient</p>
-                </div>
-                <div className="relative">
-                  <img
-                    src={isAnonymous 
-                      ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                      : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                    }
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-green-500 transition-colors cursor-pointer"
-                  />
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-                </div>
+              <div className="relative" ref={profileDropdownRef}>
+                <button 
+                  className="flex items-center space-x-3"
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                >
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-gray-900">
+                      {isAnonymous ? 'Anonymous User' : 'John Doe'}
+                    </p>
+                    <p className="text-xs text-gray-500">Patient</p>
+                  </div>
+                  <div className="relative flex items-center">
+                    <img
+                      src={isAnonymous 
+                        ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+                        : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+                      }
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-green-500 transition-colors cursor-pointer"
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                    <ChevronDown className="w-4 h-4 ml-1 text-gray-600" />
+                  </div>
+                </button>
+                {isProfileDropdownOpen && (
+                  <div className="absolute profile-dropdown bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="p-4 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">
+                        {isAnonymous ? 'Anonymous User' : 'John Doe'}
+                      </p>
+                      <p className="text-xs text-gray-500">Patient</p>
+                    </div>
+                    <div className="py-1">
+                      <button
+                        onClick={() => handleProfileNavigation('/patient/profile/edit')}
+                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      >
+                        <Settings className="w-4 h-4 mr-2" />
+                        Edit Profile
+                      </button>
+                      <button
+                        onClick={() => handleProfileNavigation()}
+                        className="w-full flex items-center px-4 py-2 text-sm text-red-500 hover:bg-gray-100 hover:text-red-600"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

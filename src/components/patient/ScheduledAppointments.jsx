@@ -192,14 +192,7 @@ const ScheduledAppointments = () => {
       {/* Quick Actions */}
       <div className="mt-6 pt-6 border-t border-gray-100">
         <div className="flex space-x-3">
-          <button className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2">
-            <Calendar className="w-4 h-4" />
-            <span>Book New</span>
-          </button>
-          <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2">
-            <Phone className="w-4 h-4" />
-            <span>Call Support</span>
-          </button>
+          
         </div>
       </div>
     </div>
