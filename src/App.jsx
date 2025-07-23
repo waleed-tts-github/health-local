@@ -12,6 +12,11 @@ import BloodVolunteers from './pages/patient/BloodVolunteers';
 import BloodDonations from './pages/patient/BloodDonations';
 import VirtualWallet from './pages/patient/VirtualWallet';
 import Landing from './pages/patient/Landing';
+import PatientEditProfile from './pages/patient/EditProfile';
+import PatientSignIn from './pages/patient/SignIn';
+import PatientForgotPassword from './pages/patient/ForgotPassword';
+import PatientResetPassword from './pages/patient/ResetPassword';
+import OTPPage from './pages/OTP';
 
 const App = () => {
   return (
@@ -38,15 +43,22 @@ const App = () => {
                       <Route path='blood-volunteers' element={<BloodVolunteers/>}></Route>
                       <Route path='blood-donations' element={<BloodDonations/>}></Route>
                       <Route path='virtual-wallet' element={<VirtualWallet/>}></Route>
+                      <Route path='profile/edit' element={<PatientEditProfile/>}></Route>
+
                     </Routes>
                   </Layout>
                 }
               />
               <Route path="sign-up" element={<PatientSignup />} />
+                                    <Route path='login' element={<PatientSignIn/>}></Route>
+                                    <Route path='forgot-password' element={<PatientForgotPassword/>}></Route>
+                                    <Route path='reset-password' element={<PatientResetPassword/>}></Route>
+                                   
             </Routes>
           }
         />
         <Route path="/" element={<div>Landing Page</div>} />
+         <Route path='/verify-otp' element={<OTPPage/>}></Route>
       </Routes>
     </BrowserRouter>
   );

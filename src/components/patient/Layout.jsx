@@ -182,22 +182,44 @@ const Layout = ({ children }) => {
             padding: 8px 0;
             margin-top: 8px;
           }
+
+          .logo-crisp {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+          }
         `}
       </style>
 
       {/* Sidebar for larger screens */}
       <div className="hidden md:block relative w-64 bg-green-600 rounded-lg h-[850px] z-10">
         {/* Sidebar Header */}
-        <div className="p-6 border-b border-green-500 flex flex-col items-center">
-          <div className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0">
-            <img src={logo} alt="Logo" className="w-full h-full object-contain"/>
+        <div className="p-6 border-b border-green-500">
+          {/* Logo and Brand */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 backdrop-blur-sm">
+              <img 
+                src={logo} 
+                alt="Angill Healthcare Logo" 
+                className="w-8 h-8 object-contain logo-crisp"
+                style={{ 
+                  filter: 'contrast(1.2) brightness(1.1)',
+                  imageRendering: 'crisp-edges'
+                }}
+              />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
+              <p className="text-green-100 text-xs font-medium uppercase tracking-wider">
+                Healthcare
+              </p>
+            </div>
           </div>
-          <div className="mt-2 text-center">
-            <h1 className="text-white font-bold text-sm">ANGILL HEALTHCARE</h1>
-          </div>
-<p className="text-white italic font-light text-xs" style={{ color: '#FFFFFF' }}>
-  Every illness deserves an angel.
-</p>
+          
+          {/* Tagline */}
+          <p className="text-green-100 italic font-light text-xs text-center mb-4">
+            Every illness deserves an angel.
+          </p>
           
           {/* Toggle in Sidebar */}
           <div className="sidebar-toggle-container">
@@ -323,16 +345,32 @@ const Layout = ({ children }) => {
         } md:hidden transition-transform duration-300 ease-in-out z-20 overflow-y-auto custom-scrollbar`}
       >
         {/* Drawer Header */}
-        <div className="p-6 border-b border-green-500 flex flex-col items-center">
-          <div className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0">
-            <img src={logo} alt="Logo" className="w-full h-full object-contain"/>
+        <div className="p-6 border-b border-green-500">
+          {/* Logo and Brand */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 backdrop-blur-sm">
+              <img 
+                src={logo} 
+                alt="Angill Healthcare Logo" 
+                className="w-8 h-8 object-contain logo-crisp"
+                style={{ 
+                  filter: 'contrast(1.2) brightness(1.1)',
+                  imageRendering: 'crisp-edges'
+                }}
+              />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
+              <p className="text-green-100 text-xs font-medium uppercase tracking-wider">
+                Healthcare
+              </p>
+            </div>
           </div>
-          <div className="mt-2 text-center">
-            <h1 className="text-white font-bold text-sm">ANGILL HEALTHCARE</h1>
-          </div>
-          <p className="text-white italic font-light text-xs" style={{ color: '#FFFFFF' }}>
-  Every illness deserves an angel.
-</p>
+          
+          {/* Tagline */}
+          <p className="text-green-100 italic font-light text-xs text-center mb-4">
+            Every illness deserves an angel.
+          </p>
           
           {/* Toggle in Drawer */}
           <div className="sidebar-toggle-container">

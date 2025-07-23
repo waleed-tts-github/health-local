@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Calendar, Clock, User, FileText, X, ChevronDown, Trash2, Printer, Filter } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Search, Calendar, Clock, User, FileText, X,Share2,ToggleLeft,ToggleRight, ChevronDown, Trash2, Printer, Filter } from 'lucide-react';
 import AppointmentDetailsModal from '../../components/patient/AppointmentDetailsModel'
 import CancelAppointmentModal from '../../components/patient/CancelAppointmentModel'
 import RefundRequestModal from '../../components/patient/RefundRequestModel'
@@ -18,10 +18,13 @@ const AppointmentRecord = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
- const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [refundReason, setRefundReason] = useState('');
   const [customReason, setCustomReason] = useState('');
   const [activeFilter, setActiveFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [appointmentToggles, setAppointmentToggles] = useState({});
+  const [mainToggle, setMainToggle] = useState(false);
 
   const appointments = [
     {
@@ -33,7 +36,8 @@ const AppointmentRecord = () => {
       time: "10:30 AM",
       checkupNumber: "CHK-001",
       fee: "3,500",
-      category: "Private Doctor"
+      category: "Private Doctor",
+      status: "Upcoming"
     },
     {
       id: 2,
@@ -44,7 +48,8 @@ const AppointmentRecord = () => {
       time: "2:00 PM",
       checkupNumber: "CHK-002",
       fee: "2,800",
-      category: "Angel Doctor"
+      category: "Angel Doctor",
+      status: "Upcoming"
     },
     {
       id: 3,
@@ -55,7 +60,8 @@ const AppointmentRecord = () => {
       time: "11:00 AM",
       checkupNumber: "CHK-003",
       fee: "3,200",
-      category: "Private Doctor"
+      category: "Private Doctor",
+      status: "Completed"
     },
     {
       id: 4,
@@ -66,7 +72,8 @@ const AppointmentRecord = () => {
       time: "3:30 PM",
       checkupNumber: "CHK-004",
       fee: "4,000",
-      category: "Angel Doctor"
+      category: "Angel Doctor",
+      status: "Cancelled"
     },
     {
       id: 5,
@@ -77,7 +84,8 @@ const AppointmentRecord = () => {
       time: "9:00 AM",
       checkupNumber: "CHK-005",
       fee: "2,500",
-      category: "Private Doctor"
+      category: "Private Doctor",
+      status: "Upcoming"
     },
     {
       id: 6,
@@ -88,7 +96,8 @@ const AppointmentRecord = () => {
       time: "4:00 PM",
       checkupNumber: "CHK-006",
       fee: "5,000",
-      category: "Angel Doctor"
+      category: "Angel Doctor",
+      status: "Completed"
     }
   ];
 
@@ -98,6 +107,14 @@ const AppointmentRecord = () => {
     "I missed my turn",
     "Other (Custom)"
   ];
+
+  useEffect(() => {
+    const initialToggles = {};
+    appointments.forEach(appointment => {
+      initialToggles[appointment.id] = false;
+    });
+    setAppointmentToggles(initialToggles);
+  }, []);
 
   const getDateRange = (days) => {
     const end = new Date();
@@ -144,7 +161,45 @@ const AppointmentRecord = () => {
     setSelectedDate('');
     setStartDate(null);
     setEndDate(null);
+    setStatusFilter('All');
     setShowFilterDropdown(false);
+  };
+
+  const handleMainToggle = () => {
+    const newToggleState = !mainToggle;
+    setMainToggle(newToggleState);
+    const newToggles = {};
+    appointments.forEach(appointment => {
+      newToggles[appointment.id] = newToggleState;
+    });
+    setAppointmentToggles(newToggles);
+  };
+
+  const handleAppointmentToggle = (appointmentId) => {
+    setAppointmentToggles(prev => ({
+      ...prev,
+      [appointmentId]: !prev[appointmentId]
+    }));
+    const updatedToggles = {
+      ...appointmentToggles,
+      [appointmentId]: !appointmentToggles[appointmentId]
+    };
+    const allToggled = Object.values(updatedToggles).every(toggle => toggle);
+    setMainToggle(allToggled);
+  };
+
+  const handleShareAppointment = (appointment) => {
+    const shareText = `Appointment with ${appointment.doctorName} (${appointment.specialty})\nDate: ${appointment.date}\nTime: ${appointment.time}\nType: ${appointment.consultationType}\nFee: PKR ${appointment.fee}`;
+    if (navigator.share) {
+      navigator.share({
+        title: `Appointment ${appointment.checkupNumber}`,
+        text: shareText,
+        url: window.location.href
+      }).catch(error => console.error('Error sharing:', error));
+    } else {
+      navigator.clipboard.writeText(shareText);
+      alert('Appointment details copied to clipboard!');
+    }
   };
 
   const filteredAppointments = appointments.filter(appointment => {
@@ -153,8 +208,9 @@ const AppointmentRecord = () => {
     const matchesDateRange = (startDate && endDate) 
       ? appointment.date >= startDate && appointment.date <= endDate 
       : true;
+    const matchesStatus = statusFilter === 'All' || appointment.status === statusFilter;
     
-    return matchesSearch && matchesDate && matchesDateRange;
+    return matchesSearch && matchesDate && matchesDateRange && matchesStatus;
   });
 
   const handleViewAppointment = (appointment) => {
@@ -188,7 +244,6 @@ const AppointmentRecord = () => {
 
   const handleDeleteAppointment = (appointmentId) => {
     console.log(`Delete appointment with ID: ${appointmentId}`);
-    // Implement actual delete logic here (e.g., API call)
   };
 
   const handlePrintAppointment = (appointment) => {
@@ -213,6 +268,7 @@ const AppointmentRecord = () => {
             <p>Consultation Type: ${appointment.consultationType}</p>
             <p>Category: ${appointment.category}</p>
             <p>Fee: PKR ${appointment.fee}</p>
+            <p>Status: ${appointment.status}</p>
           </div>
         </body>
       </html>
@@ -235,21 +291,30 @@ const AppointmentRecord = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
         <BackButton />
         
         <div className="pb-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">My Appointments</h1>
-            <p className="text-lg text-gray-600 max-w-2xl">
-              Manage and track your medical appointments with ease. View details, cancel, or request refunds.
-            </p>
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-3">My Appointments</h1>
+              <p className="text-lg text-gray-600 max-w-2xl">
+                Manage and track your medical appointments with ease. View details, cancel, or request refunds.
+              </p>
+            </div>
+            <button
+              onClick={handleMainToggle}
+              className="flex items-center space-x-2 px-4 py-2 bg-white text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200 border border-gray-200"
+              aria-label="Toggle all appointments"
+            >
+              <div className={`relative w-10 h-5 rounded-full transition-all duration-300 ${mainToggle ? 'bg-green-500' : 'bg-gray-300'}`}>
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transform transition-all duration-300 ${mainToggle ? 'translate-x-5' : 'translate-x-0.5'}`} />
+              </div>
+              <span className="text-sm font-medium">Toggle All</span>
+            </button>
           </div>
 
-          {/* Search and Filters Section */}
           <div className="bg-green-500 rounded-2xl shadow-sm border border-gray-200 p-6 lg:p-8">
             <div className="flex flex-col lg:flex-row gap-6">
-              {/* Search Bar */}
               <div className="flex-1 max-w-md">
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -264,16 +329,29 @@ const AppointmentRecord = () => {
                 </div>
               </div>
 
-              {/* Filter Controls */}
               <div className="flex flex-wrap items-center gap-4">
-                {/* Quick Filter Dropdown */}
+                <div className="relative">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="flex items-center space-x-3 px-6 py-4 bg-white rounded-xl transition-all duration-200 text-sm font-medium min-w-[160px] text-gray-700 hover:bg-gray-50 appearance-none"
+                    aria-label="Filter by status"
+                  >
+                    <option value="All">All</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-700 pointer-events-none" />
+                </div>
+
                 <div className="relative">
                   <button
                     onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                    className={`flex items-center space-x-3 px-6 py-4 border rounded-xl transition-all duration-200 text-sm font-medium min-w-[160px] ${
+                    className={`flex items-center space-x-3 px-6 py-4 bg-white rounded-xl transition-all duration-200 text-sm font-medium min-w-[160px] ${
                       activeFilter 
-                        ? 'bg-green-50 border-green-200 text-green-700' 
-                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                        ? 'bg-green-50 text-green-700' 
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                     aria-label="Toggle quick filter dropdown"
                   >
@@ -287,7 +365,7 @@ const AppointmentRecord = () => {
                     <ChevronDown className="h-4 w-4" />
                   </button>
                   {showFilterDropdown && (
-                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-2 w-56 z-20">
+                    <div className="absolute top-full mt-2 right-0 bg-white rounded-xl shadow-lg border border-gray-200 p-2 w-56 z-20">
                       <div className="space-y-1">
                         {[
                           { key: 'today', label: 'Today' },
@@ -313,11 +391,10 @@ const AppointmentRecord = () => {
                   )}
                 </div>
 
-                {/* Date Range Picker */}
                 <div className="relative">
                   <button
                     onClick={() => setShowDatePicker(!showDatePicker)}
-                    className="flex items-center space-x-3 px-6 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 text-sm font-medium text-gray-700 bg-white min-w-[160px]"
+                    className="flex items-center space-x-3 px-6 py-4 bg-white rounded-xl hover:bg-gray-50 transition-all duration-200 text-sm font-medium text-gray-700 min-w-[160px]"
                     aria-label="Toggle date range picker"
                   >
                     <Calendar className="h-4 w-4" />
@@ -325,7 +402,7 @@ const AppointmentRecord = () => {
                     <ChevronDown className="h-4 w-4" />
                   </button>
                   {showDatePicker && (
-                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-6 w-80 z-20">
+                    <div className="absolute top-full mt-2 right-0 bg-white rounded-xl shadow-lg border border-gray-200 p-6 w-80 z-20">
                       <div className="space-y-6">
                         <h3 className="text-sm font-semibold text-gray-900">Filter by Date Range</h3>
                         <div className="grid grid-cols-1 gap-4">
@@ -371,11 +448,10 @@ const AppointmentRecord = () => {
                   )}
                 </div>
 
-                {/* Clear All Filters */}
-                {(activeFilter || startDate || endDate) && (
+                {(activeFilter || startDate || endDate || statusFilter !== 'All') && (
                   <button
                     onClick={clearFilters}
-                    className="flex items-center space-x-2 px-6 py-4 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all duration-200 text-sm font-medium border border-red-200"
+                    className="flex items-center space-x-2 px-6 py-4 bg-white text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 text-sm font-medium"
                     aria-label="Clear all filters"
                   >
                     <X className="h-4 w-4" />
@@ -385,8 +461,7 @@ const AppointmentRecord = () => {
               </div>
             </div>
 
-            {/* Active Filters Display */}
-            {(activeFilter || startDate || endDate) && (
+            {(activeFilter || startDate || endDate || statusFilter !== 'All') && (
               <div className="mt-6 pt-6 border-t border-gray-100">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-sm text-gray-600 mr-3">Active filters:</span>
@@ -400,14 +475,18 @@ const AppointmentRecord = () => {
                       {startDate} to {endDate}
                     </span>
                   )}
+                  {statusFilter !== 'All' && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                      {statusFilter}
+                    </span>
+                  )}
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Appointments Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-1 lg:flex lg:flex-wrap gap-6">
           {filteredAppointments.map((appointment) => (
             <div
               key={appointment.id}
@@ -423,6 +502,19 @@ const AppointmentRecord = () => {
                     <p className="text-sm text-gray-500">{appointment.specialty}</p>
                   </div>
                 </div>
+                <button
+                  onClick={() => handleAppointmentToggle(appointment.id)}
+                  className="relative w-10 h-5 rounded-full transition-all duration-300"
+                  style={{ backgroundColor: appointmentToggles[appointment.id] ? '#10B981' : '#D1D5DB' }}
+                  aria-label={`Toggle visibility for appointment ${appointment.checkupNumber}`}
+                  title="Toggle Appointment"
+                >
+                  <div
+                    className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transform transition-all duration-300 ${
+                      appointmentToggles[appointment.id] ? 'translate-x-5' : 'translate-x-0.5'
+                    }`}
+                  />
+                </button>
               </div>
 
               <div className="grid grid-cols-1 gap-4 mb-4">
@@ -442,15 +534,27 @@ const AppointmentRecord = () => {
                   <p className="text-xs text-gray-500 mb-1">Fee</p>
                   <p className="font-medium text-gray-900">PKR {appointment.fee}</p>
                 </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Status</p>
+                  <p className="font-medium text-gray-900">{appointment.status}</p>
+                </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleViewAppointment(appointment)}
-                  className="flex-1 bg-green-500 text-white font-medium text-sm py-3 px-4 rounded-full transition-all duration-200 transform group-hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                  className="flex-1 bg-green-500 text-white font-medium text-xs py-3 px-4 rounded-full transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
                   aria-label={`View details for appointment ${appointment.checkupNumber}`}
                 >
                   View Appointment
+                </button>
+                <button
+                  onClick={() => handleShareAppointment(appointment)}
+                  className="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors"
+                  aria-label={`Share appointment ${appointment.checkupNumber}`}
+                  title="Share Appointment"
+                >
+                  <Share2 className="h-4 w-4 text-blue-600" />
                 </button>
                 <button
                   onClick={() => handlePrintAppointment(appointment)}
@@ -472,8 +576,6 @@ const AppointmentRecord = () => {
             </div>
           ))}
         </div>
-
-        {/* Empty State */}
         {filteredAppointments.length === 0 && (
           <div className="text-center py-12">
             <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -484,7 +586,6 @@ const AppointmentRecord = () => {
           </div>
         )}
 
-        {/* Appointment Details Modal */}
         <AppointmentDetailsModal
           isOpen={showModal}
           onClose={() => setShowModal(false)}
@@ -493,14 +594,12 @@ const AppointmentRecord = () => {
           onRefund={handleRefundRequest}
         />
 
-        {/* Cancel Confirmation Modal */}
         <CancelAppointmentModal
           isOpen={showCancelModal}
           onClose={() => setShowCancelModal(false)}
           onConfirm={confirmCancel}
         />
 
-        {/* Refund Request Modal */}
         <RefundRequestModal
           isOpen={showRefundModal}
           onClose={() => setShowRefundModal(false)}
@@ -512,7 +611,6 @@ const AppointmentRecord = () => {
           onSubmit={submitRefund}
         />
 
-        {/* Success Modal */}
         <SuccessModal
           isOpen={showSuccessModal}
           onClose={() => setShowSuccessModal(false)}

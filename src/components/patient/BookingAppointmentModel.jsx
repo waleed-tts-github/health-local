@@ -8,8 +8,10 @@ const BookAppointmentModal = () => {
   const [selectedDate, setSelectedDate] = useState(28);
   const [selectedTime, setSelectedTime] = useState('3:30');
   const [selectedSegment, setSelectedSegment] = useState('Private Doctors');
+  const [selectedLocation, setSelectedLocation] = useState('');
   const [complaint, setComplaint] = useState('');
   const [showSegmentDropdown, setShowSegmentDropdown] = useState(false);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showComplaintDropdown, setShowComplaintDropdown] = useState(false);
 
   const days = [
@@ -25,6 +27,12 @@ const BookAppointmentModal = () => {
     afternoon: ['2:30', '3:30', '4:30', '5:30'],
     evening: ['10:30', '11:30', '12:30', '1:30'],
   };
+
+  const locations = [
+    'Agha Khan Hospital',
+    'Liaquat National Hospital',
+    'Patel Hospital'
+  ];
 
   if (currentModal !== 'bookAppointment') return null;
 
@@ -54,7 +62,7 @@ const BookAppointmentModal = () => {
 
           {/* Main content */}
           <div className="flex-1 px-6 pb-6 overflow-y-auto">
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Appointment Type */}
               <div>
                 <h4 className="text-sm font-bold text-white mb-2">Appointment Type</h4>
@@ -83,7 +91,7 @@ const BookAppointmentModal = () => {
               </div>
 
               {/* Segment Type */}
-              <div>
+              <div className="relative" style={{ zIndex: showSegmentDropdown ? 30 : 10 }}>
                 <h4 className="text-sm font-bold text-white mb-2">Segment Type</h4>
                 <div className="relative">
                   <button
@@ -98,25 +106,25 @@ const BookAppointmentModal = () => {
                     />
                   </button>
                   {showSegmentDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white/20 border border-white/20 rounded-xl shadow-lg z-10 backdrop-blur-sm">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-green-800/95 border border-green-700 rounded-xl shadow-xl z-50 backdrop-blur-lg">
                       <div className="p-1">
                         <button
                           onClick={() => {
                             setSelectedSegment('Private Doctors');
                             setShowSegmentDropdown(false);
                           }}
-                          className="w-full text-left p-3 hover:bg-white/30 rounded-lg text-sm text-white transition-all duration-300"
+                          className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium"
                         >
                           Private Doctors
                         </button>
                         <button
                           onClick={() => {
-                            setSelectedSegment('Specialists');
+                            setSelectedSegment('ANGILL Doctors');
                             setShowSegmentDropdown(false);
                           }}
-                          className="w-full text-left p-3 hover:bg-white/30 rounded-lg text-sm text-white transition-all duration-300"
+                          className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium"
                         >
-                          Specialists
+                          ANGILL Doctors
                         </button>
                       </div>
                     </div>
@@ -124,8 +132,46 @@ const BookAppointmentModal = () => {
                 </div>
               </div>
 
+              {/* Location Dropdown (Shown only for Physical Appointments) */}
+              {selectedAppointmentType === 'physical' && (
+                <div className="relative" style={{ zIndex: showLocationDropdown ? 25 : 10 }}>
+                  <h4 className="text-sm font-bold text-white mb-2">Location</h4>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                      className="w-full flex items-center justify-between p-3 bg-white/20 rounded-xl border border-white/20 text-white text-sm font-medium hover:bg-white/30 transition-all duration-300 backdrop-blur-sm"
+                    >
+                      <span>{selectedLocation || 'Select Location'}</span>
+                      <ChevronDown
+                        className={`w-5 h-5 text-white transition-transform ${
+                          showLocationDropdown ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {showLocationDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-green-800/95 border border-green-700 rounded-xl shadow-xl z-50 backdrop-blur-lg">
+                        <div className="p-1">
+                          {locations.map((location) => (
+                            <button
+                              key={location}
+                              onClick={() => {
+                                setSelectedLocation(location);
+                                setShowLocationDropdown(false);
+                              }}
+                              className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium"
+                            >
+                              {location}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Health Complaint */}
-              <div>
+              <div className="relative" style={{ zIndex: showComplaintDropdown ? 20 : 10 }}>
                 <h4 className="text-sm font-bold text-white mb-2">Health Complaint</h4>
                 <div className="relative">
                   <button
@@ -139,6 +185,15 @@ const BookAppointmentModal = () => {
                       }`}
                     />
                   </button>
+                  {showComplaintDropdown && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-green-800/95 border border-green-700 rounded-xl shadow-xl z-50 backdrop-blur-lg">
+                      <div className="p-1">
+                        <button className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium">
+                          Auto-generated complaint options will appear here
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <textarea
                   value={complaint}

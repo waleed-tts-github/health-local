@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { Heart, User, Shield, LogOut, ArrowLeft, Check, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Heart, User, Shield, LogOut, ArrowLeft, Check, Plus, Search, MapPin, Star } from 'lucide-react';
 import consultationBg from '../../assets/consultationpagebg.png';
 import AddDependent from '../../components/patient/AddDependent';
 import HealthComplaint from '../../components/patient/HealthComplaint';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+import ScheduledAppointments from '../../components/patient/ScheduledAppointments';
 
 const Landing = () => {
   const {
     currentStep,
     selectedService,
+    handleShowCyberClinics,
     handleServiceSelect,
     handleShowHealthComplaint,
     handleConsultationClick,
@@ -19,6 +21,15 @@ const Landing = () => {
   } = useConsultationFlow();
 
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  // Preload the background image
+  useEffect(() => {
+    const img = new Image();
+    img.src = consultationBg;
+    img.onload = () => setIsImageLoaded(true);
+    img.onerror = () => setIsImageLoaded(true); // Fallback in case of error
+  }, []);
 
   // Step 1: Service Selection
   const ServiceSelection = () => (
@@ -76,7 +87,7 @@ const Landing = () => {
 
         {/* Angill Cyber Clinics */}
         <div 
-          onClick={() => handleServiceSelect('cyber')}
+          onClick={handleShowCyberClinics}
           className="bg-gradient-to-br from-green-700/80 to-teal-700/80 p-6 rounded-xl text-white cursor-pointer hover:from-green-800/90 hover:to-teal-800/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-green-300/20 backdrop-blur-sm"
         >
           <div className="flex justify-center mb-4">
@@ -88,6 +99,9 @@ const Landing = () => {
           <p className="text-xs text-center text-teal-100 font-light">No wait, verified experts, extended hours</p>
         </div>
       </div>
+      <div className="mt-8">
+  <ScheduledAppointments/>
+</div>
     </div>
   );
 
@@ -104,7 +118,6 @@ const Landing = () => {
             <ArrowLeft className="w-5 h-5 text-green-600" />
           </button>
           <div className="flex-1 text-center h-[48px]">
-
           </div>
         </div>
       </div>
@@ -130,13 +143,18 @@ const Landing = () => {
 
         {/* Consultation Section */}
         <div 
-          className="flex-1 relative bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-96"
+          className={`flex-1 relative bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-96 transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={{ 
-            backgroundImage: `url(${consultationBg})`,
+            backgroundImage: isImageLoaded ? `url(${consultationBg})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
         >
+          {!isImageLoaded && (
+            <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+            </div>
+          )}
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="relative z-10 text-center text-white">
             <div className="mb-6">
@@ -279,22 +297,6 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex space-x-3 pt-6">
-            <button 
-              onClick={resetFlow}
-              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              Back
-            </button>
-            <button 
-              onClick={handleShowHealthComplaint}
-              className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
-              disabled={!selectedPatient}
-            >
-              OK, Next
-            </button>
-          </div>
         </div>
       </div>
 
@@ -366,13 +368,157 @@ const Landing = () => {
     </div>
   );
 
+  // Step 6: Cyber Clinics Map Page
+  const CyberClinicsPage = () => {
+    // Mock clinic data
+    const clinics = [
+      {
+        id: 1,
+        name: "George Cyber Angill Clinic",
+        rating: 4.9,
+        reviews: 48,
+        hours: "Open 24 Hours",
+        position: { top: '45%', left: '55%' }
+      },
+      {
+        id: 2,
+        name: "Central Angill Clinic",
+        rating: 4.8,
+        reviews: 32,
+        hours: "Open 24 Hours",
+        position: { top: '60%', left: '45%' }
+      },
+      {
+        id: 3,
+        name: "North Angill Clinic",
+        rating: 4.7,
+        reviews: 28,
+        hours: "Open 24 Hours",
+        position: { top: '35%', left: '65%' }
+      },
+      {
+        id: 4,
+        name: "East Angill Clinic",
+        rating: 4.9,
+        reviews: 55,
+        hours: "Open 24 Hours",
+        position: { top: '50%', left: '75%' }
+      },
+      {
+        id: 5,
+        name: "West Angill Clinic",
+        rating: 4.6,
+        reviews: 41,
+        hours: "Open 24 Hours",
+        position: { top: '70%', left: '35%' }
+      }
+    ];
+
+    return (
+      <div className="min-h-screen bg-white">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-4 mb-4">
+          <div className="flex items-center max-w-6xl mx-auto relative">
+            <button 
+              onClick={goBack}
+              className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-green-600" />
+            </button>
+            <div className="flex-1 text-center">
+              <h1 className="text-lg font-bold text-green-700">Angill Cyber Clinics</h1>
+              <p className="text-gray-600 text-xs mt-1">Find the nearest cyber clinic to you</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-6xl mx-auto px-4 mb-6">
+          <div className="relative">
+            <input 
+              type="text" 
+              placeholder="Clinics Near Me"
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 text-gray-700 placeholder-gray-500"
+            />
+            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-2">
+              <button className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                <Search className="w-5 h-5" />
+              </button>
+             
+            </div>
+          </div>
+        </div>
+
+        {/* Map Section */}
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="relative bg-gradient-to-br from-green-50 to-teal-50 rounded-xl h-96 overflow-hidden border border-green-100">
+            {/* Background map pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <svg className="w-full h-full" viewBox="0 0 800 400" fill="none">
+                <path d="M0 200L100 180L200 220L300 160L400 240L500 180L600 200L700 160L800 200V400H0V200Z" fill="#10b981" opacity="0.1"/>
+                <path d="M0 100L150 120L300 80L450 140L600 100L800 120V400H0V100Z" fill="#0d9488" opacity="0.1"/>
+              </svg>
+            </div>
+            
+            {/* Map markers and clinic info */}
+            {clinics.map((clinic) => (
+              <div key={clinic.id}>
+                {/* Map Pin */}
+                <div 
+                  className="absolute w-8 h-8 bg-green-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-green-700 transition-colors z-10"
+                  style={clinic.position}
+                >
+                  <MapPin className="w-5 h-5 text-white" />
+                </div>
+                
+                {/* Clinic Info Card (show for featured clinic) */}
+                {clinic.id === 1 && (
+                  <div 
+                    className="absolute bg-white rounded-lg shadow-lg p-4 border border-gray-200 w-64 z-20"
+                    style={{ top: '35%', left: '65%' }}
+                  >
+                    <div className="flex items-start space-x-3">
+                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Shield className="w-6 h-6 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 text-sm">{clinic.name}</h3>
+                        <div className="flex items-center space-x-1 mt-1">
+                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <span className="text-xs text-gray-600">{clinic.rating} ({clinic.reviews})</span>
+                        </div>
+                        <p className="text-xs text-green-600 mt-1">{clinic.hours}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Angill Logo in center */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="bg-white/80 backdrop-blur-sm rounded-full p-4 shadow-lg flex items-center justify-center">
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-8 h-8 text-green-600" />
+                  <span className="text-lg font-bold text-green-700">Angill</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="font-poppins text-lg antialiased">
       {currentStep === 1 && <ServiceSelection />}
-      {currentStep === 2 && <ConsultationDetails />}
+      {currentStep === 2 && selectedService && selectedService === "cyber" && <CyberClinicsPage />}
+      {currentStep === 2 && selectedService!="cyber" && <ConsultationDetails />}
       {currentStep === 3 && <PatientSelection />}
       {currentStep === 4 && <AddDependentPage />}
       {currentStep === 5 && <HealthComplaintPage />}
+
     </div>
   );
 };

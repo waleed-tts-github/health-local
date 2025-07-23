@@ -1,21 +1,23 @@
-
 import React, { useState } from 'react';
 import { ChevronDown, Upload, Camera, User, Calendar, Thermometer, Ruler, Weight, Activity, Clock } from 'lucide-react';
-import { useConsultationFlow } from '../../contexts/ConsulationFlowContext'
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import { useNavigate } from 'react-router-dom';
 
 const HealthComplaint = () => {
   const { goBack } = useConsultationFlow();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     healthCondition: '',
     complaintSinceWhen: '',
     temperature: '',
+    temperatureUnit: '°C',
     height: '',
+    heightUnit: 'cm',
     bloodPressure: '',
     pulse: '',
     weight: '',
+    weightUnit: 'kg',
     fileName: ''
   });
 
@@ -30,7 +32,10 @@ const HealthComplaint = () => {
     healthCondition: false,
     complaintSinceWhen: false,
     bloodPressure: false,
-    pulse: false
+    pulse: false,
+    temperatureUnit: false,
+    heightUnit: false,
+    weightUnit: false
   });
 
   const healthConditions = [
@@ -75,11 +80,14 @@ const HealthComplaint = () => {
     'Add custom pulse...'
   ];
 
+  const unitOptions = {
+    temperature: ['°C', '°F'],
+    height: ['cm', 'ft/in'],
+    weight: ['kg', 'lbs']
+  };
+
   const handleSelectChange = (field, value) => {
-    if (value === 'Add custom condition...' || 
-        value === 'Add custom duration...' || 
-        value === 'Add custom reading...' || 
-        value === 'Add custom pulse...') {
+    if (value.includes('Add custom')) {
       setCustomInputs(prev => ({ ...prev, [field]: true }));
       setFormData(prev => ({ ...prev, [field]: '' }));
     } else {
@@ -87,6 +95,33 @@ const HealthComplaint = () => {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
     setIsDropdownOpen(prev => ({ ...prev, [field]: false }));
+  };
+
+  const handleUnitChange = (field, unit) => {
+    setFormData(prev => {
+      let newValue = prev[field];
+      if (field === 'temperature' && prev[field]) {
+        newValue = unit === '°C' 
+          ? ((parseFloat(prev[field]) - 32) * 5/9).toFixed(1)
+          : (parseFloat(prev[field]) * 9/5 + 32).toFixed(1);
+      } else if (field === 'weight' && prev[field]) {
+        newValue = unit === 'kg'
+          ? (parseFloat(prev[field]) / 2.20462).toFixed(1)
+          : (parseFloat(prev[field]) * 2.20462).toFixed(1);
+      } else if (field === 'height' && prev[field]) {
+        if (unit === 'cm') {
+          const [feet, inches] = prev[field].split('.').map(Number);
+          newValue = ((feet * 30.48) + (inches * 2.54)).toFixed(1);
+        } else {
+          const cm = parseFloat(prev[field]);
+          const feet = Math.floor(cm / 30.48);
+          const inches = ((cm % 30.48) / 2.54).toFixed(1);
+          newValue = `${feet}.${inches}`;
+        }
+      }
+      return { ...prev, [field]: newValue, [`${field}Unit`]: unit };
+    });
+    setIsDropdownOpen(prev => ({ ...prev, [`${field}Unit`]: false }));
   };
 
   const handleInputChange = (field, value) => {
@@ -162,27 +197,53 @@ const HealthComplaint = () => {
     </div>
   );
 
-  const InputField = ({ label, value, name, placeholder, icon: Icon, type = "number" }) => (
+  const InputField = ({ label, value, name, placeholder, icon: Icon, type = "text", unitField }) => (
     <div>
       <label className="block text-xs font-semibold text-gray-900 mb-1">{label}</label>
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-          <Icon className="w-4 h-4 text-gray-400" />
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+            <Icon className="w-4 h-4 text-gray-400" />
+          </div>
+          <input
+            type={type}
+            name={name}
+            value={value}
+            onChange={(e) => handleInputChange(name, e.target.value)}
+            placeholder={placeholder}
+            className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+          />
         </div>
-        <input
-          type={type}
-          name={name}
-          value={value}
-          onChange={(e) => handleInputChange(name, e.target.value)}
-          placeholder={placeholder}
-          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
-        />
+        <div className="relative w-24">
+          <button
+            type="button"
+            onClick={() => setIsDropdownOpen(prev => ({ ...prev, [unitField]: !prev[unitField] }))}
+            className="w-full px-2 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
+          >
+            <span className="text-gray-900">{formData[unitField]}</span>
+            <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen[unitField] ? 'rotate-180' : ''}`} />
+          </button>
+          {isDropdownOpen[unitField] && (
+            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl">
+              {unitOptions[name].map((unit, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => handleUnitChange(name, unit)}
+                  className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                >
+                  {unit}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 
   const handleSubmit = () => {
-    navigate("/patient/home")
+    navigate("/patient/home");
     console.log('Form submitted:', formData);
     // Add form submission logic here (e.g., API call)
   };
@@ -191,7 +252,9 @@ const HealthComplaint = () => {
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto p-2">
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl shadow-xl border border-gray-100 p-4 mb-4">
+        <div 
+          className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl shadow-xl border border-gray-100 p-4 mb-4"
+        >
           <div className="text-center">
             <h1 className="text-lg font-semibold text-gray-900">Health Complaint</h1>
             <p className="text-gray-600 text-xs">Please provide your health details</p>
@@ -242,18 +305,20 @@ const HealthComplaint = () => {
                   icon={Clock}
                 />
                 <InputField
-                  label="Temperature (°C)"
+                  label="Temperature"
                   name="temperature"
                   value={formData.temperature}
-                  placeholder="100 °C"
+                  placeholder={formData.temperatureUnit === '°C' ? '37 °C' : '98.6 °F'}
                   icon={Thermometer}
+                  unitField="temperatureUnit"
                 />
                 <InputField
-                  label="Height (cm)"
+                  label="Height"
                   name="height"
                   value={formData.height}
-                  placeholder="170 cm"
+                  placeholder={formData.heightUnit === 'cm' ? '170 cm' : '5.7 ft/in'}
                   icon={Ruler}
+                  unitField="heightUnit"
                 />
                 <CustomSelect
                   field="bloodPressure"
@@ -270,11 +335,12 @@ const HealthComplaint = () => {
                   icon={Activity}
                 />
                 <InputField
-                  label="Weight (kg)"
+                  label="Weight"
                   name="weight"
                   value={formData.weight}
-                  placeholder="50 kg"
+                  placeholder={formData.weightUnit === 'kg' ? '50 kg' : '110 lbs'}
                   icon={Weight}
+                  unitField="weightUnit"
                 />
               </div>
             </div>

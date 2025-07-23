@@ -52,6 +52,10 @@ export const ConsultationFlowProvider = ({ children }) => {
     setCurrentStep(4);
     setCameFromAddDependent(true);
   };
+  const handleShowCyberClinics = ()=>{
+    setSelectedService("cyber")
+    setCurrentStep(2)
+  }
 
   const handleDependentSelect = (dependent) => {
     setSelectedDependent(dependent);
@@ -69,6 +73,7 @@ export const ConsultationFlowProvider = ({ children }) => {
       value={{
         handleShowHealthComplaint,
         currentStep,
+        handleShowCyberClinics,
         setCurrentStep,
         selectedService,
         selectedDependent,
