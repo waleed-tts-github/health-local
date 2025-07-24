@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { X, Mic, MicOff, Video, VideoOff, Phone, PhoneOff, Monitor, MessageSquare } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
+import PrescriptionDetailsModal from './PrescriptionDetailsModel';
 
 const MeetingModal = ({ doctorName = "Dr. Smith", patientName = "You", meetingTime = "15:00" }) => {
+  const [isPrescriptionModelOpen,setIsPrescriptionModelOpen] = useState(false)
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(true);
   const { currentModal, handleGiveFeedback } = useContext(BookingContext);
+
+  const handleClosePrescription = ()=>{
+    setIsPrescriptionModelOpen(false)
+  } 
+  const handleOpenPrescription = ()=>{
+    setIsPrescriptionModelOpen(true)
+  }
 
   const handleEndCall = () => {
     setIsCallActive(false);
@@ -33,7 +42,7 @@ const MeetingModal = ({ doctorName = "Dr. Smith", patientName = "You", meetingTi
         </div>
 
         {/* Prescription Button with Badge */}
-        <div className="absolute top-4 right-4 z-30">
+        <div className="absolute top-4 right-4 z-30" onClick={handleOpenPrescription}>
           <div className="relative">
             <button 
               className="w-14 h-14 bg-indigo-600 hover:bg-indigo-700 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-lg"
@@ -133,6 +142,7 @@ const MeetingModal = ({ doctorName = "Dr. Smith", patientName = "You", meetingTi
           </div>
         )}
       </div>
+      <PrescriptionDetailsModal isOpen={isPrescriptionModelOpen} onClose={handleClosePrescription}/>
     </div>
   );
 };

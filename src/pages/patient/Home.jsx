@@ -59,7 +59,7 @@ const Home = () => {
       reviews: 156,
       experience: 15,
       location: 'Lahore',
-      price: 3500,
+      price: 2500,
       image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
       isVerified: true,
       responseTime: '1 hour',

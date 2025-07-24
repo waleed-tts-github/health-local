@@ -16,13 +16,18 @@ import {
   Droplets,
   Activity,
   Award,
-  TrendingUp
+  TrendingUp,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 
 const BloodDonations = () => {
   const [activeTab, setActiveTab] = useState('donations');
   const [filterStatus, setFilterStatus] = useState('all');
   const [dateRange, setDateRange] = useState('all');
+  const [bloodSectionExpanded, setBloodSectionExpanded] = useState(false);
+  const [isBloodVolunteer, setIsBloodVolunteer] = useState(false);
+  const [bloodGroup, setBloodGroup] = useState('');
 
   // Sample data for donations made by patient
   const donationsMade = [
@@ -135,9 +140,114 @@ const BloodDonations = () => {
     return received.status === filterStatus;
   });
 
+  const handleBloodVolunteerChange = (e) => {
+    setIsBloodVolunteer(e.target.checked);
+    if (!e.target.checked) {
+      setBloodGroup('');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Blood Volunteer Section */}
+        <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-xl p-6 mb-8 shadow-sm hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-500 via-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
+                <Heart className="w-6 h-6 text-white" fill="currentColor" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Blood Donation Volunteer</h3>
+                <p className="text-sm text-gray-600 mt-1">Help save lives by volunteering to donate blood</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button
+                type="button"
+                onClick={() => setBloodSectionExpanded(!bloodSectionExpanded)}
+                className="p-2 text-gray-500 hover:text-red-600 transition-colors duration-200 rounded-full hover:bg-red-100"
+              >
+                {bloodSectionExpanded ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
+              </button>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isBloodVolunteer}
+                  onChange={handleBloodVolunteerChange}
+                  className="sr-only peer"
+                />
+                <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-pink-500 shadow-sm"></div>
+              </label>
+            </div>
+          </div>
+          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
+            bloodSectionExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 opacity-0'
+          }`}>
+            <div className="bg-white bg-opacity-80 rounded-xl p-4 space-y-3 backdrop-blur-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                <div className="space-y-2">
+                  <p className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    Donating blood is a simple, selfless act that can save lives in your community.
+                  </p>
+                  <p className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    Blood donation benefits your physical and emotional health, per The Mental Health Foundation.
+                  </p>
+                  <p className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    Most people can donate whole blood every 56 days, according to the American Red Cross.
+                  </p>
+                  <p className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    Your eligibility is confirmed by checking temperature, blood pressure, pulse, and hemoglobin levels.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <p className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    The donation area is cleaned and sterilized, and a new sterile needle is used for each donation.
+                  </p>
+                  <p className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    Relax during donation—some centers offer movies or TV to keep you comfortable.
+                  </p>
+                  <p className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    After donation, a bandage is applied, and you'll rest for 15 minutes with a snack or drink.
+                  </p>
+                </div>
+              </div>
+              <p className="text-red-500 text-xs mt-2">*Minimum Age For Blood Volunteer: Male: 18 - Female: 19</p>
+            </div>
+            {isBloodVolunteer && (
+              <div className="mt-4">
+                <label className="text-sm font-bold text-gray-700 block">Blood Group</label>
+                <select
+                  value={bloodGroup}
+                  onChange={(e) => setBloodGroup(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 text-sm shadow-sm hover:shadow-md"
+                >
+                  <option value="">Select Blood Group</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm p-6">
@@ -201,7 +311,7 @@ const BloodDonations = () => {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                My Donations ({donationsMade.length})
+                My Donations ({filteredDonations.length})
               </button>
               <button
                 onClick={() => setActiveTab('received')}
@@ -211,7 +321,7 @@ const BloodDonations = () => {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Blood Received ({bloodReceived.length})
+                Blood Received ({filteredReceived.length})
               </button>
             </div>
           </div>
@@ -225,7 +335,7 @@ const BloodDonations = () => {
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
+                    className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500 bg-white shadow-sm"
                   >
                     <option value="all">All Status</option>
                     <option value="completed">Completed</option>
@@ -237,7 +347,7 @@ const BloodDonations = () => {
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500 bg-white shadow-sm"
                 >
                   <option value="all">All Time</option>
                   <option value="month">This Month</option>
@@ -247,9 +357,9 @@ const BloodDonations = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  <Download className="h-4 w-4" />
-                  <span>Export</span>
+                <button className="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all bg-white shadow-sm hover:shadow-md">
+                  <Download className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm text-gray-700">Export</span>
                 </button>
               </div>
             </div>
@@ -260,7 +370,7 @@ const BloodDonations = () => {
             {activeTab === 'donations' ? (
               <div className="space-y-4">
                 {filteredDonations.map((donation) => (
-                  <div key={donation.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div key={donation.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all bg-white">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
@@ -337,7 +447,7 @@ const BloodDonations = () => {
             ) : (
               <div className="space-y-4">
                 {filteredReceived.map((received) => (
-                  <div key={received.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div key={received.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all bg-white">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">

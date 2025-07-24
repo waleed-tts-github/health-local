@@ -52,14 +52,17 @@ const FeedbackModal = () => {
             </div>
 
             {/* Feedback description */}
-            <div className="text-center mb-4">
-              <h1 className="text-2xl font-bold text-white mb-2">Feedback</h1>
-              <p className="text-base text-white/90">Hello! How Was Your Experience?</p>
-              <p className="text-sm text-white/80">Rate And Review Your Doctor For Others To Benefit From Your Experience</p>
+            <div className="text-center w-full bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20">
+              <h4 className="text-sm font-bold text-white bg-white/20 py-1.5 px-3 rounded-full backdrop-blur-sm">
+                Share Your Experience
+              </h4>
+              <p className="text-xs text-white/80 mt-2">
+                Rate and review your doctor to help others benefit from your feedback
+              </p>
             </div>
 
             {/* Star Rating */}
-            <div className="flex justify-center gap-2 mb-4">
+            <div className="flex justify-center gap-1">
               {[...Array(5)].map((_, index) => (
                 <button
                   key={index}
@@ -67,7 +70,7 @@ const FeedbackModal = () => {
                   className="focus:outline-none transition-transform hover:scale-110"
                 >
                   <svg
-                    className={`w-10 h-10 ${index < rating ? 'text-green-400' : 'text-white/30'}`}
+                    className={`w-8 h-8 ${index < rating ? 'text-green-400' : 'text-white/30'}`}
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -78,18 +81,18 @@ const FeedbackModal = () => {
             </div>
 
             {/* Feedback Textarea */}
-            <div className="w-full mb-4">
+            <div className="w-full">
               <textarea
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Share your experience..."
-                className="w-full h-32 bg-white/10 border border-white/20 rounded-xl p-4 text-white placeholder-white/50 focus:outline-none focus:border-green-400 resize-none text-sm backdrop-blur-sm"
+                className="w-full h-24 bg-white/10 border border-white/20 rounded-xl p-3 text-white placeholder-white/50 focus:outline-none focus:border-green-400 resize-none text-xs backdrop-blur-sm"
                 rows="4"
               />
             </div>
 
             {/* Add to Favorites Checkbox */}
-            <div className="w-full mb-4">
+            <div className="w-full">
               <label className="flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -98,10 +101,10 @@ const FeedbackModal = () => {
                   className="sr-only"
                 />
                 <div className="relative">
-                  <div className={`w-5 h-5 rounded border-2 border-white/20 ${addToFavorites ? 'bg-green-500' : 'bg-transparent'}`}>
+                  <div className={`w-4 h-4 rounded border-2 border-white/20 ${addToFavorites ? 'bg-green-500' : 'bg-transparent'}`}>
                     {addToFavorites && (
                       <svg
-                        className="w-3 h-3 text-white absolute top-0.5 left-0.5"
+                        className="w-2.5 h-2.5 text-white absolute top-0.5 left-0.5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -114,78 +117,64 @@ const FeedbackModal = () => {
                     )}
                   </div>
                 </div>
-                <span className="ml-3 text-sm text-white/90">Add Dr. To Favorites</span>
+                <span className="ml-2 text-xs text-white/80">Add doctor to favorites</span>
               </label>
             </div>
+          </div>
 
-            {/* Buttons */}
-            <div className="w-full flex gap-2">
+          {/* Buttons */}
+          <div className="px-4 pb-4">
+            <div className="flex gap-2">
               <button 
                 onClick={closeModal}
-                className="flex-1 bg-white/20 hover:bg-white/30 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 backdrop-blur-sm border border-white/20 shadow-md hover:shadow-lg"
+                className="flex-1 bg-white/20 hover:bg-white/30 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 backdrop-blur-sm border border-white/20 shadow-md hover:shadow-lg transform hover:scale-105"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleSubmit}
-                className="flex-1 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm"
+                className="flex-1 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm transform hover:scale-105"
               >
                 Submit
               </button>
             </div>
           </div>
+        </div>
 
-          <style jsx>{`
-            input[type='range']::-webkit-slider-thumb {
-              appearance: none;
-              width: 14px;
-              height: 14px;
-              background: linear-gradient(to right, #10b981, #059669);
-              border-radius: 50%;
-              cursor: pointer;
-              border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            input[type='range']::-moz-range-thumb {
-              width: 14px;
-              height: 14px;
-              background: linear-gradient(to right, #10b981, #059669);
-              border-radius: 50%;
-              cursor: pointer;
-              border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            /* Enhanced scrollbar styling - only for small devices */
+        <style jsx>{`
+          /* Enhanced scrollbar styling - only for small devices */
+          .h-[98vh] {
+            scrollbar-width: thin;
+            scrollbar-color: #10b981 rgba(255, 255, 255, 0.2);
+          }
+          .h-[98vh]::-webkit-scrollbar {
+            width: 8px;
+          }
+          .h-[98vh]::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #10b981, #059669);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #059669, #047857);
+          }
+          
+          /* Hide scrollbar on larger screens */
+          @media (min-width: 640px) {
             .h-[98vh] {
-              scrollbar-width: thin;
-              scrollbar-color: #10b981 rgba(255, 255, 255, 0.2);
+              scrollbar-width: none;
             }
             .h-[98vh]::-webkit-scrollbar {
-              width: 8px;
+              display: none;
             }
-            .h-[98vh]::-webkit-scrollbar-track {
-              background: rgba(255, 255, 255, 0.1);
-              backdrop-filter: blur(12px);
-              border-radius: 4px;
-              border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .h-[98vh]::-webkit-scrollbar-thumb {
-              background: linear-gradient(to bottom, #10b981, #059669);
-              border-radius: 4px;
-              border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .h-[98vh]::-webkit-scrollbar-thumb:hover {
-              background: linear-gradient(to bottom, #059669, #047857);
-            }
-            /* Hide scrollbar on larger screens */
-            @media (min-width: 640px) {
-              .h-[98vh] {
-                scrollbar-width: none;
-              }
-              .h-[98vh]::-webkit-scrollbar {
-                display: none;
-              }
-            }
-          `}</style>
-        </div>
+          }
+        `}</style>
       </div>
     </div>
   );

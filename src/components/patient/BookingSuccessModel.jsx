@@ -1,8 +1,13 @@
 import React, { useContext } from 'react';
 import { X, CheckCircle } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+import { useNavigate } from 'react-router-dom';
+
 const SuccessModal = () => {
-  const { currentModal, closeModal,handleNextInLine } = useContext(BookingContext);
+  const { setCurrentStep } = useConsultationFlow();
+  const { currentModal, closeModal, handleNextInLine, isLaterTodayBooking, isTomorrowOnwardBooking } = useContext(BookingContext);
+  const navigate = useNavigate();
 
   if (currentModal !== 'success') return null;
 
@@ -14,92 +19,101 @@ const SuccessModal = () => {
         
         <div className="relative z-10 flex flex-col h-full">
           {/* Header with close button */}
-          <div className="flex items-center justify-between p-6 pb-4">
-            <h3 className="text-xl font-bold text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
-              Payment
+          <div className="flex items-center justify-between p-4 pb-3">
+            <h3 className="text-lg font-bold text-white bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+              Payment Successful
             </h3>
             <button 
               onClick={closeModal} 
-              className="p-2 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 backdrop-blur-sm border border-white/20"
+              className="p-1.5 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 backdrop-blur-sm border border-white/20"
             >
-              <X className="w-6 h-6 text-white" />
+              <X className="w-5 h-5 text-white" />
             </button>
           </div>
 
           {/* Main content - centered */}
-          <div className="flex-1 flex flex-col items-center justify-center px-6 pb-6">
-            <div className="flex flex-col items-center space-y-8">
-              {/* CheckCircle icon */}
-              <div className="w-20 h-20 bg-white/15 rounded-full flex items-center justify-center shadow-lg">
-                <CheckCircle className="w-10 h-10 text-white" />
-              </div>
-              
-              {/* Status message */}
-              <div className="text-center">
-                <h4 className="text-lg font-bold text-white bg-white/20 py-3 px-6 rounded-full backdrop-blur-sm">
-                  Successfully Paid
-                </h4>
-                <p className="text-2xl font-bold text-white mt-4">Rs. 1500</p>
-                <p className="text-white/80 text-sm mt-2">Physical Appointment Booked</p>
-                <div className="flex justify-center items-center gap-8 mt-4">
+          <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
+            {/* CheckCircle icon */}
+            <div className="w-16 h-16 bg-white/15 rounded-full flex items-center justify-center shadow-lg">
+              <CheckCircle className="w-8 h-8 text-white" />
+            </div>
+            
+            {/* Status message */}
+            <div className="text-center w-full bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20">
+              <h4 className="text-sm font-bold text-white bg-white/20 py-1.5 px-3 rounded-full backdrop-blur-sm">
+                Appointment Booked
+              </h4>
+              <p className="text-sm font-semibold text-white/80 mt-2">Rs. 1500 Paid</p>
+              {isTomorrowOnwardBooking || isLaterTodayBooking ? (
+                <div className="flex justify-center items-center gap-4 mt-2">
                   <div>
-                    <p className="text-white/80 text-sm">Date:</p>
-                    <p className="font-bold text-white text-sm">13/07/2025</p>
+                    <p className="text-xs text-white/80">Date</p>
+                    <p className="text-xs font-semibold text-white">13/07/2025</p>
                   </div>
                   <div>
-                    <p className="text-white/80 text-sm">Time:</p>
-                    <p className="font-bold text-white text-sm">9:30 PM</p>
+                    <p className="text-xs text-white/80">Time</p>
+                    <p className="text-xs font-semibold text-white">9:30 PM</p>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <p className="text-xs text-white/80 mt-2">Proceed to your consultation</p>
+              )}
             </div>
           </div>
 
           {/* Button */}
-          <div className="px-6 pb-6">
+          <div className="px-4 pb-4">
             <button
-              onClick={handleNextInLine}
-              className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-3 rounded-xl font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm"
+              onClick={() => {
+                if (isTomorrowOnwardBooking || isLaterTodayBooking) {
+                  setCurrentStep(1);
+                  closeModal();
+                  navigate("/patient", { replace: true });
+                } else {
+                  handleNextInLine();
+                }
+              }}
+              className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm transform hover:scale-105"
             >
-              Ok
+              OK
             </button>
           </div>
+        </div>
 
-          <style jsx>{`
-            /* Enhanced scrollbar styling - only for small devices */
+        <style jsx>{`
+          /* Enhanced scrollbar styling - only for small devices */
+          .h-[98vh] {
+            scrollbar-width: thin;
+            scrollbar-color: #10b981 rgba(255, 255, 255, 0.2);
+          }
+          .h-[98vh]::-webkit-scrollbar {
+            width: 8px;
+          }
+          .h-[98vh]::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #10b981, #059669);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #059669, #047857);
+          }
+          
+          /* Hide scrollbar on larger screens */
+          @media (min-width: 640px) {
             .h-[98vh] {
-              scrollbar-width: thin;
-              scrollbar-color: #10b981 rgba(255, 255, 255, 0.2);
+              scrollbar-width: none;
             }
             .h-[98vh]::-webkit-scrollbar {
-              width: 8px;
+              display: none;
             }
-            .h-[98vh]::-webkit-scrollbar-track {
-              background: rgba(255, 255, 255, 0.1);
-              backdrop-filter: blur(12px);
-              border-radius: 4px;
-              border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .h-[98vh]::-webkit-scrollbar-thumb {
-              background: linear-gradient(to bottom, #10b981, #059669);
-              border-radius: 4px;
-              border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .h-[98vh]::-webkit-scrollbar-thumb:hover {
-              background: linear-gradient(to bottom, #059669, #047857);
-            }
-            
-            /* Hide scrollbar on larger screens */
-            @media (min-width: 640px) {
-              .h-[98vh] {
-                scrollbar-width: none;
-              }
-              .h-[98vh]::-webkit-scrollbar {
-                display: none;
-              }
-            }
-          `}</style>
-        </div>
+          }
+        `}</style>
       </div>
     </div>
   );

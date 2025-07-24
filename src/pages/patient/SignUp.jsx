@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, User, Mail, Phone, Calendar, CreditCard, Camera, Heart, Check, Shield, Edit2, ChevronDown, ChevronUp, X } from 'lucide-react';
 import logo from '../../assets/Group.png';
 import { useNavigate } from 'react-router-dom';
@@ -52,6 +52,16 @@ const PatientSignup = () => {
     }
     return age;
   };
+
+  // Effect to check age whenever dateOfBirth changes
+  useEffect(() => {
+    if (formData.dateOfBirth) {
+      const age = calculateAge(formData.dateOfBirth);
+      setShowAgeErrorModal(age < 18);
+    } else {
+      setShowAgeErrorModal(false);
+    }
+  }, [formData.dateOfBirth]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -151,11 +161,7 @@ const PatientSignup = () => {
   };
 
   const handleSubmit = () => {
-    if (formData.dateOfBirth && calculateAge(formData.dateOfBirth) < 18) {
-      setShowAgeErrorModal(true);
-      return;
-    }
-    if (validateStep(2)) {
+    if (validateStep(2) && !showAgeErrorModal) {
       setCurrentStep(3);
       console.log('Form submitted:', formData);
     }
@@ -163,6 +169,7 @@ const PatientSignup = () => {
 
   const closeAgeErrorModal = () => {
     setShowAgeErrorModal(false);
+    setFormData(prev => ({ ...prev, dateOfBirth: '' })); // Reset date of birth
   };
 
   return (
@@ -641,6 +648,7 @@ const PatientSignup = () => {
                   <button
                     onClick={handleSubmit}
                     className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 text-white py-3 px-6 rounded-full font-bold text-base hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+                    disabled={showAgeErrorModal}
                   >
                     Create Account
                   </button>

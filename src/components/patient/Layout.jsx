@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import logo from '../../assets/Group.png';
+import logo from '../../assets/Group.png'; // Verify this path is correct relative to your project structure
 import { 
   Home, 
   FileText, 
@@ -8,8 +8,6 @@ import {
   TestTube, 
   User, 
   Wallet, 
-  Heart, 
-  Users, 
   HelpCircle, 
   MessageCircle, 
   Globe, 
@@ -21,7 +19,10 @@ import {
   Bell, 
   Menu,
   Settings,
-  ChevronDown
+  ChevronDown,
+  Handshake,
+  Droplet,
+  Users
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -42,16 +43,16 @@ const Layout = ({ children }) => {
       subItems: [
         { name: 'Appointment Record', icon: Calendar, path: '/patient/appointments' },
         { name: 'Prescriptions', icon: FileText, path: '/patient/prescriptions' },
-        { name: 'Lab Reports', icon: TestTube },
+        { name: 'Lab Reports', icon: TestTube, path: '/patient/lab-reports' },
         { name: 'Health Profile', icon: User, path: '/patient/health-profile' },
       ],
     },
     { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
     {
       name: 'FAN Volunteer',
-      icon: Heart,
+      icon: Handshake,
       subItems: [
-        { name: 'Blood Donations', icon: Heart, path: '/patient/blood-donations' },
+        { name: 'Blood Donations', icon: Droplet, path: '/patient/blood-donations' },
         { name: 'Find Volunteers', icon: Users, path: '/patient/blood-volunteers' },
       ],
     },
@@ -59,16 +60,16 @@ const Layout = ({ children }) => {
       name: 'Need Help',
       icon: HelpCircle,
       subItems: [
-        { name: 'Get In Touch', icon: MessageCircle },
-        { name: 'Support & FAQ', icon: HelpCircle },
-        { name: 'App Language', icon: Globe },
-        { name: 'Privacy And Policy', icon: Lock },
-        { name: 'Terms And Conditions', icon: FileIcon },
+        { name: 'Get In Touch', icon: MessageCircle, path: '/patient/contact' },
+        { name: 'Support & FAQ', icon: HelpCircle, path: '/patient/support' },
+        { name: 'App Language', icon: Globe, path: '/patient/language' },
+        { name: 'Privacy And Policy', icon: Lock, path: '/patient/privacy' },
+        { name: 'Terms And Conditions', icon: FileIcon, path: '/patient/terms' },
       ],
     },
-    { name: 'Send Feedback', icon: Send },
-    { name: 'Refer A Friend', icon: UserPlus },
-    { name: 'Logout', icon: LogOut },
+    { name: 'Send Feedback', icon: Send, path: '/patient/feedback' },
+    { name: 'Refer A Friend', icon: UserPlus, path: '/patient/refer' },
+    { name: 'Logout', icon: LogOut, path: '/logout' },
   ];
 
   useEffect(() => {
@@ -130,6 +131,11 @@ const Layout = ({ children }) => {
     if (path) {
       navigate(path);
     }
+  };
+
+  const handleLogoClick = () => {
+    navigate('/patient');
+    setIsDrawerOpen(false);
   };
 
   return (
@@ -202,7 +208,7 @@ const Layout = ({ children }) => {
             align-items: flex-start;
             gap: 2px;
             padding: 8px 0;
-            margin-top: 8px;
+            margin-top: 40px;
           }
 
           .logo-crisp {
@@ -225,30 +231,32 @@ const Layout = ({ children }) => {
         {/* Sidebar Header */}
         <div className="p-6 border-b border-green-500">
           {/* Logo and Brand */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 backdrop-blur-sm">
-              <img 
-                src={logo} 
-                alt="Angill Healthcare Logo" 
-                className="w-8 h-8 object-contain logo-crisp"
-                style={{ 
-                  filter: 'contrast(1.2) brightness(1.1)',
-                  imageRendering: 'crisp-edges'
-                }}
-              />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
-              <p className="text-green-100 text-xs font-medium uppercase tracking-wider">
-                Healthcare
-              </p>
-            </div>
+          <div className="flex items-start gap-3 mb-4 relative">
+            <button onClick={handleLogoClick} className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 backdrop-blur-sm">
+                <img 
+                  src={logo} 
+                  alt="Angill Healthcare Logo" 
+                  className="w-8 h-8 object-contain logo-crisp"
+                  style={{ 
+                    filter: 'contrast(1.2) brightness(1.1)',
+                    imageRendering: 'crisp-edges'
+                  }}
+                />
+              </div>
+              <div className=" Recovery Mode flex flex-col pt-2">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
+                  <p className="text-green-100 text-[10px] font-medium  tracking-wider pt-1">
+                    Healthcare
+                  </p>
+                </div>
+              </div>
+            </button>
+            <p className="text-green-100 italic font-light text-xs absolute left-0 bottom-[-15px]">
+              Every Illness Deserves An Angel
+            </p>
           </div>
-          
-          {/* Tagline */}
-          <p className="text-green-100 italic font-light text-xs text-center mb-4">
-            Every illness deserves an angel.
-          </p>
           
           {/* Toggle in Sidebar */}
           <div className="sidebar-toggle-container">
@@ -376,30 +384,32 @@ const Layout = ({ children }) => {
         {/* Drawer Header */}
         <div className="p-6 border-b border-green-500">
           {/* Logo and Brand */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 backdrop-blur-sm">
-              <img 
-                src={logo} 
-                alt="Angill Healthcare Logo" 
-                className="w-8 h-8 object-contain logo-crisp"
-                style={{ 
-                  filter: 'contrast(1.2) brightness(1.1)',
-                  imageRendering: 'crisp-edges'
-                }}
-              />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
-              <p className="text-green-100 text-xs font-medium uppercase tracking-wider">
-                Healthcare
-              </p>
-            </div>
+          <div className="flex items-start gap-3 mb-4 relative">
+            <button onClick={handleLogoClick} className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 backdrop-blur-sm">
+                <img 
+                  src={logo} 
+                  alt="Angill Healthcare Logo" 
+                  className="w-8 h-8 object-contain logo-crisp"
+                  style={{ 
+                    filter: 'contrast(1.2) brightness(1.1)',
+                    imageRendering: 'crisp-edges'
+                  }}
+                />
+              </div>
+              <div className="flex flex-col pt-2">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
+                  <p className="text-green-100 text-[10px] pt-1 font-medium  tracking-wider">
+                    Healthcare
+                  </p>
+                </div>
+              </div>
+            </button>
+            <p className="text-green-100 italic font-light text-xs absolute left-0 bottom-[-15px]">
+              Every Illness Deserves An Angel
+            </p>
           </div>
-          
-          {/* Tagline */}
-          <p className="text-green-100 italic font-light text-xs text-center mb-4">
-            Every illness deserves an angel.
-          </p>
           
           {/* Toggle in Drawer */}
           <div className="sidebar-toggle-container">
@@ -493,11 +503,26 @@ const Layout = ({ children }) => {
         {/* Navbar */}
         <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between w-full">
-            <button className="md:hidden p-2 text-gray-600 hover:text-gray-900" onClick={toggleDrawer}>
-              <Menu className="w-6 h-6" />
-            </button>
+            <div className="flex items-center gap-4">
+              <button className="md:hidden p-2 text-gray-600 hover:text-gray-900" onClick={toggleDrawer}>
+                <Menu className="w-6 h-6" />
+              </button>
+              <button onClick={handleLogoClick} className="md:hidden flex items-center">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-green-600/10 backdrop-blur-sm">
+                  <img 
+                    src={logo} 
+                    alt="Angill Healthcare Logo" 
+                    className="w-6 h-6 object-contain logo-crisp"
+                    style={{ 
+                      filter: 'contrast(1.2) brightness(1.1)',
+                      imageRendering: 'crisp-edges'
+                    }}
+                  />
+                </div>
+              </button>
+            </div>
 
-            <div className="flex items-center space-x-4 ml-auto">
+            <div className="flex items-center space-x-4">
               <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                 <Bell className="w-6 h-6" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
@@ -543,7 +568,7 @@ const Layout = ({ children }) => {
                         Edit Profile
                       </button>
                       <button
-                        onClick={() => handleProfileNavigation()}
+                        onClick={() => handleProfileNavigation('/logout')}
                         className="w-full flex items-center px-4 py-2 text-sm text-red-500 hover:bg-gray-100 hover:text-red-600"
                       >
                         <LogOut className="w-4 h-4 mr-2" />

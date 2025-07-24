@@ -8,6 +8,9 @@ export const BookingProvider = ({ children }) => {
   const [timeMinutes, setTimeMinutes] = useState(7);
   const [timeSeconds, setTimeSeconds] = useState(53);
   const [queueWaitTime, setQueueWaitTime] = useState(3);
+  const [isLaterTodayBooking,setIsLaterTodayBooking] = useState(false)
+  const [isTomorrowOnwardBooking ,setIsTomorrowOnwardBooking] = useState(false)
+
 
   // Timer effect for BookingConnectModal
   useEffect(() => {
@@ -36,7 +39,15 @@ export const BookingProvider = ({ children }) => {
     }, 2000);
   };
 
+  const handleIsLaterTodayBooking = ()=>{
+    setIsLaterTodayBooking(true)
+  }
+  const handleIsTomorrowOnwardBooking = ()=>{
+    setIsTomorrowOnwardBooking(true)
+  }
+
   const handleScheduleAppointment = () => {
+    setIsTomorrowOnwardBooking(true)
     setCurrentModal('bookAppointment');
   };
 
@@ -49,6 +60,7 @@ export const BookingProvider = ({ children }) => {
   };
 
   const handleBookingConfirm=()=>{
+    setIsLaterTodayBooking(true)
     setCurrentModal("confirmed")
   }
   const handleNextInLine =()=>{
@@ -66,6 +78,8 @@ export const BookingProvider = ({ children }) => {
   };
 
   const value = {
+    isLaterTodayBooking,
+    isTomorrowOnwardBooking,
     currentModal,
     setCurrentModal,
     selectedTime,
@@ -76,6 +90,8 @@ export const BookingProvider = ({ children }) => {
     timeSeconds,
     setTimeSeconds,
     handleNextInLine,
+    handleIsTomorrowOnwardBooking,
+    handleIsLaterTodayBooking,
     handleJoinMeeting,
     handleBookingConfirm,
     queueWaitTime,

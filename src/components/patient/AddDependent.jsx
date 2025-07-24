@@ -128,11 +128,7 @@ const AddDependent = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto p-2">
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl shadow-xl border border-gray-100 p-4 mb-4">
-          <div className="text-center">
-            <p className="text-gray-600 text-xs">Provide details to add a dependent to your account</p>
-          </div>
-        </div>
+      
 
         <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-6">
           <div className="flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mx-auto mb-4">

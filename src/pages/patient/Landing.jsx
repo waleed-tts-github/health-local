@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, User, Shield, LogOut, ArrowLeft, Check, Plus, Search, MapPin, Star } from 'lucide-react';
+import { Heart, User, Shield, LogOut, ArrowLeft, Check, Plus, Search, MapPin, Star, Calendar } from 'lucide-react';
 import consultationBg from '../../assets/consultationpagebg.png';
 import AddDependent from '../../components/patient/AddDependent';
 import HealthComplaint from '../../components/patient/HealthComplaint';
@@ -22,8 +22,9 @@ const Landing = () => {
 
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Preload the background image
+  // Preload the consultation background image
   useEffect(() => {
     const img = new Image();
     img.src = consultationBg;
@@ -47,9 +48,18 @@ const Landing = () => {
           <h2 className="text-xl font-bold text-green-700">Welcome, Niaz Ahmed</h2>
           <p className="text-xs text-gray-600 font-light">We strive to connect you with highly skilled medical professionals.</p>
         </div>
-        <button className="p-2 bg-green-100/80 text-green-700 rounded-full hover:bg-green-200/80 transition-all duration-300 transform hover:scale-110 shadow-md">
-          <LogOut className="w-5 h-5" />
-        </button>
+        <div className="flex items-center space-x-3">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Today's Appointments</span>
+          </button>
+          <button className="p-2 bg-green-100/80 text-green-700 rounded-full hover:bg-green-200/80 transition-all duration-300 transform hover:scale-110 shadow-md">
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Service Selection */}
@@ -99,9 +109,9 @@ const Landing = () => {
           <p className="text-xs text-center text-teal-100 font-light">No wait, verified experts, extended hours</p>
         </div>
       </div>
-      <div className="mt-8">
-  <ScheduledAppointments/>
-</div>
+
+      {/* Scheduled Appointments Modal */}
+      <ScheduledAppointments open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 
@@ -179,7 +189,7 @@ const Landing = () => {
 
   // Step 3: Patient Selection
   const PatientSelection = () => (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-4 mb-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
@@ -444,7 +454,6 @@ const Landing = () => {
               <button className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
                 <Search className="w-5 h-5" />
               </button>
-             
             </div>
           </div>
         </div>
@@ -513,12 +522,11 @@ const Landing = () => {
   return (
     <div className="font-poppins text-lg antialiased">
       {currentStep === 1 && <ServiceSelection />}
-      {currentStep === 2 && selectedService && selectedService === "cyber" && <CyberClinicsPage />}
-      {currentStep === 2 && selectedService!="cyber" && <ConsultationDetails />}
+      {currentStep === 2 && selectedService === "cyber" && <CyberClinicsPage />}
+      {currentStep === 2 && selectedService !== "cyber" && <ConsultationDetails />}
       {currentStep === 3 && <PatientSelection />}
       {currentStep === 4 && <AddDependentPage />}
       {currentStep === 5 && <HealthComplaintPage />}
-
     </div>
   );
 };
