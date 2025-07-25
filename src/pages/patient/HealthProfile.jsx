@@ -77,23 +77,24 @@ const HealthProfile = () => {
 
     return (
       <div className="relative">
-        <label className="block text-sm font-semibold text-gray-900 mb-2">{label}</label>
+        <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">{label}</label>
         <div className="relative">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
+            className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-sm flex items-center justify-between"
+            aria-label={`Select ${label}`}
           >
-            <div className="flex items-center space-x-3">
-              {Icon && <span className="w-5 h-5 text-gray-400"><Icon /></span>}
-              <span className={value ? 'text-gray-900' : 'text-gray-500'}>
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              {Icon && <Icon className="w-3 sm:w-4 h-3 sm:h-4 text-gray-400 flex-shrink-0" />}
+              <span className={value ? 'text-gray-900 text-xs sm:text-sm' : 'text-gray-500 text-xs sm:text-sm'}>
                 {value || 'Select an option'}
               </span>
             </div>
-            <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 sm:w-5 h-4 sm:h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </button>
           {isOpen && (
-            <div className="absolute z-10 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+            <div className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {options.map((option, index) => (
                 <button
                   key={index}
@@ -102,7 +103,7 @@ const HealthProfile = () => {
                     onChange(option);
                     setIsOpen(false);
                   }}
-                  className="w-full px-6 py-4 text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-xl last:rounded-b-xl text-gray-900"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900 text-xs sm:text-sm"
                 >
                   {option}
                 </button>
@@ -116,17 +117,17 @@ const HealthProfile = () => {
 
   const InputField = ({ label, value, onChange, placeholder, icon: Icon, type = "text" }) => (
     <div>
-      <label className="block text-sm font-semibold text-gray-900 mb-2">{label}</label>
+      <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">{label}</label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          {Icon && <span className="w-5 h-5 text-gray-400"><Icon /></span>}
+        <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
+          {Icon && <Icon className="w-3 sm:w-4 h-3 sm:h-4 text-gray-400 flex-shrink-0" />}
         </div>
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-12 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+          className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-sm text-gray-900 text-xs sm:text-sm leading-5"
         />
       </div>
     </div>
@@ -134,24 +135,24 @@ const HealthProfile = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Back Button */}
         <BackButton />
 
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 p-6 mb-8">
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Health Profile</h2>
-            <p className="text-gray-600 text-sm">Help us provide you with personalized healthcare services</p>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Complete Your Health Profile</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Help us provide you with personalized healthcare services</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-          <div className="flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mx-auto mb-6">
-            <User className="w-8 h-8 text-emerald-600" />
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 lg:p-8">
+          <div className="flex items-center justify-center w-12 sm:w-16 h-12 sm:h-16 bg-emerald-100 rounded-full mx-auto mb-4 sm:mb-6">
+            <User className="w-6 sm:w-8 h-6 sm:h-8 text-emerald-600" />
           </div>
 
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <InputField
                 label="First Name"
                 value={formData.firstName}
@@ -169,7 +170,7 @@ const HealthProfile = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <CustomDropdown
                 label="Gender"
                 value={formData.gender}
@@ -188,7 +189,7 @@ const HealthProfile = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <CustomDropdown
                 label="Blood Group"
                 value={formData.bloodGroup}
@@ -206,7 +207,7 @@ const HealthProfile = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <CustomDropdown
                 label="Drug Allergy"
                 value={formData.drugAllergy}
@@ -224,7 +225,7 @@ const HealthProfile = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <CustomDropdown
                 label="History Of Operation/Surgical Procedure"
                 value={formData.surgicalHistory}
@@ -242,10 +243,11 @@ const HealthProfile = () => {
               />
             </div>
 
-            <div className="pt-6">
+            <div className="pt-4 sm:pt-6">
               <button
                 onClick={() => console.log('Health profile saved:', formData)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
+                aria-label="Save Health Profile"
               >
                 Save Health Profile
               </button>

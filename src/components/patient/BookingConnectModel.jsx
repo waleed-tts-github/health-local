@@ -80,7 +80,7 @@ const BookingConnectModal = () => {
             {/* Connect Live Online button */}
             <button
               onClick={handleLiveConnect}
-              className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2.5 rounded-xl font-medium text-xs transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 transform hover:scale-105 backdrop-blur-sm"
+              className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 transform hover:scale-105 backdrop-blur-sm"
             >
               <Video className="w-4 h-4" />
               Connect Live Online
@@ -128,7 +128,7 @@ const BookingConnectModal = () => {
             <div className="w-full bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20">
               <button
                 onClick={handleScheduleAppointment}
-                className="w-full bg-white/15 font-bold text-lg hover:bg-white/30 border border-white/20 text-white py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-1.5 backdrop-blur-sm shadow-md hover:shadow-lg transform hover:scale-105"
+                className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 backdrop-blur-sm"
               >
                 <Calendar className="w-4 h-4" />
                 Schedule an appointment for any day from tomorrow onward

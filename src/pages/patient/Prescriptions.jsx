@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Filter, Calendar, Clock, User, FileText, X, ChevronDown, Trash2, Printer } from 'lucide-react';
 import BackButton from '../../components/BackButton';
-import PrescriptionDetailsModal from '../../components/patient/PrescriptionDetailsModel'
+import PrescriptionDetailsModal from '../../components/patient/PrescriptionDetailsModel';
+
 const Prescriptions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
@@ -241,67 +242,68 @@ const Prescriptions = () => {
       type="date"
       value={selected || ''}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full px-4 py-3 border-2 border-emerald-200 rounded-full focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none bg-white"
+      className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-emerald-200 rounded-full focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none bg-white text-xs sm:text-sm"
       placeholder={placeholder}
+      aria-label={placeholder}
     />
   );
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Back Button */}
         <BackButton />
         
-<div className="pb-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">My Prescriptions</h1>
-            <p className="text-lg text-gray-600 max-w-2xl">
+        <div className="pb-6 sm:pb-8">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">My Prescriptions</h1>
+            <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
               Manage and track your prescriptions.
             </p>
           </div>
 
           {/* Search and Filters Section */}
-          <div className="bg-green-500 rounded-2xl shadow-sm border border-gray-200 p-6 lg:p-8">
-            <div className="flex flex-col lg:flex-row gap-6">
+          <div className="bg-green-500 rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
+            <div className="flex flex-col gap-4 sm:gap-6">
               {/* Search Bar */}
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 sm:h-5 w-4 sm:w-5 text-gray-400" />
                   <input
                     type="text"
                     placeholder="Search by doctor name..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:border-white  text-sm bg-gray-50 focus:bg-white transition-all duration-200"
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 border border-gray-200 rounded-xl focus:outline-none focus:border-white text-xs sm:text-sm bg-gray-50 focus:bg-white transition-all duration-200"
                     aria-label="Search by doctor name"
                   />
                 </div>
               </div>
 
               {/* Filter Controls */}
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 {/* Quick Filter Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                    className={`flex items-center space-x-3 px-6 py-4 border rounded-xl transition-all duration-200 text-sm font-medium min-w-[160px] ${
+                    className={`flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 py-3 sm:py-4 border rounded-xl transition-all duration-200 text-xs sm:text-sm font-medium min-w-[140px] sm:min-w-[160px] ${
                       activeFilter 
                         ? 'bg-green-50 border-green-200 text-green-700' 
                         : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                     }`}
                     aria-label="Toggle quick filter dropdown"
                   >
-                    <Filter className="h-4 w-4" />
+                    <Filter className="h-3 sm:h-4 w-3 sm:w-4" />
                     <span>
                       {activeFilter 
                         ? `${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}` 
                         : 'Quick Filter'
                       }
                     </span>
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-3 sm:h-4 w-3 sm:w-4" />
                   </button>
                   {showFilterDropdown && (
-                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-2 w-56 z-20">
+                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-2 w-48 sm:w-56 z-20">
                       <div className="space-y-1">
                         {[
                           { key: 'today', label: 'Today' },
@@ -312,7 +314,7 @@ const Prescriptions = () => {
                           <button
                             key={filter.key}
                             onClick={() => handleQuickFilter(filter.key)}
-                            className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                            className={`w-full text-left px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
                               activeFilter === filter.key
                                 ? 'bg-green-50 text-green-700'
                                 : 'text-gray-600 hover:bg-gray-50'
@@ -331,20 +333,20 @@ const Prescriptions = () => {
                 <div className="relative">
                   <button
                     onClick={() => setShowDatePicker(!showDatePicker)}
-                    className="flex items-center space-x-3 px-6 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 text-sm font-medium text-gray-700 bg-white min-w-[160px]"
+                    className="flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 py-3 sm:py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 text-xs sm:text-sm font-medium text-gray-700 bg-white min-w-[140px] sm:min-w-[160px]"
                     aria-label="Toggle date range picker"
                   >
-                    <Calendar className="h-4 w-4" />
+                    <Calendar className="h-3 sm:h-4 w-3 sm:w-4" />
                     <span>Date Range</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-3 sm:h-4 w-3 sm:w-4" />
                   </button>
                   {showDatePicker && (
-                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-6 w-80 z-20">
-                      <div className="space-y-6">
-                        <h3 className="text-sm font-semibold text-gray-900">Filter by Date Range</h3>
-                        <div className="grid grid-cols-1 gap-4">
+                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6 w-72 sm:w-80 z-20">
+                      <div className="space-y-4 sm:space-y-6">
+                        <h3 className="text-xs sm:text-sm font-semibold text-gray-900">Filter by Date Range</h3>
+                        <div className="grid grid-cols-1 gap-3 sm:gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">From Date</label>
                             <DatePickerInput
                               selected={startDate}
                               onChange={setStartDate}
@@ -352,7 +354,7 @@ const Prescriptions = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">To Date</label>
                             <DatePickerInput
                               selected={endDate}
                               onChange={setEndDate}
@@ -360,10 +362,10 @@ const Prescriptions = () => {
                             />
                           </div>
                         </div>
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-2 sm:gap-3 pt-2">
                           <button
                             onClick={() => setShowDatePicker(false)}
-                            className="flex-1 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 text-sm font-medium"
+                            className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 text-xs sm:text-sm font-medium"
                             aria-label="Apply date range filter"
                           >
                             Apply Filter
@@ -374,7 +376,7 @@ const Prescriptions = () => {
                               setEndDate(null);
                               setShowDatePicker(false);
                             }}
-                            className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 text-sm font-medium"
+                            className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 text-xs sm:text-sm font-medium"
                             aria-label="Clear date range filter"
                           >
                             Clear
@@ -389,10 +391,10 @@ const Prescriptions = () => {
                 {(activeFilter || startDate || endDate) && (
                   <button
                     onClick={clearFilters}
-                    className="flex items-center space-x-2 px-6 py-4 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all duration-200 text-sm font-medium border border-red-200"
+                    className="flex items-center space-x-2 px-4 sm:px-6 py-3 sm:py-4 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all duration-200 text-xs sm:text-sm font-medium border border-red-200"
                     aria-label="Clear all filters"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-3 sm:h-4 w-3 sm:w-4" />
                     <span>Clear All</span>
                   </button>
                 )}
@@ -401,16 +403,16 @@ const Prescriptions = () => {
 
             {/* Active Filters Display */}
             {(activeFilter || startDate || endDate) && (
-              <div className="mt-6 pt-6 border-t border-gray-100">
+              <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-100">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm text-gray-600 mr-3">Active filters:</span>
+                  <span className="text-xs sm:text-sm text-gray-600 mr-2 sm:mr-3">Active filters:</span>
                   {activeFilter && (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                       {activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}
                     </span>
                   )}
                   {startDate && endDate && (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                       {startDate} to {endDate}
                     </span>
                   )}
@@ -421,48 +423,48 @@ const Prescriptions = () => {
         </div>
 
         {/* Prescriptions Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredPrescriptions.map((prescription) => (
             <div
               key={prescription.id}
               className="group bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
-              style={{ minHeight: '340px' }}
+              style={{ minHeight: '300px sm:340px' }}
             >
-              <div className="p-6 flex flex-col flex-1">
-                <div className="flex justify-between items-start mb-4">
+              <div className="p-4 sm:p-6 flex flex-col flex-1">
+                <div className="flex justify-between items-start mb-3 sm:mb-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1 truncate">{prescription.doctorName}</h3>
-                    <p className="text-emerald-600 font-medium text-sm">{prescription.specialty}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 truncate">{prescription.doctorName}</h3>
+                    <p className="text-emerald-600 font-medium text-xs sm:text-sm">{prescription.specialty}</p>
                   </div>
                 </div>
                 
-                <div className="space-y-3 mb-4 flex-1">
-                  <div className="flex items-center gap-3">
+                <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4 flex-1">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <div className="p-2 bg-gray-50 rounded-lg">
-                      <FileText className="w-4 h-4 text-gray-600" />
+                      <FileText className="w-3 sm:w-4 h-3 sm:h-4 text-gray-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900 truncate">{prescription.consultationType}</p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{prescription.consultationType}</p>
                       <p className="text-xs text-gray-500">Consultation Type</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <div className="p-2 bg-gray-50 rounded-lg">
-                      <Clock className="w-4 h-4 text-gray-600" />
+                      <Clock className="w-3 sm:w-4 h-3 sm:h-4 text-gray-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{formatDate(prescription.date)}</p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-900">{formatDate(prescription.date)}</p>
                       <p className="text-xs text-gray-500">{prescription.time}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <div className="p-2 bg-gray-50 rounded-lg">
-                      <FileText className="w-4 h-4 text-gray-600" />
+                      <FileText className="w-3 sm:w-4 h-3 sm:h-4 text-gray-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{prescription.prescriptionId}</p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-900">{prescription.prescriptionId}</p>
                       <p className="text-xs text-gray-500">Prescription ID</p>
                     </div>
                   </div>
@@ -471,24 +473,27 @@ const Prescriptions = () => {
                 <div className="flex gap-2 mt-auto">
                   <button
                     onClick={() => handleViewPrescription(prescription)}
-                    className="flex-1 bg-green-500 text-white font-medium text-sm py-3 px-4 rounded-full transition-all duration-200 transform group-hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                    className="flex-1 bg-green-500 text-white font-medium text-xs sm:text-sm py-2 sm:py-3 px-3 sm:px-4 rounded-full transition-all duration-200 transform group-hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                    aria-label={`View prescription ${prescription.prescriptionId}`}
                   >
-                    <FileText className="w-4 h-4" />
+                    <FileText className="w-3 sm:w-4 h-3 sm:h-4" />
                     View Prescription
                   </button>
                   <button
                     onClick={() => handlePrintPrescription(prescription)}
-                    className="p-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-all shadow-sm"
+                    className="p-2 sm:p-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-all shadow-sm"
                     title="Print Prescription"
+                    aria-label={`Print prescription ${prescription.prescriptionId}`}
                   >
-                    <Printer className="w-4 h-4" />
+                    <Printer className="w-3 sm:w-4 h-3 sm:h-4" />
                   </button>
                   <button
                     onClick={() => handleDeletePrescription(prescription.id)}
-                    className="p-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition-all shadow-sm"
+                    className="p-2 sm:p-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition-all shadow-sm"
                     title="Delete Prescription"
+                    aria-label={`Delete prescription ${prescription.prescriptionId}`}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3 sm:w-4 h-3 sm:h-4" />
                   </button>
                 </div>
               </div>
@@ -498,12 +503,12 @@ const Prescriptions = () => {
 
         {/* Empty State */}
         {filteredPrescriptions.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-12 h-12 text-emerald-500" />
+          <div className="text-center py-8 sm:py-12">
+            <div className="w-20 sm:w-24 h-20 sm:h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <Search className="w-10 sm:w-12 h-10 sm:h-12 text-emerald-500" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">No prescriptions found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">No prescriptions found</h3>
+            <p className="text-sm sm:text-base text-gray-600">Try adjusting your search or filter criteria</p>
           </div>
         )}
 

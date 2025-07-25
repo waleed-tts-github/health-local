@@ -24,34 +24,30 @@ const Landing = () => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Preload the consultation background image
   useEffect(() => {
     const img = new Image();
     img.src = consultationBg;
     img.onload = () => setIsImageLoaded(true);
-    img.onerror = () => setIsImageLoaded(true); // Fallback in case of error
+    img.onerror = () => setIsImageLoaded(true);
   }, []);
 
-  // Step 1: Service Selection
   const ServiceSelection = () => (
-    <div className="min-h-screen bg-white p-8">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-green-600 to-teal-700 text-white p-6 rounded-2xl mb-8 relative z-10 backdrop-blur-md border border-green-500/20">
+    <div className="min-h-screen bg-white px-4 sm:px-8 py-6">
+      <div className="bg-gradient-to-r from-green-600 to-teal-700 text-white p-4 sm:p-6 rounded-2xl mb-6 relative z-10 backdrop-blur-md border border-green-500/20">
         <div className="absolute -inset-2 bg-green-500/5 rounded-2xl animate-pulse-slow"></div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Find Your Best Specialists & Best Clinics</h1>
-        <p className="text-xs font-medium text-teal-100">Top-tier treatment from Pakistan's finest, available now.</p>
+        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight">Find Your Best Specialists & Clinics</h1>
+        <p className="text-xs sm:text-sm font-medium text-teal-100">Top-tier treatment from Pakistan's finest, available now.</p>
       </div>
 
-      {/* Welcome Section */}
-      <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl mb-8 flex items-center justify-between border border-green-100/50 hover:shadow-xl transition-all duration-300">
-        <div>
-          <h2 className="text-xl font-bold text-green-700">Welcome, Niaz Ahmed</h2>
-          <p className="text-xs text-gray-600 font-light">We strive to connect you with highly skilled medical professionals.</p>
+      <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-2xl mb-6 flex flex-col sm:flex-row items-center justify-between border border-green-100/50 hover:shadow-xl transition-all duration-300">
+        <div className="mb-4 sm:mb-0 text-center sm:text-left">
+          <h2 className="text-lg sm:text-xl font-bold text-green-700">Welcome, Niaz Ahmed</h2>
+          <p className="text-xs sm:text-sm text-gray-600 font-light">We strive to connect you with highly skilled medical professionals.</p>
         </div>
         <div className="flex items-center space-x-3">
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg"
+            className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-medium text-sm flex items-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <Calendar className="w-4 h-4" />
             <span>Today's Appointments</span>
@@ -62,98 +58,87 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Service Selection */}
-      <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">Choose Your Service</h3>
+      <div className="text-center mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900">Choose Your Service</h3>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-        {/* Angill Doctors */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10">
         <div 
           onClick={() => handleServiceSelect('angill')}
-          className="bg-gradient-to-br from-green-500/80 to-teal-500/80 p-6 rounded-xl text-white cursor-pointer hover:from-green-600/90 hover:to-teal-600/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-green-300/20 backdrop-blur-sm"
+          className="bg-gradient-to-br from-green-500/80 to-teal-500/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-green-600/90 hover:to-teal-600/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-green-300/20 backdrop-blur-sm"
         >
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center animate-pulse-slow">
-              <Heart className="w-6 h-6 text-white" />
+          <div className="flex justify-center mb-3 sm:mb-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/30 rounded-full flex items-center justify-center animate-pulse-slow">
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
           </div>
-          <h4 className="text-base font-semibold text-center">Angill Doctors</h4>
+          <h4 className="text-sm sm:text-base font-semibold text-center">Angill Doctors</h4>
           <p className="text-xs text-center text-teal-100 font-light">Fixed consultation fees</p>
         </div>
 
-        {/* Private Doctors */}
         <div 
           onClick={() => handleServiceSelect('private')}
-          className="bg-gradient-to-br from-blue-800/80 to-blue-600/80 p-6 rounded-xl text-white cursor-pointer hover:from-blue-900/90 hover:to-blue-700/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-blue-200/20 backdrop-blur-sm"
+          className="bg-gradient-to-br from-blue-800/80 to-blue-600/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-blue-900/90 hover:to-blue-700/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-blue-200/20 backdrop-blur-sm"
         >
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center animate-pulse-slow delay-500">
-              <User className="w-6 h-6 text-white" />
+          <div className="flex justify-center mb-3 sm:mb-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/30 rounded-full flex items-center justify-center animate-pulse-slow delay-500">
+              <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
           </div>
-          <h4 className="text-base font-semibold text-center">Private Doctors</h4>
+          <h4 className="text-sm sm:text-base font-semibold text-center">Private Doctors</h4>
           <p className="text-xs text-center text-cyan-100 font-light">Flexible consultation fees</p>
         </div>
 
-        {/* Angill Cyber Clinics */}
         <div 
           onClick={handleShowCyberClinics}
-          className="bg-gradient-to-br from-green-700/80 to-teal-700/80 p-6 rounded-xl text-white cursor-pointer hover:from-green-800/90 hover:to-teal-800/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-green-300/20 backdrop-blur-sm"
+          className="bg-gradient-to-br from-green-700/80 to-teal-700/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-green-800/90 hover:to-teal-800/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-green-300/20 backdrop-blur-sm"
         >
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center animate-pulse-slow delay-1000">
-              <Shield className="w-6 h-6 text-white" />
+          <div className="flex justify-center mb-3 sm:mb-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/30 rounded-full flex items-center justify-center animate-pulse-slow delay-1000">
+              <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
           </div>
-          <h4 className="text-base font-semibold text-center">Angill Cyber Clinics</h4>
+          <h4 className="text-sm sm:text-base font-semibold text-center">Angill Cyber Clinics</h4>
           <p className="text-xs text-center text-teal-100 font-light">No wait, verified experts, extended hours</p>
         </div>
       </div>
 
-      {/* Scheduled Appointments Modal */}
       <ScheduledAppointments open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 
-  // Step 2: Consultation Details
   const ConsultationDetails = () => (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-4 mb-4">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4 mb-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
           <button 
             onClick={goBack}
             className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-green-600" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
           </button>
-          <div className="flex-1 text-center h-[48px]">
-          </div>
+          <div className="flex-1 text-center h-10 sm:h-[48px]"></div>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Title Section */}
         <div className="bg-white p-4 text-center max-w-4xl mx-auto">
-          <div className="flex items-center justify-center mb-4">
-            <div className={`w-12 h-12 ${selectedService === 'private' ? 'bg-blue-100' : 'bg-green-100'} rounded-full flex items-center justify-center`}>
-              <Heart className={`w-6 h-6 ${selectedService === 'private' ? 'text-blue-600' : 'text-green-600'}`} />
+          <div className="flex items-center justify-center mb-3 sm:mb-4">
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 ${selectedService === 'private' ? 'bg-blue-100' : 'bg-green-100'} rounded-full flex items-center justify-center`}>
+              <Heart className={`w-5 h-5 sm:w-6 sm:h-6 ${selectedService === 'private' ? 'text-blue-600' : 'text-green-600'}`}/>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
             {selectedService === 'angill' ? 'Angill Doctors' : selectedService === 'private' ? 'Private Doctors' : 'Angill Cyber Clinics'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-sm sm:text-base">
             {selectedService === 'private' 
               ? 'Choose an approved private doctor of your choice from anywhere in Pakistan. Consultation fees may vary based on the doctor\'s qualifications and expertise' 
               : 'Our verified board of general practitioners and specialist doctors offer medical consultations at a fixed, transparent price.'}
           </p>
         </div>
 
-        {/* Consultation Section */}
         <div 
-          className={`flex-1 relative bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-96 transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`flex-1 relative bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-[300px] sm:min-h-96 transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={{ 
             backgroundImage: isImageLoaded ? `url(${consultationBg})` : 'none',
             backgroundSize: 'cover',
@@ -162,22 +147,22 @@ const Landing = () => {
         >
           {!isImageLoaded && (
             <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-green-600"></div>
             </div>
           )}
           <div className="absolute inset-0 bg-black/40"></div>
-          <div className="relative z-10 text-center text-white">
-            <div className="mb-6">
-              <h2 className="text-lg font-medium mb-2">Proceed For</h2>
-              <h3 className="text-sm font-thin text-white/30 tracking-[0.3em]">Emergency</h3>
+          <div className="relative z-10 text-center text-white px-4">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-base sm:text-lg font-medium mb-2">Proceed For</h2>
+              <h3 className="text-xs sm:text-sm font-thin text-white/30 tracking-[0.3em]">Emergency</h3>
             </div>
             <button 
               onClick={handleConsultationClick}
-              className="bg-green-500 hover:bg-green-600 text-white px-12 py-4 rounded-lg font-medium text-lg transition-colors shadow-lg"
+              className="bg-green-500 hover:bg-green-600 text-white px-8 sm:px-12 py-3 sm:py-4 rounded-lg font-medium text-base sm:text-lg transition-colors shadow-lg"
             >
               Consultation
             </button>
-            <div className="mt-6 text-sm text-gray-200">
+            <div className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-200">
               <p>In the event of a life-threatening situation,</p>
               <p>please contact the nearest hospital.</p>
             </div>
@@ -187,45 +172,41 @@ const Landing = () => {
     </div>
   );
 
-  // Step 3: Patient Selection
   const PatientSelection = () => (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-4 mb-4">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4 mb-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
           <button 
             onClick={goBack}
             className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-green-600" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
           </button>
           <div className="flex-1 text-center">
-            <h1 className="text-lg font-bold text-green-700">
+            <h1 className="text-base sm:text-lg font-bold text-green-700">
               {selectedService === 'angill' ? 'Angill Doctors' : selectedService === 'private' ? 'Private Doctors' : 'Angill Cyber Clinics'}
             </h1>
-            <p className="text-gray-600 text-xs mt-1">
+            <p className="text-gray-600 text-xs sm:text-sm mt-1">
               {selectedService === 'private' ? 'Price varies' : 'Fixed price'}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-lg mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-green-700 mb-2">
+      <div className="max-w-lg mx-auto px-4 sm:p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-green-700 mb-2">
               Who Needs Help?
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs sm:text-sm">
               Tell me who needs our doctor's help, you or other dependents.
             </p>
           </div>
 
           <div className="space-y-4">
-            {/* Me Section */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Me</h3>
+            <div className="mb-4 sm:mb-6">
+              <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-3">Me</h3>
               <div 
                 onClick={() => {
                   setSelectedPatient('Thomas K.');
@@ -234,10 +215,10 @@ const Landing = () => {
                 className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
               >
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                    <User className="w-5 h-5 text-gray-600" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                    <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
                   </div>
-                  <span className="text-gray-900 font-medium">Thomas K.</span>
+                  <span className="text-gray-900 font-medium text-sm sm:text-base">Thomas K.</span>
                 </div>
                 <div className={`w-5 h-5 rounded border-2 ${selectedPatient === 'Thomas K.' ? 'bg-green-600 border-green-600' : 'border-gray-300'}`}>
                   {selectedPatient === 'Thomas K.' && <Check className="w-4 h-4 text-white" />}
@@ -245,13 +226,12 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* Dependents Section */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-gray-700">Dependents</h3>
+                <h3 className="text-xs sm:text-sm font-medium text-gray-700">Dependents</h3>
                 <button 
                   onClick={() => handleAddDependentClick()}
-                  className="p-1 hover:bg-gray-100 rounded mr-[9px]"
+                  className="p-1 hover:bg-gray-100 rounded mr-2 sm:mr-[9px]"
                 >
                   <Plus className="w-4 h-4 text-gray-600" />
                 </button>
@@ -266,11 +246,11 @@ const Landing = () => {
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                      <User className="w-5 h-5 text-gray-600" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
                     </div>
                     <div>
-                      <div className="text-gray-900 font-medium">Karl K.</div>
+                      <div className="text-gray-900 font-medium text-sm sm:text-base">Karl K.</div>
                       <div className="text-xs text-gray-500">Depends on you</div>
                     </div>
                   </div>
@@ -287,11 +267,11 @@ const Landing = () => {
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                      <User className="w-5 h-5 text-gray-600" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
                     </div>
                     <div>
-                      <div className="text-gray-900 font-medium">Rannie K.</div>
+                      <div className="text-gray-900 font-medium text-sm sm:text-base">Rannie K.</div>
                       <div className="text-xs text-gray-500">Depends on you</div>
                     </div>
                   </div>
@@ -306,11 +286,9 @@ const Landing = () => {
               <p className="text-red-600 text-xs font-light">*Add children under 18 and dependents</p>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* Bottom Security Notice */}
       <div className="fixed bottom-4 right-4">
         <div className="flex items-center space-x-2 bg-white rounded-lg shadow-sm border border-gray-200 px-3 py-2">
           <div className="w-4 h-4 bg-gray-400 rounded-full flex items-center justify-center">
@@ -322,27 +300,24 @@ const Landing = () => {
     </div>
   );
 
-  // Step 4: Add Dependent Page
   const AddDependentPage = () => (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-4 mb-4">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4 mb-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
           <button 
             onClick={goBack}
             className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-green-600" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
           </button>
           <div className="flex-1 text-center">
-            <h1 className="text-lg font-bold text-green-700">Add Dependent</h1>
-            <p className="text-gray-600 text-xs mt-1">Add a new dependent for medical consultations</p>
+            <h1 className="text-base sm:text-lg font-bold text-green-700">Add Dependent</h1>
+            <p className="text-gray-600 text-xs sm:text-sm mt-1">Add a new dependent for medical consultations</p>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col p-8">
+      <div className="flex-1 flex flex-col px-4 sm:p-8">
         <div className="max-w-4xl mx-auto w-full">
           <AddDependent />
         </div>
@@ -350,27 +325,24 @@ const Landing = () => {
     </div>
   );
 
-  // Step 5: Health Complaint Page
   const HealthComplaintPage = () => (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-4 mb-4">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4 mb-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
           <button 
             onClick={goBack}
             className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-green-600" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
           </button>
           <div className="flex-1 text-center">
-            <h1 className="text-lg font-bold text-green-700">Health Complaint</h1>
-            <p className="text-gray-600 text-xs mt-1">Provide your health details</p>
+            <h1 className="text-base sm:text-lg font-bold text-green-700">Health Complaint</h1>
+            <p className="text-gray-600 text-xs sm:text-sm mt-1">Provide your health details</p>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col p-8">
+      <div className="flex-1 flex flex-col px-4 sm:p-8">
         <div className="max-w-4xl mx-auto w-full">
           <HealthComplaint />
         </div>
@@ -378,9 +350,7 @@ const Landing = () => {
     </div>
   );
 
-  // Step 6: Cyber Clinics Map Page
   const CyberClinicsPage = () => {
-    // Mock clinic data
     const clinics = [
       {
         id: 1,
@@ -426,42 +396,45 @@ const Landing = () => {
 
     return (
       <div className="min-h-screen bg-white">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-4 mb-4">
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4 mb-4">
           <div className="flex items-center max-w-6xl mx-auto relative">
             <button 
               onClick={goBack}
               className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-green-600" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             </button>
             <div className="flex-1 text-center">
-              <h1 className="text-lg font-bold text-green-700">Angill Cyber Clinics</h1>
-              <p className="text-gray-600 text-xs mt-1">Find the nearest cyber clinic to you</p>
+              <h1 className="text-base sm:text-lg font-bold text-green-700">Angill Cyber Clinics</h1>
+              <p className="text-gray-600 text-xs sm:text-sm mt-1">Find the nearest cyber clinic to you</p>
             </div>
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="max-w-6xl mx-auto px-4 mb-6">
+        <div className="max-w-6xl mx-auto px-4 mb-4 sm:mb-6">
           <div className="relative">
             <input 
               type="text" 
               placeholder="Clinics Near Me"
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 text-gray-700 placeholder-gray-500"
+              className="w-full pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 text-gray-700 placeholder-gray-500 text-sm sm:text-base"
             />
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-2">
               <button className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Map Section */}
         <div className="max-w-6xl mx-auto px-4">
-          <div className="relative bg-gradient-to-br from-green-50 to-teal-50 rounded-xl h-96 overflow-hidden border border-green-100">
-            {/* Background map pattern */}
+          <div 
+            className="relative bg-gradient-to-br from-green-50 to-teal-50 rounded-xl h-[300px] sm:h-96 overflow-hidden border border-green-100 bg-cover bg-center"
+            style={{ 
+              backgroundImage: `url('https://images.unsplash.com/photo-1576091160399-1123a9de3fa0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')`,
+              backgroundBlendMode: 'overlay',
+              backgroundColor: 'rgba(255,255,255,0.7)'
+            }}
+          >
             <div className="absolute inset-0 opacity-20">
               <svg className="w-full h-full" viewBox="0 0 800 400" fill="none">
                 <path d="M0 200L100 180L200 220L300 160L400 240L500 180L600 200L700 160L800 200V400H0V200Z" fill="#10b981" opacity="0.1"/>
@@ -469,31 +442,28 @@ const Landing = () => {
               </svg>
             </div>
             
-            {/* Map markers and clinic info */}
             {clinics.map((clinic) => (
               <div key={clinic.id}>
-                {/* Map Pin */}
                 <div 
-                  className="absolute w-8 h-8 bg-green-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-green-700 transition-colors z-10"
+                  className="absolute w-7 h-7 sm:w-8 sm:h-8 bg-green-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-green-700 transition-colors z-10"
                   style={clinic.position}
                 >
-                  <MapPin className="w-5 h-5 text-white" />
+                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 
-                {/* Clinic Info Card (show for featured clinic) */}
                 {clinic.id === 1 && (
                   <div 
-                    className="absolute bg-white rounded-lg shadow-lg p-4 border border-gray-200 w-64 z-20"
-                    style={{ top: '35%', left: '65%' }}
+                    className="absolute bg-white rounded-lg shadow-lg p-3 sm:p-4 border border-gray-200 w-56 sm:w-64 z-20"
+                    style={{ top: '30% sm:35%', left: '60% sm:65%' }}
                   >
                     <div className="flex items-start space-x-3">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Shield className="w-6 h-6 text-green-600" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 text-sm">{clinic.name}</h3>
+                        <h3 className="font-semibold text-gray-900 text-xs sm:text-sm">{clinic.name}</h3>
                         <div className="flex items-center space-x-1 mt-1">
-                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current" />
                           <span className="text-xs text-gray-600">{clinic.rating} ({clinic.reviews})</span>
                         </div>
                         <p className="text-xs text-green-600 mt-1">{clinic.hours}</p>
@@ -504,12 +474,11 @@ const Landing = () => {
               </div>
             ))}
 
-            {/* Angill Logo in center */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="bg-white/80 backdrop-blur-sm rounded-full p-4 shadow-lg flex items-center justify-center">
+              <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 sm:p-4 shadow-lg flex items-center justify-center">
                 <div className="flex items-center space-x-2">
-                  <Shield className="w-8 h-8 text-green-600" />
-                  <span className="text-lg font-bold text-green-700">Angill</span>
+                  <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                  <span className="text-base sm:text-lg font-bold text-green-700">Angill</span>
                 </div>
               </div>
             </div>
@@ -520,7 +489,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="font-poppins text-lg antialiased">
+    <div className="font-poppins text-base sm:text-lg antialiased">
       {currentStep === 1 && <ServiceSelection />}
       {currentStep === 2 && selectedService === "cyber" && <CyberClinicsPage />}
       {currentStep === 2 && selectedService !== "cyber" && <ConsultationDetails />}

@@ -16,7 +16,7 @@ const NextInLineModal = () => {
         <div className="relative z-10 flex flex-col h-full">
           {/* Header with close button */}
           <div className="flex items-center justify-between p-4 pb-3">
-            <h3 className="text-lg font-bold text-white bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+            <h3 className="text-md font-bold text-white bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
               You're Next
             </h3>
             <button 

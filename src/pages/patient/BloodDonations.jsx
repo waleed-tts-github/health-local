@@ -120,13 +120,13 @@ const BloodDonations = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="h-4 w-4" />;
+        return <CheckCircle className="h-3 sm:h-4 w-3 sm:w-4" />;
       case 'scheduled':
-        return <Clock className="h-4 w-4" />;
+        return <Clock className="h-3 sm:h-4 w-3 sm:w-4" />;
       case 'cancelled':
-        return <XCircle className="h-4 w-4" />;
+        return <XCircle className="h-3 sm:h-4 w-3 sm:w-4" />;
       default:
-        return <AlertCircle className="h-4 w-4" />;
+        return <AlertCircle className="h-3 sm:h-4 w-3 sm:w-4" />;
     }
   };
 
@@ -149,29 +149,30 @@ const BloodDonations = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Blood Volunteer Section */}
-        <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-xl p-6 mb-8 shadow-sm hover:shadow-md transition-all duration-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-500 via-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
-                <Heart className="w-6 h-6 text-white" fill="currentColor" />
+        <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-sm hover:shadow-md transition-all duration-300">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-red-500 via-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
+                <Heart className="w-5 sm:w-6 h-5 sm:h-6 text-white" fill="currentColor" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900">Blood Donation Volunteer</h3>
-                <p className="text-sm text-gray-600 mt-1">Help save lives by volunteering to donate blood</p>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">Blood Donation Volunteer</h3>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Help save lives by volunteering to donate blood</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <button
                 type="button"
                 onClick={() => setBloodSectionExpanded(!bloodSectionExpanded)}
-                className="p-2 text-gray-500 hover:text-red-600 transition-colors duration-200 rounded-full hover:bg-red-100"
+                className="p-1 sm:p-2 text-gray-500 hover:text-red-600 transition-colors duration-200 rounded-full hover:bg-red-100"
+                aria-label={bloodSectionExpanded ? 'Collapse volunteer section' : 'Expand volunteer section'}
               >
                 {bloodSectionExpanded ? (
-                  <ChevronUp className="w-5 h-5" />
+                  <ChevronUp className="w-4 sm:w-5 h-4 sm:h-5" />
                 ) : (
-                  <ChevronDown className="w-5 h-5" />
+                  <ChevronDown className="w-4 sm:w-5 h-4 sm:h-5" />
                 )}
               </button>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -181,15 +182,15 @@ const BloodDonations = () => {
                   onChange={handleBloodVolunteerChange}
                   className="sr-only peer"
                 />
-                <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-pink-500 shadow-sm"></div>
+                <div className="w-8 sm:w-10 h-4 sm:h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-[18px] sm:peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-3 sm:after:h-4 after:w-3 sm:after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-pink-500 shadow-sm"></div>
               </label>
             </div>
           </div>
           <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            bloodSectionExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 opacity-0'
+            bloodSectionExpanded ? 'max-h-[800px] opacity-100 mt-3 sm:mt-4' : 'max-h-0 opacity-0'
           }`}>
-            <div className="bg-white bg-opacity-80 rounded-xl p-4 space-y-3 backdrop-blur-sm">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+            <div className="bg-white bg-opacity-80 rounded-xl p-3 sm:p-4 space-y-2 sm:space-y-3 backdrop-blur-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-700">
                 <div className="space-y-2">
                   <p className="flex items-start">
                     <span className="text-red-500 mr-2">•</span>
@@ -223,15 +224,16 @@ const BloodDonations = () => {
                   </p>
                 </div>
               </div>
-              <p className="text-red-500 text-xs mt-2">*Minimum Age For Blood Volunteer: Male: 18 - Female: 19</p>
+              <p className="text-red-500 text-xs">*Minimum Age For Blood Volunteer: Male: 18 - Female: 19</p>
             </div>
             {isBloodVolunteer && (
-              <div className="mt-4">
-                <label className="text-sm font-bold text-gray-700 block">Blood Group</label>
+              <div className="mt-3 sm:mt-4">
+                <label className="text-xs sm:text-sm font-bold text-gray-700 block">Blood Group</label>
                 <select
                   value={bloodGroup}
                   onChange={(e) => setBloodGroup(e.target.value)}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 text-sm shadow-sm hover:shadow-md"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 text-xs sm:text-sm shadow-sm hover:shadow-md"
+                  aria-label="Select Blood Group"
                 >
                   <option value="">Select Blood Group</option>
                   <option value="A+">A+</option>
@@ -249,77 +251,79 @@ const BloodDonations = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Donations</p>
-                <p className="text-2xl font-bold text-gray-900">12</p>
+                <p className="text-xs sm:text-sm text-gray-600">Total Donations</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">12</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Heart className="h-6 w-6 text-green-600" />
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <Heart className="h-5 sm:h-6 w-5 sm:w-6 text-green-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Blood Received</p>
-                <p className="text-2xl font-bold text-gray-900">3</p>
+                <p className="text-xs sm:text-sm text-gray-600">Blood Received</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">3</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Activity className="h-6 w-6 text-blue-600" />
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Activity className="h-5 sm:h-6 w-5 sm:w-6 text-blue-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Lives Saved</p>
-                <p className="text-2xl font-bold text-gray-900">36</p>
+                <p className="text-xs sm:text-sm text-gray-600">Lives Saved</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">36</p>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <Award className="h-6 w-6 text-red-600" />
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                <Award className="h-5 sm:h-6 w-5 sm:w-6 text-red-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Next Eligible</p>
-                <p className="text-lg font-bold text-gray-900">15 Jun 2024</p>
+                <p className="text-xs sm:text-sm text-gray-600">Next Eligible</p>
+                <p className="text-base sm:text-lg font-bold text-gray-900">15 Jun 2024</p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="h-6 w-6 text-orange-600" />
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="h-5 sm:h-6 w-5 sm:w-6 text-orange-600" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm mb-8">
+        <div className="bg-white rounded-xl shadow-sm mb-6 sm:mb-8">
           <div className="border-b border-gray-200">
-            <div className="flex space-x-8 px-6">
+            <div className="flex flex-wrap space-x-4 sm:space-x-8 px-4 sm:px-6">
               <button
                 onClick={() => setActiveTab('donations')}
-                className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-xs sm:text-sm ${
                   activeTab === 'donations'
                     ? 'border-green-500 text-green-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
+                aria-label="View My Donations"
               >
                 My Donations ({filteredDonations.length})
               </button>
               <button
                 onClick={() => setActiveTab('received')}
-                className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-xs sm:text-sm ${
                   activeTab === 'received'
                     ? 'border-green-500 text-green-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
+                aria-label="View Blood Received"
               >
                 Blood Received ({filteredReceived.length})
               </button>
@@ -327,15 +331,16 @@ const BloodDonations = () => {
           </div>
 
           {/* Filters */}
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center space-x-4">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex flex-wrap items-center space-x-3 sm:space-x-4">
                 <div className="flex items-center space-x-2">
-                  <Filter className="h-4 w-4 text-gray-500" />
+                  <Filter className="h-3 sm:h-4 w-3 sm:w-4 text-gray-500" />
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500 bg-white shadow-sm"
+                    className="border border-gray-200 rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-green-500 bg-white shadow-sm"
+                    aria-label="Filter by status"
                   >
                     <option value="all">All Status</option>
                     <option value="completed">Completed</option>
@@ -347,7 +352,8 @@ const BloodDonations = () => {
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value)}
-                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500 bg-white shadow-sm"
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-green-500 bg-white shadow-sm"
+                  aria-label="Filter by date range"
                 >
                   <option value="all">All Time</option>
                   <option value="month">This Month</option>
@@ -357,86 +363,86 @@ const BloodDonations = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <button className="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all bg-white shadow-sm hover:shadow-md">
-                  <Download className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm text-gray-700">Export</span>
+                <button className="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all bg-white shadow-sm hover:shadow-md" aria-label="Export data">
+                  <Download className="h-3 sm:h-4 w-3 sm:w-4 text-gray-600" />
+                  <span className="text-xs sm:text-sm text-gray-700">Export</span>
                 </button>
               </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {activeTab === 'donations' ? (
               <div className="space-y-4">
                 {filteredDonations.map((donation) => (
-                  <div key={donation.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all bg-white">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                          <Droplets className="h-6 w-6 text-red-600" />
+                  <div key={donation.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all bg-white">
+                    <div className="flex items-start justify-between mb-2 sm:mb-3">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-10 sm:w-12 h-10 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Droplets className="h-5 sm:h-6 w-5 sm:w-6 text-red-600" />
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900">Blood Donation</h4>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <h4 className="font-medium text-sm sm:text-base text-gray-900">Blood Donation</h4>
+                          <div className="flex flex-wrap items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
                             <span className="flex items-center space-x-1">
-                              <Calendar className="h-3 w-3" />
+                              <Calendar className="h-3 sm:h-4 w-3 sm:w-4" />
                               <span>{donation.date}</span>
                             </span>
                             <span className="flex items-center space-x-1">
-                              <Clock className="h-3 w-3" />
+                              <Clock className="h-3 sm:h-4 w-3 sm:w-4" />
                               <span>{donation.time}</span>
                             </span>
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(donation.status)}`}>
+                        <span className={`inline-flex items-center space-x-1 px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(donation.status)}`}>
                           {getStatusIcon(donation.status)}
                           <span className="capitalize">{donation.status}</span>
                         </span>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Blood Type</p>
-                        <p className="font-medium text-gray-900">{donation.bloodType}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.bloodType}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Quantity</p>
-                        <p className="font-medium text-gray-900">{donation.quantity}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.quantity}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Location</p>
-                        <p className="font-medium text-gray-900">{donation.location}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.location}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Recipient</p>
-                        <p className="font-medium text-gray-900">{donation.recipient}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.recipient}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-1 text-sm text-gray-600">
-                        <MapPin className="h-3 w-3" />
+                    <div className="flex flex-wrap items-center justify-between">
+                      <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-600">
+                        <MapPin className="h-3 sm:h-4 w-3 sm:w-4" />
                         <span>{donation.address}</span>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 mt-2 sm:mt-0">
                         {donation.certificate && (
-                          <button className="text-green-600 hover:text-green-700 text-sm font-medium">
+                          <button className="text-green-600 hover:text-green-700 text-xs sm:text-sm font-medium" aria-label={`View certificate for donation ${donation.id}`}>
                             View Certificate
                           </button>
                         )}
-                        <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                          <Eye className="h-4 w-4" />
+                        <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for donation ${donation.id}`}>
+                          <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
                         </button>
                       </div>
                     </div>
 
                     {donation.nextEligible && (
-                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                        <p className="text-sm text-blue-800">
+                      <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-blue-50 rounded-lg">
+                        <p className="text-xs sm:text-sm text-blue-800">
                           <strong>Next Eligible:</strong> {donation.nextEligible}
                         </p>
                       </div>
@@ -447,70 +453,70 @@ const BloodDonations = () => {
             ) : (
               <div className="space-y-4">
                 {filteredReceived.map((received) => (
-                  <div key={received.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all bg-white">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <Activity className="h-6 w-6 text-blue-600" />
+                  <div key={received.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all bg-white">
+                    <div className="flex items-start justify-between mb-2 sm:mb-3">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-10 sm:w-12 h-10 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-5 sm:h-6 w-5 sm:w-6 text-blue-600" />
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900">Blood Transfusion</h4>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <h4 className="font-medium text-sm sm:text-base text-gray-900">Blood Transfusion</h4>
+                          <div className="flex flex-wrap items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
                             <span className="flex items-center space-x-1">
-                              <Calendar className="h-3 w-3" />
+                              <Calendar className="h-3 sm:h-4 w-3 sm:w-4" />
                               <span>{received.date}</span>
                             </span>
                             <span className="flex items-center space-x-1">
-                              <Clock className="h-3 w-3" />
+                              <Clock className="h-3 sm:h-4 w-3 sm:h-4" />
                               <span>{received.time}</span>
                             </span>
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(received.status)}`}>
+                        <span className={`inline-flex items-center space-x-1 px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(received.status)}`}>
                           {getStatusIcon(received.status)}
                           <span className="capitalize">{received.status}</span>
                         </span>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Blood Type</p>
-                        <p className="font-medium text-gray-900">{received.bloodType}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.bloodType}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Quantity</p>
-                        <p className="font-medium text-gray-900">{received.quantity}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.quantity}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Reason</p>
-                        <p className="font-medium text-gray-900">{received.reason}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.reason}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Doctor</p>
-                        <p className="font-medium text-gray-900">{received.doctor}</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.doctor}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-1 text-sm text-gray-600">
-                        <MapPin className="h-3 w-3" />
+                    <div className="flex flex-wrap items-center justify-between">
+                      <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-600">
+                        <MapPin className="h-3 sm:h-4 w-3 sm:w-4" />
                         <span>{received.address}</span>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-500">
+                      <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+                        <span className="text-xs sm:text-sm text-gray-500">
                           Batch: {received.batchNumber}
                         </span>
-                        <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                          <Eye className="h-4 w-4" />
+                        <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for transfusion ${received.id}`}>
+                          <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
                         </button>
                       </div>
                     </div>
 
-                    <div className="mt-3 p-3 bg-green-50 rounded-lg">
-                      <p className="text-sm text-green-800">
+                    <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-green-50 rounded-lg">
+                      <p className="text-xs sm:text-sm text-green-800">
                         <strong>Donor:</strong> {received.donor}
                       </p>
                     </div>

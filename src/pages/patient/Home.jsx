@@ -73,7 +73,7 @@ const Home = () => {
       id: 2,
       name: 'Dr. Ahmad Hassan',
       specialty: 'Dermatology',
-      description: 'Renowned dermatologist offering advanced skincare treatments and cosmetic procedures.',
+            description: 'Renowned dermatologist offering advanced skincare treatments and cosmetic procedures.',
       rating: 4.8,
       reviews: 203,
       experience: 12,
@@ -177,7 +177,7 @@ const Home = () => {
   };
 
   const handleBack = () => {
-    navigate("/patient",{replace:true});
+    navigate("/patient", { replace: true });
   };
 
   return (
@@ -328,123 +328,137 @@ const Home = () => {
 
         {/* Responsive Filter Modal */}
         {isFilterModalOpen && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
-            <div className="bg-white/90 backdrop-blur-xl rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl border border-green-100/30">
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className="text-sm sm:text-base font-bold text-green-700">Filter Doctors</h3>
-                <button
-                  onClick={closeFilterModal}
-                  className="p-2 bg-green-100/80 hover:bg-green-200/80 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110"
-                >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-green-700" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Specialty</label>
-                  <select
-                    value={selectedSpecialty}
-                    onChange={(e) => setSelectedSpecialty(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
+          <div className="fixed inset-0 bg-gradient-to-br from-green-900/60 via-green-800/50 to-emerald-900/60 backdrop-blur-md flex items-center justify-center z-50 px-4">
+            <div className="bg-green-50/20 backdrop-blur-2xl rounded-3xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl border border-green-200/30 overflow-y-auto sm:overflow-visible relative">
+              {/* Glass overlay effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-green-100/10 via-white/5 to-green-200/10 rounded-3xl pointer-events-none"></div>
+              
+              <div className="relative z-10 flex flex-col h-full">
+                {/* Header with close button */}
+                <div className="flex items-center justify-between p-4 pb-3">
+                  <h3 className="text-lg font-bold text-white bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                    Filter Doctors
+                  </h3>
+                  <button
+                    onClick={closeFilterModal}
+                    className="p-1.5 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 backdrop-blur-sm border border-white/20"
                   >
-                    {specialties.map((specialty) => (
-                      <option key={specialty} value={specialty}>
-                        {specialty}
-                      </option>
-                    ))}
-                  </select>
+                    <X className="w-5 h-5 text-white" />
+                  </button>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Location</label>
-                  <select
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
-                  >
-                    {locations.map((location) => (
-                      <option key={location} value={location}>
-                        {location}
-                      </option>
-                    ))}
-                  </select>
+                {/* Main content - centered */}
+                <div className="flex-1 flex flex-col px-4 pb-4 space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-white mb-1">Specialty</label>
+                      <select
+                        value={selectedSpecialty}
+                        onChange={(e) => setSelectedSpecialty(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg backdrop-blur-sm"
+                      >
+                        {specialties.map((specialty) => (
+                          <option key={specialty} value={specialty} className="text-gray-900">
+                            {specialty}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-white mb-1">Location</label>
+                      <select
+                        value={selectedLocation}
+                        onChange={(e) => setSelectedLocation(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg backdrop-blur-sm"
+                      >
+                        {locations.map((location) => (
+                          <option key={location} value={location} className="text-gray-900">
+                            {location}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-white mb-1">Gender</label>
+                      <select
+                        value={selectedGender}
+                        onChange={(e) => setSelectedGender(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg backdrop-blur-sm"
+                      >
+                        {genders.map((gender) => (
+                          <option key={gender} value={gender} className="text-gray-900">
+                            {gender}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-white mb-1">Rating</label>
+                      <select
+                        value={selectedRating}
+                        onChange={(e) => setSelectedRating(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg backdrop-blur-sm"
+                      >
+                        {ratings.map((rating) => (
+                          <option key={rating} value={rating} className="text-gray-900">
+                            {rating}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-white mb-1">Availability</label>
+                      <select
+                        value={selectedAvailability}
+                        onChange={(e) => setSelectedAvailability(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg backdrop-blur-sm"
+                      >
+                        {availabilities.map((availability) => (
+                          <option key={availability} value={availability} className="text-gray-900">
+                            {availability}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-white mb-1">Experience</label>
+                      <select
+                        value={selectedExperience}
+                        onChange={(e) => setSelectedExperience(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg backdrop-blur-sm"
+                      >
+                        {experiences.map((experience) => (
+                          <option key={experience} value={experience} className="text-gray-900">
+                            {experience}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Gender</label>
-                  <select
-                    value={selectedGender}
-                    onChange={(e) => setSelectedGender(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
-                  >
-                    {genders.map((gender) => (
-                      <option key={gender} value={gender}>
-                        {gender}
-                      </option>
-                    ))}
-                  </select>
+                {/* Buttons */}
+                <div className="px-4 pb-4">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={closeFilterModal}
+                      className="flex-1 bg-white/20 hover:bg-white/30 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 backdrop-blur-sm border border-white/20 shadow-md hover:shadow-lg"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={closeFilterModal}
+                      className="flex-1 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm"
+                    >
+                      Apply Filters
+                    </button>
+                  </div>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Rating</label>
-                  <select
-                    value={selectedRating}
-                    onChange={(e) => setSelectedRating(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
-                  >
-                    {ratings.map((rating) => (
-                      <option key={rating} value={rating}>
-                        {rating}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Availability</label>
-                  <select
-                    value={selectedAvailability}
-                    onChange={(e) => setSelectedAvailability(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
-                  >
-                    {availabilities.map((availability) => (
-                      <option key={availability} value={availability}>
-                        {availability}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Experience</label>
-                  <select
-                    value={selectedExperience}
-                    onChange={(e) => setSelectedExperience(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-100 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
-                  >
-                    {experiences.map((experience) => (
-                      <option key={experience} value={experience}>
-                        {experience}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={closeFilterModal}
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-50 border border-gray-100 text-gray-900 text-xs sm:text-sm font-semibold rounded-lg hover:border-emerald-300 transition-all duration-200 hover:shadow-lg"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={closeFilterModal}
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                >
-                  Apply Filters
-                </button>
               </div>
             </div>
           </div>
@@ -485,10 +499,10 @@ const Home = () => {
         <QueueModal />
         <PaymentModal />
         <SuccessModal />
-        <FeedbackModal/>
+        <FeedbackModal />
         <BookAppointmentModal />
-        <NextInLineModal/>
-        <MeetingModal/>
+        <NextInLineModal />
+        <MeetingModal />
       </div>
     </BookingProvider>
   );
