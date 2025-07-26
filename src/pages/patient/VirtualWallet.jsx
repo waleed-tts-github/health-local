@@ -10,13 +10,13 @@ const VirtualWallet = () => {
   const [newBeneficiaryId, setNewBeneficiaryId] = useState('');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [activeTab, setActiveTab] = useState('topup');
-
-  const beneficiaries = [
+  const [beneficiaries, setBeneficiaries] = useState([
     { id: 1, name: 'Ali Hassan', relationship: 'Son', selected: false },
     { id: 2, name: 'Murtaza Hussain', relationship: 'Son', selected: false },
     { id: 3, name: 'Noor Fatima', relationship: 'Mother', selected: false },
     { id: 4, name: 'Shoukat Javed', relationship: 'Father', selected: false }
-  ];
+  ]);
+  const [searchResults, setSearchResults] = useState([]);
 
   const invoiceData = [
     { id: 1, doctor: 'Dr. Ahmad Ali', date: '2024-01-15', amount: 2500, status: 'Paid', service: 'Consultation' },
@@ -71,6 +71,27 @@ const VirtualWallet = () => {
   const handleBeneficiarySelect = (beneficiary) => {
     setSelectedBeneficiary(beneficiary);
     setActiveModal('paymentConfirm');
+    if (!beneficiaries.some(b => b.id === beneficiary.id)) {
+      setBeneficiaries([...beneficiaries, { ...beneficiary, selected: false }]);
+    }
+  };
+
+  const handleSearchBeneficiary = (input) => {
+    setNewBeneficiaryId(input);
+    if (input.trim()) {
+      const mockResults = [
+        { id: 1001, name: 'Ayesha Khan', relationship: 'Friend' },
+        { id: 1002, name: 'Zainab Ali', relationship: 'Cousin' },
+        { id: 1003, name: 'Omar Farooq', relationship: 'Brother' },
+        { id: 1004, name: 'Sana Malik', relationship: 'Sister' }
+      ].filter(person => 
+        person.id.toString().includes(input.trim()) || 
+        person.name.toLowerCase().includes(input.trim().toLowerCase())
+      );
+      setSearchResults(mockResults);
+    } else {
+      setSearchResults([]);
+    }
   };
 
   const handleAddBeneficiary = () => {
@@ -78,9 +99,10 @@ const VirtualWallet = () => {
       const newBeneficiary = {
         id: Date.now(),
         name: 'Ali Hassan Qadri',
-        email: 'alihassan786@gmail.com',
-        address: 'Sindh, Karachi'
+        relationship: 'Friend',
+        selected: false
       };
+      setBeneficiaries([...beneficiaries, newBeneficiary]);
       setSelectedBeneficiary(newBeneficiary);
       setActiveModal('paymentConfirm');
     }
@@ -92,38 +114,45 @@ const VirtualWallet = () => {
     setPaymentAmount('');
     setPaymentCategory('');
     setNewBeneficiaryId('');
+    setSearchResults([]);
   };
 
-  const renderSocialPayModal = () => (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-white rounded-2xl p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl" style={{ scrollbarWidth: 'thin', scrollbarColor: '#10b981 #f3f4f6' }}>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg sm:text-2xl font-bold text-green-600">Social Pay</h2>
+ const renderSocialPayModal = () => (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-4 pb-3">
+          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+            Social Pay
+          </h3>
           <button 
             onClick={closeModal} 
-            className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
+            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
             aria-label="Close modal"
           >
-            <X size={20} />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="space-y-4 sm:space-y-6">
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">Enter Amount</label>
+        {/* Main content */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
+          {/* Amount input */}
+          <div className="w-full">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Enter Amount</label>
             <input
               type="number"
               value={paymentAmount}
               onChange={(e) => setPaymentAmount(e.target.value)}
-              className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-1 focus:ring-green-500 focus:border-green-500 bg-white transition-all"
               placeholder="1500"
-              aria-label="Payment amount"
             />
           </div>
 
-          <div className="space-y-3 sm:space-y-4">
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700">Purpose</label>
-            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+          {/* Purpose selection */}
+          <div className="w-full">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Purpose</label>
+            <div className="grid grid-cols-3 gap-2">
               {['Family', 'Loan', 'Donation'].map((category) => (
                 <label key={category} className="cursor-pointer">
                   <input
@@ -133,177 +162,392 @@ const VirtualWallet = () => {
                     checked={paymentCategory === category}
                     onChange={(e) => setPaymentCategory(e.target.value)}
                     className="sr-only"
-                    aria-label={`Select ${category}`}
                   />
-                  <div className={`p-2 sm:p-3 rounded-xl border-2 text-center transition-all ${
+                  <div className={`p-2 rounded-xl border-2 text-center transition-all ${
                     paymentCategory === category 
                       ? 'border-green-500 bg-green-50 text-green-700' 
-                      : 'border-gray-200 hover:border-green-300 text-gray-600'
+                      : 'border-gray-200 hover:border-gray-300 text-gray-600'
                   }`}>
-                    <span className="text-xs sm:text-sm font-medium">{category}</span>
+                    <span className="text-xs font-medium">{category}</span>
                   </div>
                 </label>
               ))}
             </div>
           </div>
 
+        
+          
+        </div>
+
+        {/* Button */}
+        <div className="px-4 pb-4">
           <button
             onClick={() => setActiveModal('selectBeneficiary')}
-            className="w-full bg-green-500 text-white py-3 sm:py-4 rounded-xl font-semibold hover:bg-green-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
           >
             Select Beneficiary
           </button>
         </div>
+
+        <style jsx>{`
+          /* Enhanced scrollbar styling - only for small devices */
+          .h-[98vh] {
+            scrollbar-width: thin;
+            scrollbar-color: #10b981 #e5e7eb;
+          }
+          .h-[98vh]::-webkit-scrollbar {
+            width: 8px;
+          }
+          .h-[98vh]::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+          }
+          
+          /* Hide scrollbar on larger screens */
+          @media (min-width: 640px) {
+            .h-[98vh] {
+              scrollbar-width: none;
+            }
+            .h-[98vh]::-webkit-scrollbar {
+              display: none;
+            }
+          }
+          
+          /* Pulse Animation for Loading Dots */
+          .animate-pulse {
+            animation: pulse 1.5s infinite;
+          }
+          .delay-100 {
+            animation-delay: 0.1s;
+          }
+          .delay-200 {
+            animation-delay: 0.2s;
+          }
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 1;
+            }
+            50% {
+              opacity: 0.5;
+            }
+          }
+        `}</style>
       </div>
     </div>
-  );
+  </div>
+);
 
-  const renderSelectBeneficiaryModal = () => (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-3">
-      <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-md max-h-[85vh] overflow-hidden shadow-xl">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg sm:text-xl font-bold text-green-600">Select Beneficiary</h2>
+const renderSelectBeneficiaryModal = () => (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-hidden">
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-4 pb-3">
+          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+            Select Beneficiary
+          </h3>
           <button 
             onClick={closeModal} 
-            className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded-full"
+            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
             aria-label="Close modal"
           >
-            <X size={18} />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Pay To</label>
+        {/* Scrollable content area */}
+        <div className="flex-1 overflow-y-auto px-4">
+          {/* Beneficiary list */}
+          <div className="w-full">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Pay To</label>
             <div className="space-y-2">
               {beneficiaries.map((beneficiary) => (
                 <button
                   key={beneficiary.id}
                   onClick={() => handleBeneficiarySelect(beneficiary)}
-                  className={`w-full p-2 sm:p-3 border-2 rounded-lg cursor-pointer transition-all hover:shadow-sm text-left ${
+                  className={`w-full p-3 border-2 rounded-lg text-left transition-all ${
                     beneficiary.id === selectedBeneficiary?.id 
-                      ? 'border-green-500 bg-green-50 shadow-sm' 
-                      : 'border-gray-200 hover:border-green-300 bg-white'
+                      ? 'border-green-500 bg-green-50' 
+                      : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  aria-label={`Select ${beneficiary.name}`}
                 >
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-xs sm:text-sm text-gray-800">{beneficiary.id}: {beneficiary.name}</span>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-1 sm:px-1.5 py-0.5 rounded-full">{beneficiary.relationship}</span>
+                    <span className="font-medium text-sm text-gray-800">
+                      {beneficiary.id}: {beneficiary.name}
+                    </span>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                      {beneficiary.relationship}
+                    </span>
                   </div>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="border-t pt-4">
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Search By ID Or Wallet</label>
+          {/* Search section */}
+          <div className="border-t border-gray-200 pt-4 pb-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Search By ID Or Name
+            </label>
             <input
               type="text"
               value={newBeneficiaryId}
-              onChange={(e) => setNewBeneficiaryId(e.target.value)}
-              className="w-full px-3 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-all mb-2 sm:mb-3"
-              placeholder="#12465468"
-              aria-label="Search beneficiary"
+              onChange={(e) => handleSearchBeneficiary(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-all mb-3"
+              placeholder="Enter ID or Name"
             />
-            <button
-              onClick={handleAddBeneficiary}
-              className="w-full bg-green-500 text-white py-2 sm:py-3 rounded-lg font-semibold hover:bg-green-600 transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
-            >
-              Search & Add
-            </button>
+            
+            {searchResults.length > 0 && (
+              <div className="space-y-2">
+                {searchResults.map((result) => (
+                  <button
+                    key={result.id}
+                    onClick={() => handleBeneficiarySelect(result)}
+                    className="w-full p-3 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-all"
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-sm text-gray-800">
+                        {result.id}: {result.name}
+                      </span>
+                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                        {result.relationship}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Fixed position button at bottom */}
+        <div className="px-4 pb-4 pt-2 bg-white border-t border-gray-200">
+          <button
+            onClick={handleAddBeneficiary}
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
+          >
+            Search & Add Beneficiary
+          </button>
+        </div>
+
+        <style jsx>{`
+          /* Enhanced scrollbar styling */
+          .overflow-y-auto {
+            scrollbar-width: thin;
+            scrollbar-color: gray #e5e7eb;
+          }
+          .overflow-y-auto::-webkit-scrollbar {
+            width: 8px;
+          }
+          .overflow-y-auto::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 4px;
+          }
+          .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+          }
+          .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+          }
+        `}</style>
       </div>
     </div>
-  );
+  </div>
+);
 
-  const renderPaymentConfirmModal = () => (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-white rounded-2xl p-4 sm:p-6 w-full max-w-md shadow-2xl">
-        <div className="text-center space-y-4 sm:space-y-6">
-          <div className="w-16 sm:w-20 h-16 sm:h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-            <DollarSign size={32} className="text-white" />
+ const renderPaymentConfirmModal = () => (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-4 pb-3">
+          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+            Confirm Payment
+          </h3>
+          <button 
+            onClick={closeModal} 
+            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Main content - centered */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4 text-center">
+          {/* Dollar icon */}
+          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+            <DollarSign className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-base sm:text-lg font-medium text-gray-600">You Are Sending</h2>
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-800">{selectedBeneficiary ? selectedBeneficiary.name : 'Ali Hassan Qadri'}</h3>
-          <p className="text-sm sm:text-base text-gray-600">An Amount Of</p>
-          <p className="text-2xl sm:text-3xl font-bold text-green-600">Rs. {paymentAmount || '1500'}</p>
-          <div className="text-gray-600 bg-gray-50 p-3 sm:p-4 rounded-xl">
-            <p className="font-semibold text-xs sm:text-sm">Note:</p>
-            <p className="text-xs sm:text-sm">{paymentCategory || 'Family/Loan/Donation'}</p>
+          
+          {/* Payment details */}
+          <h2 className="text-sm font-medium text-gray-600">You Are Sending</h2>
+          <h3 className="text-xl font-bold text-gray-800">
+            {selectedBeneficiary ? selectedBeneficiary.name : 'Ali Hassan Qadri'}
+          </h3>
+          <p className="text-xs text-gray-600">An Amount Of</p>
+          <p className="text-2xl font-bold text-green-600">Rs. {paymentAmount || '1500'}</p>
+          
+          {/* Note section */}
+          <div className="w-full border border-gray-200 rounded-xl p-3">
+            <p className="text-xs font-semibold text-gray-700">Note:</p>
+            <p className="text-xs text-gray-600">{paymentCategory || 'Family/Loan/Donation'}</p>
           </div>
+        </div>
+
+        {/* Button */}
+        <div className="px-4 pb-4">
           <button
             onClick={closeModal}
-            className="w-full bg-green-500 text-white py-3 sm:py-4 rounded-xl font-semibold hover:bg-green-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
           >
             Confirm Payment
           </button>
         </div>
+
+        <style jsx>{`
+          /* Enhanced scrollbar styling - only for small devices */
+          .h-[98vh] {
+            scrollbar-width: thin;
+            scrollbar-color: #10b981 #e5e7eb;
+          }
+          .h-[98vh]::-webkit-scrollbar {
+            width: 8px;
+          }
+          .h-[98vh]::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+          }
+          
+          /* Hide scrollbar on larger screens */
+          @media (min-width: 640px) {
+            .h-[98vh] {
+              scrollbar-width: none;
+            }
+            .h-[98vh]::-webkit-scrollbar {
+              display: none;
+            }
+          }
+        `}</style>
       </div>
     </div>
-  );
-
-  const renderSelfTopUpModal = () => (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-white rounded-2xl p-4 sm:p-6 w-full max-w-md shadow-2xl">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg sm:text-2xl font-bold text-green-600">Wallet Top Up</h2>
+  </div>
+);
+const renderSelfTopUpModal = () => (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-4 pb-3">
+          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+            Wallet Top Up
+          </h3>
           <button 
             onClick={closeModal} 
-            className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
+            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
             aria-label="Close modal"
           >
-            <X size={20} />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="space-y-4 sm:space-y-6">
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">Wallet ID Number</label>
+        {/* Main content */}
+        <div className="flex-1 flex flex-col px-4 pb-4 space-y-4">
+          {/* Wallet ID */}
+          <div className="w-full">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Wallet ID Number</label>
             <input
               type="text"
               defaultValue="784558712"
-              className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-600 font-mono text-xs sm:text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600 font-mono text-sm"
               readOnly
-              aria-label="Wallet ID"
             />
           </div>
 
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4">Select Payment Mode</label>
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          {/* Payment methods */}
+          <div className="w-full">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">Select Payment Mode</label>
+            <div className="grid grid-cols-2 gap-3">
               {paymentMethods.map((method) => (
                 <button
                   key={method.id}
                   onClick={() => setSelectedPaymentMethod(method.id)}
-                  className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all hover:shadow-md ${
+                  className={`p-3 border-2 rounded-xl transition-all ${
                     selectedPaymentMethod === method.id
-                      ? 'border-green-500 bg-green-50 shadow-md'
-                      : 'border-gray-200 hover:border-green-300 bg-white'
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  aria-label={`Select ${method.name}`}
                 >
-                  <div className="flex flex-col items-center space-y-2">
-                    <span className="text-xl sm:text-2xl">{method.icon}</span>
-                    <span className="font-semibold text-xs sm:text-sm text-center">{method.name}</span>
+                  <div className="flex flex-col items-center space-y-1">
+                    <span className="text-xl">{method.icon}</span>
+                    <span className="font-medium text-xs text-center">{method.name}</span>
                   </div>
                 </button>
               ))}
             </div>
           </div>
+        </div>
 
+        {/* Button */}
+        <div className="px-4 pb-4">
           <button
-            className="w-full bg-green-500 text-white py-3 sm:py-4 rounded-xl font-semibold hover:bg-green-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
             onClick={closeModal}
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
           >
             Proceed to Payment
           </button>
         </div>
+
+        <style jsx>{`
+          /* Enhanced scrollbar styling - only for small devices */
+          .h-[98vh] {
+            scrollbar-width: thin;
+            scrollbar-color: #10b981 #e5e7eb;
+          }
+          .h-[98vh]::-webkit-scrollbar {
+            width: 8px;
+          }
+          .h-[98vh]::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+          }
+          
+          /* Hide scrollbar on larger screens */
+          @media (min-width: 640px) {
+            .h-[98vh] {
+              scrollbar-width: none;
+            }
+            .h-[98vh]::-webkit-scrollbar {
+              display: none;
+            }
+          }
+        `}</style>
       </div>
     </div>
-  );
-
+  </div>
+);
   const renderMainPage = () => (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">

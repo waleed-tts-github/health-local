@@ -135,9 +135,8 @@ const HealthProfile = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Back Button */}
-        <BackButton />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      
 
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="text-center">
@@ -246,7 +245,7 @@ const HealthProfile = () => {
             <div className="pt-4 sm:pt-6">
               <button
                 onClick={() => console.log('Health profile saved:', formData)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
+                className="w-full bg-green-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
                 aria-label="Save Health Profile"
               >
                 Save Health Profile

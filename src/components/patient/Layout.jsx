@@ -24,8 +24,10 @@ import {
   Droplet,
   Users
 } from 'lucide-react';
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const Layout = ({ children }) => {
+  const { setCurrentStep } = useConsultationFlow();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState('Home');
@@ -114,6 +116,9 @@ const Layout = ({ children }) => {
 
   const handleNavigation = (item) => {
     setActiveItem(item.name);
+    if (item.name === 'Home') {
+      setCurrentStep(1);
+    }
     if (item.path) {
       navigate(item.path);
     }
@@ -135,6 +140,7 @@ const Layout = ({ children }) => {
 
   const handleLogoClick = () => {
     navigate('/patient');
+    setCurrentStep(1);
     setIsDrawerOpen(false);
   };
 
@@ -223,6 +229,11 @@ const Layout = ({ children }) => {
             top: 100%;
             margin-top: 8px;
           }
+
+          .avatar-blur {
+            filter: blur(8px);
+            opacity: 0.7;
+          }
         `}
       </style>
 
@@ -244,10 +255,10 @@ const Layout = ({ children }) => {
                   }}
                 />
               </div>
-              <div className=" Recovery Mode flex flex-col pt-2">
+              <div className="flex flex-col pt-2">
                 <div className="flex items-center gap-2">
                   <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
-                  <p className="text-green-100 text-[10px] font-medium  tracking-wider pt-1">
+                  <p className="text-green-100 text-[10px] font-medium tracking-wider pt-1">
                     Healthcare
                   </p>
                 </div>
@@ -400,7 +411,7 @@ const Layout = ({ children }) => {
               <div className="flex flex-col pt-2">
                 <div className="flex items-center gap-2">
                   <h1 className="text-white font-bold text-lg tracking-wide">ANGILL</h1>
-                  <p className="text-green-100 text-[10px] pt-1 font-medium  tracking-wider">
+                  <p className="text-green-100 text-[10px] pt-1 font-medium tracking-wider">
                     Healthcare
                   </p>
                 </div>
@@ -534,7 +545,7 @@ const Layout = ({ children }) => {
                 >
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">
-                      {isAnonymous ? 'Anonymous User' : 'John Doe'}
+                      {isAnonymous ? 'Anonymous User' : 'Niaz Ahmad'}
                     </p>
                     <p className="text-xs text-gray-500">Patient</p>
                   </div>
@@ -545,7 +556,7 @@ const Layout = ({ children }) => {
                         : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                       }
                       alt="Profile"
-                      className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-green-500 transition-colors cursor-pointer"
+                      className={`w-10 h-10 rounded-full border-2 border-gray-200 hover:border-green-500 transition-colors cursor-pointer ${isAnonymous ? 'avatar-blur' : ''}`}
                     />
                     <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
                     <ChevronDown className="w-4 h-4 ml-1 text-gray-600" />

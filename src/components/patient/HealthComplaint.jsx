@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Upload, Camera, User, Calendar, Thermometer, Ruler, Weight, Activity, Clock } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 const HealthComplaint = () => {
   const { goBack } = useConsultationFlow();
   const navigate = useNavigate();
+  const healthConditionRef = useRef(null);
+  const complaintSinceWhenRef = useRef(null);
+  const bloodPressureRef = useRef(null);
 
   // Separate state for each field
   const [healthCondition, setHealthCondition] = useState('');
@@ -20,11 +23,6 @@ const HealthComplaint = () => {
   const [weightUnit, setWeightUnit] = useState('kg');
   const [fileName, setFileName] = useState('');
   const [description, setDescription] = useState('');
-
-  const [customInputs, setCustomInputs] = useState({
-    healthCondition: false,
-    complaintSinceWhen: false,
-  });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState({
     healthCondition: false,
@@ -43,8 +41,7 @@ const HealthComplaint = () => {
     'Nausea',
     'Fatigue',
     'Stomach ache',
-    'Dizziness',
-    'Add custom condition...'
+    'Dizziness'
   ];
 
   const timeOptions = [
@@ -55,9 +52,22 @@ const HealthComplaint = () => {
     '3 months',
     '6 months',
     '1 year',
-    'More than 1 year',
-    'Add custom duration...'
+    'More than 1 year'
   ];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (healthConditionRef.current && !healthConditionRef.current.contains(event.target)) {
+        setIsDropdownOpen(prev => ({ ...prev, healthCondition: false }));
+      }
+      if (complaintSinceWhenRef.current && !complaintSinceWhenRef.current.contains(event.target)) {
+        setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: false }));
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -68,11 +78,96 @@ const HealthComplaint = () => {
 
   const handleNumericInput = (setter) => (e) => {
     const value = e.target.value;
-    // Allow empty string or valid numeric input (including decimals)
     if (value === '' || /^-?\d*\.?\d*$/.test(value)) {
       setter(value);
     }
   };
+
+  const handleBloodPressureInput = (e) => {
+    let value = e.target.value;
+    // Remove any characters that are not digits or a single slash
+    value = value.replace(/[^0-9/]/g, '');
+
+    // Split by slash
+    const parts = value.split('/');
+    const systolic = parts[0] || '';
+    const diastolic = parts[1] || '';
+
+    // Allow empty input
+    if (value === '') {
+      setBloodPressure('');
+      return;
+    }
+
+    // Prevent multiple slashes
+    if (parts.length > 2) {
+      return;
+    }
+
+    // Remove slash if diastolic is empty and set cursor to end of systolic
+    if (diastolic === '' && value.includes('/')) {
+      setBloodPressure(systolic);
+      setTimeout(() => {
+        if (bloodPressureRef.current) {
+          bloodPressureRef.current.selectionStart = systolic.length;
+          bloodPressureRef.current.selectionEnd = systolic.length;
+        }
+      }, 0);
+      return;
+    }
+
+    // Limit systolic to 3 digits, move excess to diastolic
+    if (systolic.length > 3 && !value.includes('/')) {
+      const newSystolic = systolic.slice(0, 3);
+      const newDiastolic = systolic.slice(3);
+      value = `${newSystolic}/${newDiastolic}`;
+      setBloodPressure(value);
+      setTimeout(() => {
+        if (bloodPressureRef.current) {
+          bloodPressureRef.current.selectionStart = value.length;
+          bloodPressureRef.current.selectionEnd = value.length;
+        }
+      }, 0);
+      return;
+    }
+
+    // Limit diastolic to 3 digits
+    if (diastolic.length > 3) {
+      return;
+    }
+
+    // Automatically add slash after 3 digits if no slash exists
+    if (systolic.length === 3 && !value.includes('/')) {
+      value = `${systolic}/`;
+      setBloodPressure(value);
+      setTimeout(() => {
+        if (bloodPressureRef.current) {
+          bloodPressureRef.current.selectionStart = value.length;
+          bloodPressureRef.current.selectionEnd = value.length;
+        }
+      }, 0);
+      return;
+    }
+
+    setBloodPressure(value);
+  };
+
+  const handleAutocomplete = (value, options, setter, dropdownKey) => {
+    setter(value);
+    setIsDropdownOpen(prev => ({ ...prev, [dropdownKey]: true }));
+  };
+
+  const filteredHealthConditions = healthCondition
+    ? healthConditions.filter(option => 
+        option.toLowerCase().includes(healthCondition.toLowerCase())
+      )
+    : healthConditions;
+
+  const filteredTimeOptions = complaintSinceWhen
+    ? timeOptions.filter(option => 
+        option.toLowerCase().includes(complaintSinceWhen.toLowerCase())
+      )
+    : timeOptions;
 
   const handleSubmit = () => {
     const formData = {
@@ -89,15 +184,13 @@ const HealthComplaint = () => {
       fileName,
       description
     };
-    navigate("/patient/home");
+    navigate("/patient/doctors");
     console.log('Form submitted:', formData);
   };
 
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto p-2">
-
-
         {/* Main Form */}
         <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-6">
           <div className="flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mx-auto mb-4">
@@ -128,139 +221,71 @@ const HealthComplaint = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Health Condition Field */}
-                <div>
+                <div ref={healthConditionRef}>
                   <label className="block text-xs font-semibold text-gray-900 mb-1">Health Condition</label>
                   <div className="relative">
-                    {customInputs.healthCondition ? (
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                          <Thermometer className="w-4 h-4 text-gray-400" />
-                        </div>
-                        <input
-                          type="text"
-                          value={healthCondition}
-                          onChange={(e) => setHealthCondition(e.target.value)}
-                          placeholder="Enter custom health condition"
-                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
-                        />
-                        <button
-                          onClick={() => {
-                            setCustomInputs(prev => ({ ...prev, healthCondition: false }));
-                            setHealthCondition('');
-                            setIsDropdownOpen(prev => ({ ...prev, healthCondition: true }));
-                          }}
-                          className="absolute right-3 top-3.5 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
-                        >
-                          Cancel
-                        </button>
+                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                      <Thermometer className="w-4 h-4 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      value={healthCondition}
+                      onChange={(e) => handleAutocomplete(e.target.value, healthConditions, setHealthCondition, 'healthCondition')}
+                      onFocus={() => setIsDropdownOpen(prev => ({ ...prev, healthCondition: true }))}
+                      placeholder="Enter or select health condition"
+                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                    />
+                    {isDropdownOpen.healthCondition && filteredHealthConditions.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+                        {filteredHealthConditions.map((option, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => {
+                              setHealthCondition(option);
+                              setIsDropdownOpen(prev => ({ ...prev, healthCondition: false }));
+                            }}
+                            className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                          >
+                            {option}
+                          </button>
+                        ))}
                       </div>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => setIsDropdownOpen(prev => ({ ...prev, healthCondition: !prev.healthCondition }))}
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <Thermometer className="w-4 h-4 text-gray-400" />
-                            <span className={healthCondition ? 'text-gray-900' : 'text-gray-500'}>
-                              {healthCondition || 'Select health condition'}
-                            </span>
-                          </div>
-                          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen.healthCondition ? 'rotate-180' : ''}`} />
-                        </button>
-                        {isDropdownOpen.healthCondition && (
-                          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto">
-                            {healthConditions.map((option, index) => (
-                              <button
-                                key={index}
-                                type="button"
-                                onClick={() => {
-                                  if (option.includes('Add custom')) {
-                                    setCustomInputs(prev => ({ ...prev, healthCondition: true }));
-                                    setHealthCondition('');
-                                  } else {
-                                    setHealthCondition(option);
-                                  }
-                                  setIsDropdownOpen(prev => ({ ...prev, healthCondition: false }));
-                                }}
-                                className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
-                              >
-                                {option}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </>
                     )}
                   </div>
                 </div>
 
                 {/* Complaint Since When Field */}
-                <div>
+                <div ref={complaintSinceWhenRef}>
                   <label className="block text-xs font-semibold text-gray-900 mb-1">Complaint Since When</label>
                   <div className="relative">
-                    {customInputs.complaintSinceWhen ? (
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                          <Clock className="w-4 h-4 text-gray-400" />
-                        </div>
-                        <input
-                          type="text"
-                          value={complaintSinceWhen}
-                          onChange={(e) => setComplaintSinceWhen(e.target.value)}
-                          placeholder="Enter custom duration"
-                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
-                        />
-                        <button
-                          onClick={() => {
-                            setCustomInputs(prev => ({ ...prev, complaintSinceWhen: false }));
-                            setComplaintSinceWhen('');
-                            setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: true }));
-                          }}
-                          className="absolute right-3 top-3.5 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
-                        >
-                          Cancel
-                        </button>
+                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                      <Clock className="w-4 h-4 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      value={complaintSinceWhen}
+                      onChange={(e) => handleAutocomplete(e.target.value, timeOptions, setComplaintSinceWhen, 'complaintSinceWhen')}
+                      onFocus={() => setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: true }))}
+                      placeholder="Enter or select duration"
+                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                    />
+                    {isDropdownOpen.complaintSinceWhen && filteredTimeOptions.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+                        {filteredTimeOptions.map((option, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => {
+                              setComplaintSinceWhen(option);
+                              setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: false }));
+                            }}
+                            className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                          >
+                            {option}
+                          </button>
+                        ))}
                       </div>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: !prev.complaintSinceWhen }))}
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <Clock className="w-4 h-4 text-gray-400" />
-                            <span className={complaintSinceWhen ? 'text-gray-900' : 'text-gray-500'}>
-                              {complaintSinceWhen || 'Select duration'}
-                            </span>
-                          </div>
-                          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen.complaintSinceWhen ? 'rotate-180' : ''}`} />
-                        </button>
-                        {isDropdownOpen.complaintSinceWhen && (
-                          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto">
-                            {timeOptions.map((option, index) => (
-                              <button
-                                key={index}
-                                type="button"
-                                onClick={() => {
-                                  if (option.includes('Add custom')) {
-                                    setCustomInputs(prev => ({ ...prev, complaintSinceWhen: true }));
-                                    setComplaintSinceWhen('');
-                                  } else {
-                                    setComplaintSinceWhen(option);
-                                  }
-                                  setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: false }));
-                                }}
-                                className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
-                              >
-                                {option}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </>
                     )}
                   </div>
                 </div>
@@ -374,8 +399,9 @@ const HealthComplaint = () => {
                     </div>
                     <input
                       type="text"
+                      ref={bloodPressureRef}
                       value={bloodPressure}
-                      onChange={(e) => setBloodPressure(e.target.value)}
+                      onChange={handleBloodPressureInput}
                       placeholder="120/80"
                       className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
                     />

@@ -291,14 +291,14 @@ const AppointmentRecord = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <BackButton />
+       
         
         <div className="pb-6 sm:pb-8">
           <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">My Appointments</h1>
               <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
-                Manage and track your medical appointments with ease. View details, cancel, or request refunds.
+                Manage and track your medical appointments with ease.
               </p>
             </div>
             <button

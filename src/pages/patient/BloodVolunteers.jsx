@@ -183,12 +183,7 @@ const BloodVolunteers = () => {
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                     {volunteer.bloodType}
                   </span>
-                  <button
-                    onClick={() => handleRequestDonation(volunteer)}
-                    className="text-green-600 hover:text-green-700 font-medium text-sm"
-                  >
-                    Request
-                  </button>
+                
                 </div>
               </div>
             ))}
@@ -217,110 +212,243 @@ const BloodVolunteers = () => {
       </div>
 
       {/* Request Modal */}
-      {showRequestModal && (
-        <div className="fixed inset-0 bg-grey bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4 h-full font-poppins">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-3 sm:p-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-gray-900">Blood Donation Volunteer</h3>
-              <button
-                onClick={() => setShowRequestModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-3 sm:h-5 w-3 sm:w-5" />
-              </button>
-            </div>
-            <h6 className="text-sm font-medium text-gray-900 mb-2">
-              Requesting Urgent Blood Donation Assistance (JazakAllah Khair)
-            </h6>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-semibold text-gray-900 mb-1">
-                  Contact Person
-                </label>
-                <div className="relative">
-                  <User className="absolute left-2 sm:left-3 top-2.5 h-4 sm:h-5 w-4 sm:w-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={contactPerson}
-                    onChange={(e) => setContactPerson(e.target.value)}
-                    placeholder="Ali Hassan"
-                    className="w-full pl-8 sm:pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-xs text-gray-900 min-w-0"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-900 mb-1">
-                  Phone Number
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-2 sm:left-3 top-2.5 h-4 sm:h-5 w-4 sm:w-5 text-gray-400" />
-                  <input
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="0300 1234578"
-                    className="w-full pl-8 sm:pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-xs text-gray-900 min-w-0"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-900 mb-1">
-                  Place Of Contact
-                </label>
-                <div className="relative">
-                  <MapPin className="absolute left-2 sm:left-3 top-2.5 h-4 sm:h-5 w-4 sm:w-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={contactPlace}
-                    onChange={(e) => setContactPlace(e.target.value)}
-                    placeholder="Agha Khan Hospital Karachi Pakistan"
-                    className="w-full pl-8 sm:pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-xs text-gray-900 min-w-0"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-900 mb-1">
-                  Message
-                </label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Enter Message Here"
-                  rows={3}
-                  className="w-full px-3 sm:px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-xs text-gray-900 resize-none min-w-0"
+{showRequestModal && (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-4 pb-3">
+          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+            Blood Donation Volunteer
+          </h3>
+          <button
+            onClick={() => setShowRequestModal(false)}
+            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 flex flex-col px-4 pb-4 space-y-4">
+          <h6 className="text-sm font-medium text-gray-700 text-center">
+            Requesting Urgent Blood Donation Assistance (JazakAllah Khair)
+          </h6>
+
+          <div className="space-y-3">
+            {/* Contact Person */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Contact Person
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={contactPerson}
+                  onChange={(e) => setContactPerson(e.target.value)}
+                  placeholder="Ali Hassan"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
                 />
               </div>
-              <button
-                onClick={handleSendRequest}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg text-2xs sm:text-xs transition-colors"
-              >
-                Send Request
-              </button>
+            </div>
+
+            {/* Phone Number */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Phone Number
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="0300 1234578"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
+                />
+              </div>
+            </div>
+
+            {/* Place of Contact */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Place Of Contact
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={contactPlace}
+                  onChange={(e) => setContactPlace(e.target.value)}
+                  placeholder="Agha Khan Hospital Karachi Pakistan"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
+                />
+              </div>
+            </div>
+
+            {/* Message */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Message
+              </label>
+              <textarea      
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter Message Here"
+                rows={3}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700 resize-none"
+              />
             </div>
           </div>
         </div>
-      )}
+
+        {/* Button */}
+        <div className="px-4 pb-4">
+          <button
+            onClick={handleSendRequest}
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
+          >
+            Send Request
+          </button>
+        </div>
+
+        <style jsx>{`
+          /* Enhanced scrollbar styling - only for small devices */
+          .h-[98vh] {
+            scrollbar-width: thin;
+            scrollbar-color: #10b981 #e5e7eb;
+          }
+          .h-[98vh]::-webkit-scrollbar {
+            width: 8px;
+          }
+          .h-[98vh]::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+          }
+          
+          /* Hide scrollbar on larger screens */
+          @media (min-width: 640px) {
+            .h-[98vh] {
+              scrollbar-width: none;
+            }
+            .h-[98vh]::-webkit-scrollbar {
+              display: none;
+            }
+          }
+        `}</style>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-4 sm:p-6 text-center">
-            <div className="w-12 sm:w-16 h-12 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <Check className="h-6 sm:h-8 w-6 sm:w-8 text-green-600" />
-            </div>
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Message Sent</h3>
-            <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
-              A Volunteer Will Get In Touch With You If They're Willing.
-            </p>
-            <button
-              onClick={handleCloseSuccess}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-xs sm:text-sm"
-            >
-              Ok
-            </button>
-          </div>
+{showSuccessModal && (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-4 pb-3">
+          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+            Message Sent
+          </h3>
+          <button 
+            onClick={handleCloseSuccess} 
+            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
-      )}
+
+        {/* Main content - centered */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
+          {/* Check icon */}
+          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+            <Check className="w-8 h-8 text-white" />
+          </div>
+          
+          {/* Status message */}
+          <div className="text-center w-full border border-gray-200 rounded-xl p-2">
+            <p className="text-gray-600 mt-2 text-xs">
+              A volunteer will reach out if they are available and able to assist
+            </p>
+          </div>
+
+         
+        </div>
+
+        {/* Button */}
+        <div className="px-4 pb-4">
+          <button
+            onClick={handleCloseSuccess}
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
+          >
+            OK
+          </button>
+        </div>
+
+        <style jsx>{`
+          /* Enhanced scrollbar styling - only for small devices */
+          .h-[98vh] {
+            scrollbar-width: thin;
+            scrollbar-color: #10b981 #e5e7eb;
+          }
+          .h-[98vh]::-webkit-scrollbar {
+            width: 8px;
+          }
+          .h-[98vh]::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+          }
+          .h-[98vh]::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+          }
+          
+          /* Hide scrollbar on larger screens */
+          @media (min-width: 640px) {
+            .h-[98vh] {
+              scrollbar-width: none;
+            }
+            .h-[98vh]::-webkit-scrollbar {
+              display: none;
+            }
+          }
+          
+          /* Pulse Animation for Loading Dots */
+          .animate-pulse {
+            animation: pulse 1.5s infinite;
+          }
+          .delay-100 {
+            animation-delay: 0.1s;
+          }
+          .delay-200 {
+            animation-delay: 0.2s;
+          }
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 1;
+            }
+            50% {
+              opacity: 0.5;
+            }
+          }
+        `}</style>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

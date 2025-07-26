@@ -11,7 +11,6 @@ import ScrollToTopCustom from './components/ScrollToTopCustom';
 import BloodVolunteers from './pages/patient/BloodVolunteers';
 import BloodDonations from './pages/patient/BloodDonations';
 import VirtualWallet from './pages/patient/VirtualWallet';
-import Landing from './pages/patient/Landing';
 import PatientEditProfile from './pages/patient/EditProfile';
 import PatientSignIn from './pages/patient/SignIn';
 import PatientForgotPassword from './pages/patient/ForgotPassword';
@@ -22,6 +21,8 @@ import CreateAppointmentSlots from './pages/doctor/CreateAppointmentSlots';
 import DoctorLayout from './components/doctor/Layout';
 import CompleteProfile from './pages/doctor/CompleteProfile';
 import DoctorHome from './pages/doctor/Home';
+import Doctors from './pages/patient/Doctors';
+import Landing from './pages/Landing';
 
 const App = () => {
   return (
@@ -37,8 +38,8 @@ const App = () => {
                 element={
                   <Layout>
                     <Routes>
-                      <Route path='' element={<Landing/>}></Route>
-                      <Route path="home" element={<Home />} />
+                      <Route path='' element={<Home/>}></Route>
+                      <Route path="doctors" element={<Doctors />} />
                       <Route path="doctors/:doctorId" element={<DoctorProfile />} />
                       <Route path="appointments" element={<AppointmentRecord />} />
                       <Route path="profile" element={<div>Profile Page</div>} />
@@ -86,7 +87,7 @@ const App = () => {
             </Routes>
           }
         />
-        <Route path="/" element={<div>Landing Page</div>} />
+        <Route path="/" element={<Landing/>} />
          <Route path='/verify-otp' element={<OTPPage/>}></Route>
       </Routes>
     </BrowserRouter>
