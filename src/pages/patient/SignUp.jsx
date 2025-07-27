@@ -7,12 +7,12 @@ import { AuthContext } from '../../contexts/AuthContext';
 const PatientSignup = () => {
   const navigate = useNavigate();
   const { formData, setFormData, currentStep, setCurrentStep, setOTPContext, isVerified } = useContext(AuthContext);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [bloodSectionExpanded, setBloodSectionExpanded] = useState(false);
   const [showAgeErrorModal, setShowAgeErrorModal] = useState(false);
+  const [dateInput, setDateInput] = useState('');
 
   const steps = [
     { id: 1, title: 'Account Setup', description: 'Basic credentials', icon: User },
@@ -39,16 +39,71 @@ const PatientSignup = () => {
 
   useEffect(() => {
     if (formData.dateOfBirth) {
-      const age = calculateAge(formData.dateOfBirth);
-      setShowAgeErrorModal(age < 18);
+      const timer = setTimeout(() => {
+        const age = calculateAge(formData.dateOfBirth);
+        setShowAgeErrorModal(age < 18);
+      }, 1000);
+      return () => clearTimeout(timer);
     } else {
       setShowAgeErrorModal(false);
     }
   }, [formData.dateOfBirth]);
 
+  const handleDateInputChange = (e) => {
+    let value = e.target.value.replace(/[^0-9/]/g, '');
+    
+    // Remove extra slashes
+    value = value.replace(/\/+/g, '/');
+    
+    // Format the date as DD/MM/YYYY
+    if (value.length > 2 && value[2] !== '/') {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length > 5 && value[5] !== '/') {
+      value = value.slice(0, 5) + '/' + value.slice(5);
+    }
+    
+    // Limit to DD/MM/YYYY format (10 characters)
+    value = value.slice(0, 10);
+    
+    setDateInput(value);
+    
+    // Validate complete date format DD/MM/YYYY
+    if (value.length === 10 && /^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+      const [day, month, year] = value.split('/').map(Number);
+      const date = new Date(year, month - 1, day);
+      
+      if (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day &&
+        date <= new Date()
+      ) {
+        setFormData(prev => ({
+          ...prev,
+          dateOfBirth: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+        }));
+        setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+      } else {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date' }));
+      }
+    } else if (value.length === 10) {
+      setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date format (DD/MM/YYYY)' }));
+    }
+  };
+
+  const handleDatePickerChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      dateOfBirth: value
+    }));
+    setDateInput(value.split('-').reverse().join('/'));
+    setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     if (name === 'phone') {
       const cleanedValue = value.replace(/\D/g, '').slice(0, 11);
       setFormData(prev => ({
@@ -90,7 +145,6 @@ const PatientSignup = () => {
 
   const validateStep = (step) => {
     const newErrors = {};
-
     if (step === 1) {
       if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
       if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
@@ -130,7 +184,6 @@ const PatientSignup = () => {
         newErrors.bloodGroup = 'Blood group is required for volunteers';
       }
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -156,6 +209,7 @@ const PatientSignup = () => {
   const closeAgeErrorModal = () => {
     setShowAgeErrorModal(false);
     setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+    setDateInput('');
   };
 
   return (
@@ -201,15 +255,15 @@ const PatientSignup = () => {
                 return (
                   <React.Fragment key={step.id}>
                     <div className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
-                      currentStep >= step.id 
-                        ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-sm' 
+                      currentStep >= step.id
+                        ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-sm'
                         : 'text-gray-500'
                     }`}>
                       <div className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                        currentStep > step.id 
-                          ? 'bg-white text-emerald-600' 
-                          : currentStep === step.id 
-                          ? 'bg-white text-emerald-600' 
+                        currentStep > step.id
+                          ? 'bg-white text-emerald-600'
+                          : currentStep === step.id
+                          ? 'bg-white text-emerald-600'
                           : 'bg-gray-200 text-gray-400'
                       }`}>
                         {currentStep > step.id ? (
@@ -260,7 +314,6 @@ const PatientSignup = () => {
           {/* Form Container */}
           {currentStep === 1 && (
             <div>
-             
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
@@ -284,7 +337,6 @@ const PatientSignup = () => {
                       </p>
                     )}
                   </div>
-
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
                     <div className="relative">
@@ -307,7 +359,6 @@ const PatientSignup = () => {
                     )}
                   </div>
                 </div>
-
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">Username</label>
                   <div className="relative">
@@ -330,7 +381,6 @@ const PatientSignup = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
                   <div className="relative">
@@ -353,7 +403,6 @@ const PatientSignup = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Password</label>
@@ -383,7 +432,6 @@ const PatientSignup = () => {
                       </p>
                     )}
                   </div>
-
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Confirm Password</label>
                     <div className="relative">
@@ -413,7 +461,6 @@ const PatientSignup = () => {
                     )}
                   </div>
                 </div>
-
                 <button
                   onClick={() => {
                     if (isVerified) {
@@ -441,23 +488,30 @@ const PatientSignup = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Personal Information</h2>
                 <p className="text-gray-600 text-sm">Complete your profile to get personalized care</p>
               </div>
-
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Date of Birth</label>
                     <div className="relative">
                       <input
-                        type="date"
-                        name="dateOfBirth"
-                        value={formData.dateOfBirth}
-                        onChange={handleInputChange}
-                        max={getTodayDate()}
+                        type="text"
+                        name="dateInput"
+                        value={dateInput}
+                        onChange={handleDateInputChange}
                         className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.dateOfBirth ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
+                        placeholder="DD/MM/YYYY"
                       />
-                      <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                      <input
+                        type="date"
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleDatePickerChange}
+                        max={getTodayDate()}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 w-8 cursor-pointer"
+                      />
+                      <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
                     </div>
                     {errors.dateOfBirth && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -466,9 +520,8 @@ const PatientSignup = () => {
                       </p>
                     )}
                   </div>
-
                   <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">CNIC Number</label> 
+                    <label className="block text-sm font-bold text-gray-700 mb-2">CNIC Number</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -490,7 +543,6 @@ const PatientSignup = () => {
                     )}
                   </div>
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
@@ -514,7 +566,6 @@ const PatientSignup = () => {
                       </p>
                     )}
                   </div>
-
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Gender</label>
                     <div className="relative">
@@ -540,7 +591,6 @@ const PatientSignup = () => {
                     )}
                   </div>
                 </div>
-
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">Profile Photo</label>
                   <div className="border-2 border-dashed border-gray-200 rounded-3xl p-6 text-center hover:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-emerald-50 shadow-sm hover:shadow-md">
@@ -575,7 +625,6 @@ const PatientSignup = () => {
                     )}
                   </div>
                 </div>
-
                 {/* Enhanced Blood Volunteer Section */}
                 <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-3xl overflow-hidden hover:shadow-lg transition-all duration-300">
                   <div className="p-5">
@@ -613,7 +662,6 @@ const PatientSignup = () => {
                         </label>
                       </div>
                     </div>
-
                     <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
                       bloodSectionExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 opacity-0'
                     }`}>
@@ -688,7 +736,6 @@ const PatientSignup = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="flex space-x-4">
                   <button
                     onClick={handlePrevious}
@@ -716,18 +763,16 @@ const PatientSignup = () => {
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to ANGILL Clinic!</h2>
               <p className="text-lg text-gray-600 mb-6">Your account has been successfully created</p>
-              
               <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-3xl p-5 mb-6 shadow-sm">
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <Shield className="w-6 h-6 text-emerald-600" />
                   <h3 className="text-xl font-bold text-emerald-800">Account Activated</h3>
                 </div>
                 <p className="text-emerald-700 text-base">
-                  You now have access to all our healthcare services including consultations, 
+                  You now have access to all our healthcare services including consultations,
                   medical records, and emergency care.
                 </p>
               </div>
-              
               <button
                 onClick={() => window.location.href = '/patient'}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200"
