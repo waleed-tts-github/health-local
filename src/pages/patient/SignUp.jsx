@@ -1,30 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, User, Mail, Phone, Calendar, CreditCard, Camera, Heart, Check, Shield, Edit2, ChevronDown, ChevronUp, X } from 'lucide-react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Eye, EyeOff, User, Mail, Phone, Calendar, CreditCard, Camera, Heart, Check, Shield, Edit2, ChevronDown, ChevronUp, X, AlertCircle } from 'lucide-react';
 import logo from '../../assets/Group.png';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const PatientSignup = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    dateOfBirth: '',
-    cNIC: '',
-    phone: '',
-    gender: '',
-    bloodVolunteer: false,
-    bloodGroup: '',
-    photo: null
-  });
+  const { formData, setFormData, currentStep, setCurrentStep, setOTPContext, isVerified } = useContext(AuthContext);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const [currentStep, setCurrentStep] = useState(1);
   const [bloodSectionExpanded, setBloodSectionExpanded] = useState(false);
   const [showAgeErrorModal, setShowAgeErrorModal] = useState(false);
 
@@ -34,13 +20,11 @@ const PatientSignup = () => {
     { id: 3, title: 'Welcome', description: 'All set!', icon: Check }
   ];
 
-  // Get today's date in YYYY-MM-DD format for max date restriction
   const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split('T')[0];
   };
 
-  // Calculate age based on date of birth
   const calculateAge = (birthDate) => {
     const today = new Date();
     const dob = new Date(birthDate);
@@ -53,7 +37,6 @@ const PatientSignup = () => {
     return age;
   };
 
-  // Effect to check age whenever dateOfBirth changes
   useEffect(() => {
     if (formData.dateOfBirth) {
       const age = calculateAge(formData.dateOfBirth);
@@ -143,6 +126,9 @@ const PatientSignup = () => {
         newErrors.phone = 'Phone number must be exactly 11 digits';
       }
       if (!formData.gender) newErrors.gender = 'Gender is required';
+      if (formData.bloodVolunteer && !formData.bloodGroup) {
+        newErrors.bloodGroup = 'Blood group is required for volunteers';
+      }
     }
 
     setErrors(newErrors);
@@ -169,7 +155,7 @@ const PatientSignup = () => {
 
   const closeAgeErrorModal = () => {
     setShowAgeErrorModal(false);
-    setFormData(prev => ({ ...prev, dateOfBirth: '' })); // Reset date of birth
+    setFormData(prev => ({ ...prev, dateOfBirth: '' }));
   };
 
   return (
@@ -250,20 +236,20 @@ const PatientSignup = () => {
 
           {/* Age Error Modal */}
           {showAgeErrorModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm">
-              <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-xl border border-red-200 w-11/12 sm:w-96 max-w-md">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl transform transition-all">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg sm:text-xl font-bold text-red-600">Age Restriction</h3>
-                  <button onClick={closeAgeErrorModal} className="text-gray-500 hover:text-gray-900">
-                    <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <h3 className="text-xl font-bold text-red-600">Age Restriction</h3>
+                  <button onClick={closeAgeErrorModal} className="text-gray-400 hover:text-gray-600">
+                    <X className="w-6 h-6" />
                   </button>
                 </div>
-                <p className="text-gray-700 text-sm sm:text-base mb-4 sm:mb-6">
+                <p className="text-gray-600 mb-6">
                   If you are under 18 years of age, please have your parent or legal guardian register you as a dependent.
                 </p>
                 <button
                   onClick={closeAgeErrorModal}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-full font-bold text-sm sm:text-base hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200"
                 >
                   Close
                 </button>
@@ -274,138 +260,172 @@ const PatientSignup = () => {
           {/* Form Container */}
           {currentStep === 1 && (
             <div>
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
-                  <User className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Account Setup</h2>
-                <p className="text-gray-600 text-sm">Create your secure healthcare account</p>
-              </div>
-
+             
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">First Name</label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      className={`w-full px-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                        errors.firstName ? 'border-red-400' : ''
-                      }`}
-                      placeholder="Enter your first name"
-                    />
-                    {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
+                    <label className="block text-sm font-bold text-gray-700 mb-2">First Name</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.firstName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                        }`}
+                        placeholder="Enter your first name"
+                      />
+                    </div>
+                    {errors.firstName && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.firstName}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">Last Name</label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      className={`w-full px-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                        errors.lastName ? 'border-red-400' : ''
-                      }`}
-                      placeholder="Enter your last name"
-                    />
-                    {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.lastName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                        }`}
+                        placeholder="Enter your last name"
+                      />
+                    </div>
+                    {errors.lastName && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.lastName}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-gray-700 block">Username</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Username</label>
                   <div className="relative">
-                    <User className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
                     <input
                       type="text"
                       name="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full pl-12 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                        errors.username ? 'border-red-400' : ''
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        errors.username ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                       }`}
                       placeholder="Enter your username"
                     />
+                    <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   </div>
-                  {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
+                  {errors.username && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.username}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-gray-700 block">Email Address</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full pl-12 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                        errors.email ? 'border-red-400' : ''
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                       }`}
                       placeholder="Enter your email address"
                     />
+                    <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   </div>
-                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">Password</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Password</label>
                     <div className="relative">
                       <input
                         type={showPassword ? 'text' : 'password'}
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full px-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 pr-12 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                          errors.password ? 'border-red-400' : ''
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
                         placeholder="Create a strong password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-3.5 text-gray-400 hover:text-emerald-600 transition-colors"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                       >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                    {errors.password && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.password}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">Confirm Password</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Confirm Password</label>
                     <div className="relative">
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full px-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 pr-12 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                          errors.confirmPassword ? 'border-red-400' : ''
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
                         placeholder="Confirm your password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3.5 top-3.5 text-gray-400 hover:text-emerald-600 transition-colors"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                       >
-                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+                    {errors.confirmPassword && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.confirmPassword}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <button
-                  onClick={handleNext}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white py-3 px-6 rounded-full font-bold text-base hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+                  onClick={() => {
+                    if (isVerified) {
+                      setCurrentStep(2);
+                    } else {
+                      setOTPContext("Sign Up");
+                      navigate("/verify-otp");
+                    }
+                  }}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center"
                 >
-                  Continue to Personal Details
+                  {isVerified ? "Continue To Personal Details" : "Verify Email"}
                 </button>
               </div>
             </div>
@@ -415,8 +435,8 @@ const PatientSignup = () => {
           {currentStep === 2 && (
             <div>
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
-                  <CreditCard className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <CreditCard className="w-8 h-8 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Personal Information</h2>
                 <p className="text-gray-600 text-sm">Complete your profile to get personalized care</p>
@@ -425,82 +445,104 @@ const PatientSignup = () => {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">Date of Birth</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Date of Birth</label>
                     <div className="relative">
-                      <Calendar className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
                       <input
                         type="date"
                         name="dateOfBirth"
                         value={formData.dateOfBirth}
                         onChange={handleInputChange}
                         max={getTodayDate()}
-                        className={`w-full pl-12 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 shadow-sm hover:shadow-md ${
-                          errors.dateOfBirth ? 'border-red-400' : ''
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.dateOfBirth ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
                       />
+                      <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
-                    {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
+                    {errors.dateOfBirth && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.dateOfBirth}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">CNIC Number</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">CNIC Number</label> 
                     <div className="relative">
-                      <CreditCard className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
                       <input
                         type="text"
                         name="cNIC"
                         value={formData.cNIC}
                         onChange={handleInputChange}
-                        className={`w-full pl-12 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                          errors.cNIC ? 'border-red-400' : ''
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.cNIC ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
                         placeholder="34604-0515319-5"
                       />
+                      <CreditCard className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
-                    {errors.cNIC && <p className="text-red-500 text-xs mt-1">{errors.cNIC}</p>}
+                    {errors.cNIC && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.cNIC}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">Phone Number</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
                     <div className="relative">
-                      <Phone className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
                       <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className={`w-full pl-12 pr-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
-                          errors.phone ? 'border-red-400' : ''
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
                         placeholder="03001234567"
                       />
+                      <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
-                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                    {errors.phone && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-bold text-gray-700 block">Gender</label>
-                    <select
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleInputChange}
-                      className={`w-full px-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 shadow-sm hover:shadow-md ${
-                        errors.gender ? 'border-red-400' : ''
-                      }`}
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                    {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Gender</label>
+                    <div className="relative">
+                      <select
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.gender ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                        }`}
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    {errors.gender && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {errors.gender}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-gray-700 block">Profile Photo</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Profile Photo</label>
                   <div className="border-2 border-dashed border-gray-200 rounded-3xl p-6 text-center hover:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-emerald-50 shadow-sm hover:shadow-md">
                     <input
                       type="file"
@@ -516,18 +558,18 @@ const PatientSignup = () => {
                           alt="Profile Preview"
                           className="w-28 h-28 rounded-full object-cover mb-2 border-none"
                         />
-                        <label htmlFor="photo-upload" className="cursor-pointer inline-flex items-center space-x-1 bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold hover:bg-emerald-700 transition-all duration-300">
+                        <label htmlFor="photo-upload" className="cursor-pointer inline-flex items-center space-x-1 bg-green-500 text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-600 transition duration-200">
                           <Edit2 className="w-4 h-4" />
                           <span>Edit Photo</span>
                         </label>
-                        <p className="text-emerald-600 text-sm mt-2 font-bold">✓ {formData.photo.name}</p>
+                        <p className="text-green-600 text-sm mt-2 font-semibold">✓ {formData.photo.name}</p>
                       </div>
                     ) : (
                       <label htmlFor="photo-upload" className="cursor-pointer">
-                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                          <Camera className="w-6 h-6 text-white" />
+                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <Camera className="w-6 h-6 text-green-600" />
                         </div>
-                        <p className="text-gray-700 font-bold text-base">Upload your photo</p>
+                        <p className="text-gray-700 font-semibold text-base">Upload your photo</p>
                         <p className="text-gray-500 text-sm mt-1">PNG, JPG up to 5MB</p>
                       </label>
                     )}
@@ -571,8 +613,7 @@ const PatientSignup = () => {
                         </label>
                       </div>
                     </div>
-                    
-                    {/* Expandable Content */}
+
                     <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
                       bloodSectionExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 opacity-0'
                     }`}>
@@ -615,23 +656,33 @@ const PatientSignup = () => {
                       </div>
                       {formData.bloodVolunteer && (
                         <div className="space-y-1 mt-4">
-                          <label className="text-sm font-bold text-gray-700 block">Blood Group</label>
-                          <select
-                            name="bloodGroup"
-                            value={formData.bloodGroup}
-                            onChange={handleInputChange}
-                            className="w-full px-5 py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-none transition-all duration-300 text-gray-900 shadow-sm hover:shadow-md"
-                          >
-                            <option value="">Select Blood Group</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                          </select>
+                          <label className="block text-sm font-bold text-gray-700 mb-2">Blood Group</label>
+                          <div className="relative">
+                            <select
+                              name="bloodGroup"
+                              value={formData.bloodGroup}
+                              onChange={handleInputChange}
+                              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                                errors.bloodGroup ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                              }`}
+                            >
+                              <option value="">Select Blood Group</option>
+                              <option value="A+">A+</option>
+                              <option value="A-">A-</option>
+                              <option value="B+">B+</option>
+                              <option value="B-">B-</option>
+                              <option value="AB+">AB+</option>
+                              <option value="AB-">AB-</option>
+                              <option value="O+">O+</option>
+                              <option value="O-">O-</option>
+                            </select>
+                          </div>
+                          {errors.bloodGroup && (
+                            <p className="mt-1 text-sm text-red-600 flex items-center">
+                              <AlertCircle size={16} className="mr-1" />
+                              {errors.bloodGroup}
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -641,13 +692,13 @@ const PatientSignup = () => {
                 <div className="flex space-x-4">
                   <button
                     onClick={handlePrevious}
-                    className="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-full font-bold text-base hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold transition duration-200"
                   >
                     Previous
                   </button>
                   <button
                     onClick={handleSubmit}
-                    className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 text-white py-3 px-6 rounded-full font-bold text-base hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+                    className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center"
                     disabled={showAgeErrorModal}
                   >
                     Create Account
@@ -660,8 +711,8 @@ const PatientSignup = () => {
           {/* Step 3: Success */}
           {currentStep === 3 && (
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <Check className="w-10 h-10 text-white" />
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check className="w-8 h-8 text-green-600" />
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to ANGILL Clinic!</h2>
               <p className="text-lg text-gray-600 mb-6">Your account has been successfully created</p>
@@ -679,7 +730,7 @@ const PatientSignup = () => {
               
               <button
                 onClick={() => window.location.href = '/patient'}
-                className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white py-4 px-8 rounded-full font-bold text-lg hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200"
               >
                 Access Your Dashboard
               </button>

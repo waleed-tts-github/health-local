@@ -16,7 +16,8 @@ const PatientForgotPassword = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsSubmitting(false);
-    setShowPopup(true);
+  
+    navigate("/verify-otp")
   };
 
   const handleBackToLogin = () => {

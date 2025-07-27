@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Phone, MapPin, Calendar, Upload } from 'lucide-react';
+import { User, Phone, MapPin, Upload, AlertCircle } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext'
 
 const AddDependent = () => {
@@ -8,7 +8,7 @@ const AddDependent = () => {
   const [formData, setFormData] = useState({
     guardianName: '',
     cnicNumber: '',
-    gender: 'male',
+    gender: '',
     dependentFirstName: '',
     dependentLastName: '',
     dependentUsername: '',
@@ -19,6 +19,7 @@ const AddDependent = () => {
     dateOfBirth: '',
     profileImage: null
   });
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,6 +27,7 @@ const AddDependent = () => {
       ...prev,
       [name]: value
     }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleImageUpload = (e) => {
@@ -35,38 +37,72 @@ const AddDependent = () => {
         ...prev,
         profileImage: file
       }));
+      setErrors(prev => ({ ...prev, profileImage: '' }));
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.guardianName.trim()) newErrors.guardianName = 'Guardian name is required';
+    if (!formData.cnicNumber) {
+      newErrors.cnicNumber = 'CNIC number is required';
+    } else if (!/^\d{5}-\d{7}-\d{1}$/.test(formData.cnicNumber)) {
+      newErrors.cnicNumber = 'CNIC must be in the format 12345-1234567-1';
+    }
+    if (!formData.gender) newErrors.gender = 'Gender is required';
+    if (!formData.dependentFirstName.trim()) newErrors.dependentFirstName = 'First name is required';
+    if (!formData.dependentLastName.trim()) newErrors.dependentLastName = 'Last name is required';
+    if (!formData.dependentUsername.trim()) newErrors.dependentUsername = 'Username is required';
+    if (!formData.dependentRelation) newErrors.dependentRelation = 'Relation is required';
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = 'Phone number is required';
+    } else if (!/^\d{9,11}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = 'Phone number must be 9-11 digits';
+    }
+    if (!formData.countryCode) newErrors.countryCode = 'Country code is required';
+    if (!formData.address.trim()) newErrors.address = 'Address is required';
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
+    if (!formData.profileImage) newErrors.profileImage = 'Profile image is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    handleAddDependentSubmit(); // Navigate to HealthComplaint step
+    if (validateForm()) {
+      console.log('Form submitted:', formData);
+      handleAddDependentSubmit();
+    }
   };
 
   const CustomDropdown = ({ label, value, options, name, icon: Icon }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-      <div className="relative">
-        <label className="block text-xs font-semibold text-gray-900 mb-1">{label}</label>
+      <div className="space-y-1">
+        {label && <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>}
         <div className="relative">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
+            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+              errors[name] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+            }`}
           >
-            <div className="flex items-center space-x-2">
-              {Icon && <span className="w-4 h-4 text-gray-400"><Icon /></span>}
-              <span className={value ? 'text-gray-900' : 'text-gray-500'}>
-                {value || 'Select an option'}
-              </span>
-            </div>
-            <svg className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className={value ? 'text-gray-800' : 'text-gray-500'}>
+              {value || 'Select an option'}
+            </span>
+            <svg className={`w-5 h-5 text-gray-400 transition-transform absolute right-8 top-1/2 -translate-y-1/2 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
+          {Icon && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <Icon className="w-5 h-5 text-gray-400" />
+            </div>
+          )}
           {isOpen && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
               {options.map((option, index) => (
                 <button
                   key={index}
@@ -75,7 +111,7 @@ const AddDependent = () => {
                     handleInputChange({ target: { name, value: option } });
                     setIsOpen(false);
                   }}
-                  className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                  className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                 >
                   {option}
                 </button>
@@ -83,65 +119,85 @@ const AddDependent = () => {
             </div>
           )}
         </div>
+        {errors[name] && (
+          <p className="mt-1 text-sm text-red-600 flex items-center">
+            <AlertCircle size={16} className="mr-1" />
+            {errors[name]}
+          </p>
+        )}
       </div>
     );
   };
 
   const InputField = ({ label, value, name, placeholder, icon: Icon, type = "text" }) => (
-    <div>
-      <label className="block text-xs font-semibold text-gray-900 mb-1">{label}</label>
+    <div className="space-y-1">
+      <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-          {Icon && <span className="w-4 h-4 text-gray-400"><Icon /></span>}
-        </div>
         <input
           type={type}
           name={name}
           value={value}
           onChange={handleInputChange}
           placeholder={placeholder}
-          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+            errors[name] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+          }`}
         />
+        {Icon && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <Icon className="w-5 h-5 text-gray-400" />
+          </div>
+        )}
       </div>
+      {errors[name] && (
+        <p className="mt-1 text-sm text-red-600 flex items-center">
+          <AlertCircle size={16} className="mr-1" />
+          {errors[name]}
+        </p>
+      )}
     </div>
   );
 
   const TextAreaField = ({ label, value, name, placeholder, icon: Icon }) => (
-    <div>
-      <label className="block text-xs font-semibold text-gray-900 mb-1">{label}</label>
+    <div className="space-y-1">
+      <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>
       <div className="relative">
-        <div className="absolute top-3 left-0 pl-2 flex items-start pointer-events-none">
-          {Icon && <span className="w-4 h-4 text-gray-400"><Icon /></span>}
-        </div>
         <textarea
           name={name}
           value={value}
           onChange={handleInputChange}
           placeholder={placeholder}
           rows={3}
-          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900 resize-none"
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 ${
+            errors[name] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+          }`}
         />
+        {Icon && (
+          <div className="absolute right-3 top-3">
+            <Icon className="w-5 h-5 text-gray-400" />
+          </div>
+        )}
       </div>
+      {errors[name] && (
+        <p className="mt-1 text-sm text-red-600 flex items-center">
+          <AlertCircle size={16} className="mr-1" />
+          {errors[name]}
+        </p>
+      )}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto p-2">
-      
-
-        <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-6">
-          <div className="flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mx-auto mb-4">
-            <User className="w-6 h-6 text-emerald-600" />
+    <div className="min-h-screen font-poppins">
+      <div className="max-w-4xl mx-auto p-4">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+          <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-6">
+            <User className="w-8 h-8 text-green-600" />
           </div>
-
-          <div className="space-y-6">
-            {/* Guardian Information Section */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                Guardian Information
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-8">
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">Guardian Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <InputField
                   label="Guardian Name"
                   name="guardianName"
@@ -153,7 +209,7 @@ const AddDependent = () => {
                   label="CNIC Number"
                   name="cnicNumber"
                   value={formData.cnicNumber}
-                  placeholder="1 4785 2584 215"
+                  placeholder="12345-1234567-1"
                   icon={User}
                 />
                 <CustomDropdown
@@ -165,13 +221,9 @@ const AddDependent = () => {
                 />
               </div>
             </div>
-
-            {/* Dependent Information Section */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                Dependent Information
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">Dependent Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <InputField
                   label="Dependent First Name"
                   name="dependentFirstName"
@@ -200,19 +252,23 @@ const AddDependent = () => {
                   name="dependentRelation"
                   icon={User}
                 />
+                <InputField
+                  label="Date of Birth"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
+                  placeholder="Select date"
+                  icon={User}
+                  type="date"
+                />
               </div>
             </div>
-
-            {/* Contact Information Section */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                Contact Information
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">Contact Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Phone Number</label>
-                  <div className="flex gap-2">
-                    <div className="relative w-20">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                  <div className="flex gap-3 items-center">
+                    <div className="relative w-28">
                       <CustomDropdown
                         label=""
                         value={formData.countryCode}
@@ -231,13 +287,6 @@ const AddDependent = () => {
                     />
                   </div>
                 </div>
-                <InputField
-                  label="Date of Birth"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
-                  icon={Calendar}
-                  type="date"
-                />
                 <TextAreaField
                   label="Address"
                   name="address"
@@ -247,14 +296,10 @@ const AddDependent = () => {
                 />
               </div>
             </div>
-
-            {/* Profile Image Section */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                Profile Image
-              </h2>
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center overflow-hidden">
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">Profile Image</h2>
+              <div className="flex items-center gap-6">
+                <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center overflow-hidden">
                   {formData.profileImage ? (
                     <img
                       src={URL.createObjectURL(formData.profileImage)}
@@ -262,7 +307,7 @@ const AddDependent = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <User className="w-10 h-10 text-emerald-600" />
+                    <User className="w-12 h-12 text-green-600" />
                   )}
                 </div>
                 <div className="flex-1">
@@ -272,44 +317,40 @@ const AddDependent = () => {
                       accept="image/*"
                       onChange={handleImageUpload}
                       className="hidden"
+                      id="profile-image-upload"
                     />
-                    <div className="inline-flex items-center gap-2 px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-gray-900 text-sm font-semibold hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm">
-                      <Upload className="w-4 h-4 text-gray-400" />
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-semibold hover:bg-green-600 transition duration-200">
+                      <Upload className="w-5 h-5" />
                       Change Profile Image
                     </div>
                   </label>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Upload a JPG, PNG, or GIF file (max 5MB)
-                  </p>
+                  <p className="text-sm text-gray-500 mt-2">Upload a JPG, PNG, or GIF file (max 5MB)</p>
+                  {formData.profileImage && (
+                    <p className="text-green-600 text-sm mt-2 font-semibold">✓ {formData.profileImage.name}</p>
+                  )}
+                  {errors.profileImage && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.profileImage}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
               <button
                 type="button"
-                className="px-6 py-3 bg-gray-50 border border-gray-100 text-gray-900 text-sm font-semibold rounded-lg hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm"
+                className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg text-sm font-semibold transition duration-200"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-lg transition duration-200 flex items-center justify-center"
               >
                 Add Dependent
               </button>
-            </div>
-
-            {/* Login Link */}
-            <div className="text-center pt-3">
-              <p className="text-xs text-gray-600">
-                Already have an account?{' '}
-                <a href="#" className="text-emerald-600 hover:text-emerald-700 font-semibold">
-                  Login
-                </a>
-              </p>
             </div>
           </div>
         </div>

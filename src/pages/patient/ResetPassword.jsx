@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Lock, Check, AlertCircle } from 'lucide-react';
 import logo from '../../assets/Group.png';
+import { replace, useNavigate } from 'react-router-dom';
 
 const PatientResetPassword = () => {
+  const navigate = useNavigate()
   const [passwords, setPasswords] = useState({
     current: '',
     new: '',
@@ -103,6 +105,7 @@ const PatientResetPassword = () => {
 
   const closeSuccessPopup = () => {
     setShowSuccessPopup(false);
+    navigate("/patient/login",{replace:true})
     // Navigate to login page
     console.log('Navigate to login');
   };

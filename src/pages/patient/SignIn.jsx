@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Eye, EyeOff, User, UserCircle } from 'lucide-react';
 import logo from '../../assets/Group.png';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const PatientSignIn = () => {
   const navigate = useNavigate()
@@ -9,6 +10,7 @@ const PatientSignIn = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [username, setUsername] = useState('Niaz Ahmed');
   const [password, setPassword] = useState('password');
+  const {setOTPContext} = useContext(AuthContext)
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -98,7 +100,7 @@ const PatientSignIn = () => {
                   />
                   <span className="ml-2 text-sm text-gray-600">Remember me</span>
                 </div>
-                <button onClick={()=>{navigate("/patient/forgot-password")}} className="text-sm text-gray-600 hover:text-green-600">
+                <button onClick={()=>{ setOTPContext("ForgotPassword");navigate("/patient/forgot-password")}} className="text-sm text-gray-600 hover:text-green-600">
                   Forget Password
                 </button>
               </div>

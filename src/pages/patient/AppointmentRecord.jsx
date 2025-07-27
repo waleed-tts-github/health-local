@@ -289,7 +289,7 @@ const AppointmentRecord = () => {
   );
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white font-inter">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
        
         
@@ -540,7 +540,7 @@ const AppointmentRecord = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 flex-wrap">
                 <button
                   onClick={() => handleViewAppointment(appointment)}
                   className="flex-1 bg-green-500 text-white font-medium text-xs sm:text-sm py-2 sm:py-3 px-3 sm:px-4 rounded-full transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"

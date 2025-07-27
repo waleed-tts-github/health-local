@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Calendar, Clock, User, FileText, X, ChevronDown, Trash2, Printer } from 'lucide-react';
+import { Search, Filter, Calendar, Clock, FileText, X, ChevronDown, Trash2, Printer } from 'lucide-react';
 import BackButton from '../../components/BackButton';
 import PrescriptionDetailsModal from '../../components/patient/PrescriptionDetailsModel';
 
@@ -141,6 +141,7 @@ const Prescriptions = () => {
     setStartDate(null);
     setEndDate(null);
     setShowFilterDropdown(false);
+    setShowDatePicker(false);
   };
 
   const filteredPrescriptions = useMemo(() => {
@@ -248,13 +249,22 @@ const Prescriptions = () => {
     />
   );
 
+  // Handle dropdown toggling to ensure only one is open at a time
+  const toggleFilterDropdown = () => {
+    setShowFilterDropdown(!showFilterDropdown);
+    if (showDatePicker) setShowDatePicker(false); // Close date picker if open
+  };
+
+  const toggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+    if (showFilterDropdown) setShowFilterDropdown(false); // Close filter dropdown if open
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      
-        
-        <div className="pb-6 sm:pb-8">
-          <div className="mb-6 sm:mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="pb-4 sm:pb-6">
+          <div className="mb-4 sm:mb-6">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">My Prescriptions</h1>
             <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
               Manage and track your prescriptions.
@@ -262,10 +272,10 @@ const Prescriptions = () => {
           </div>
 
           {/* Search and Filters Section */}
-          <div className="bg-green-500 rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
-            <div className="flex flex-col gap-4 sm:gap-6">
+          <div className="bg-green-500 rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
               {/* Search Bar */}
-              <div className="flex-1 max-w-md">
+              <div className="flex-1 max-w-xs">
                 <div className="relative">
                   <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 sm:h-5 w-4 sm:w-5 text-gray-400" />
                   <input
@@ -284,7 +294,7 @@ const Prescriptions = () => {
                 {/* Quick Filter Dropdown */}
                 <div className="relative">
                   <button
-                    onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                    onClick={toggleFilterDropdown}
                     className={`flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 py-3 sm:py-4 border rounded-xl transition-all duration-200 text-xs sm:text-sm font-medium min-w-[140px] sm:min-w-[160px] ${
                       activeFilter 
                         ? 'bg-green-50 border-green-200 text-green-700' 
@@ -302,7 +312,7 @@ const Prescriptions = () => {
                     <ChevronDown className="h-3 sm:h-4 w-3 sm:w-4" />
                   </button>
                   {showFilterDropdown && (
-                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-2 w-48 sm:w-56 z-20">
+                    <div className="absolute top-full mt-2 right-0 bg-white rounded-xl shadow-lg border border-gray-200 p-2 w-48 sm:w-56 z-20 max-w-[calc(100vw-1rem)]">
                       <div className="space-y-1">
                         {[
                           { key: 'today', label: 'Today' },
@@ -331,7 +341,7 @@ const Prescriptions = () => {
                 {/* Date Range Picker */}
                 <div className="relative">
                   <button
-                    onClick={() => setShowDatePicker(!showDatePicker)}
+                    onClick={toggleDatePicker}
                     className="flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 py-3 sm:py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 text-xs sm:text-sm font-medium text-gray-700 bg-white min-w-[140px] sm:min-w-[160px]"
                     aria-label="Toggle date range picker"
                   >
@@ -340,7 +350,7 @@ const Prescriptions = () => {
                     <ChevronDown className="h-3 sm:h-4 w-3 sm:w-4" />
                   </button>
                   {showDatePicker && (
-                    <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6 w-72 sm:w-80 z-20">
+                    <div className="absolute top-full mt-2 right-0 bg-white rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6 w-72 sm:w-80 z-20 max-w-[calc(100vw-1rem)]">
                       <div className="space-y-4 sm:space-y-6">
                         <h3 className="text-xs sm:text-sm font-semibold text-gray-900">Filter by Date Range</h3>
                         <div className="grid grid-cols-1 gap-3 sm:gap-4">
@@ -402,7 +412,7 @@ const Prescriptions = () => {
 
             {/* Active Filters Display */}
             {(activeFilter || startDate || endDate) && (
-              <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-100">
+              <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-xs sm:text-sm text-gray-600 mr-2 sm:mr-3">Active filters:</span>
                   {activeFilter && (
@@ -472,7 +482,7 @@ const Prescriptions = () => {
                 <div className="flex gap-2 mt-auto">
                   <button
                     onClick={() => handleViewPrescription(prescription)}
-                    className="flex-1 bg-green-500 text-white font-medium text-xs sm:text-sm py-2 sm:py-3 px-3 sm:px-4 rounded-full transition-all duration-200 transform group-hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                    className="flex-1 bg-green-500 text-white font-medium text-[0.65rem] sm:text-xs py-2 sm:py-3 px-3 sm:px-4 rounded-full transition-all duration-200 transform group-hover:scale-100 shadow-lg flex items-center justify-center gap-2"
                     aria-label={`View prescription ${prescription.prescriptionId}`}
                   >
                     <FileText className="w-3 sm:w-4 h-3 sm:h-4" />
@@ -480,7 +490,7 @@ const Prescriptions = () => {
                   </button>
                   <button
                     onClick={() => handlePrintPrescription(prescription)}
-                    className="p-2 sm:p-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-all shadow-sm"
+                    className="p-2 sm:p-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-all shadow-sm transform group-hover:scale-100"
                     title="Print Prescription"
                     aria-label={`Print prescription ${prescription.prescriptionId}`}
                   >
@@ -488,7 +498,7 @@ const Prescriptions = () => {
                   </button>
                   <button
                     onClick={() => handleDeletePrescription(prescription.id)}
-                    className="p-2 sm:p-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition-all shadow-sm"
+                    className="p-2 sm:p-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition-all shadow-sm transform group-hover:scale-100"
                     title="Delete Prescription"
                     aria-label={`Delete prescription ${prescription.prescriptionId}`}
                   >

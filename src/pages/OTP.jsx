@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ArrowLeft, Lock, Check } from 'lucide-react';
 import logo from '../assets/Group.png';
+import { AuthContext } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const OTPPage = ({ role = 'patient' }) => {
+  const navigate = useNavigate()
   const [otp, setOtp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [error, setError] = useState('');
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
+  const {OTPContext,setCurrentStep,setIsVerified} = useContext(AuthContext)
 
   // Timer for OTP expiry
   useEffect(() => {
@@ -27,10 +31,18 @@ const OTPPage = ({ role = 'patient' }) => {
     setError('');
     // Simulate API call to verify OTP
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Mock API delay
-      // Assume OTP is valid; in a real app, verify with backend
-      setIsSubmitting(false);
-      setShowPopup(true);
+     
+      if(OTPContext=="Sign Up")
+      {
+       
+        navigate("/patient/sign-up")
+         setIsVerified(true)
+        setCurrentStep(2)
+      }
+      else if(OTPContext=="ForgotPassword")
+      {
+        navigate("/patient/reset-password")
+      }
     } catch (err) {
       setIsSubmitting(false);
       setError('Invalid OTP. Please try again or resend.');

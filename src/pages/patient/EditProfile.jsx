@@ -41,25 +41,29 @@ const PatientEditProfile = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-      <div className="relative">
-        <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">{label}</label>
+      <div className="space-y-1">
+        <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>
         <div className="relative">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-sm flex items-center justify-between"
+            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500"
             aria-label={`Select ${label}`}
           >
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              {Icon && <span className="w-3 sm:w-4 h-3 sm:h-4 text-gray-400"><Icon /></span>}
-              <span className={value ? 'text-gray-900 text-xs sm:text-sm' : 'text-gray-500 text-xs sm:text-sm'}>
-                {value || 'Select an option'}
-              </span>
-            </div>
-            <ChevronDown className={`w-4 sm:w-5 h-4 sm:h-5 text-gray-400 transition-all duration-200 transform ${isOpen ? 'rotate-180' : ''}`} />
+            <span className={value ? 'text-gray-800' : 'text-gray-500'}>
+              {value || 'Select an option'}
+            </span>
+            <svg className={`w-5 h-5 text-gray-400 transition-transform absolute right-3 top-1/2 -translate-y-1/2 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
+          {Icon && (
+            <div className="absolute right-10 top-1/2 -translate-y-1/2">
+              <Icon className="w-5 h-5 text-gray-400" />
+            </div>
+          )}
           {isOpen && (
-            <div className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
               {options.map((option, index) => (
                 <button
                   key={index}
@@ -68,7 +72,7 @@ const PatientEditProfile = () => {
                     onChange(option);
                     setIsOpen(false);
                   }}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900 text-xs sm:text-sm"
+                  className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                 >
                   {option}
                 </button>
@@ -81,19 +85,21 @@ const PatientEditProfile = () => {
   };
 
   const InputField = ({ label, value, onChange, placeholder, icon: Icon, type = "text" }) => (
-    <div>
-      <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">{label}</label>
+    <div className="space-y-1">
+      <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
-          {Icon && <span className="w-3 sm:w-4 h-3 sm:h-4 text-gray-400"><Icon /></span>}
-        </div>
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-sm text-gray-900 text-xs sm:text-sm"
+          className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
         />
+        {Icon && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <Icon className="w-5 h-5 text-gray-400" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -103,27 +109,20 @@ const PatientEditProfile = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <BackButton />
 
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
-          <div className="text-center">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Edit Your Profile</h2>
-            <p className="text-xs sm:text-sm text-gray-600">Update your personal information or change your password</p>
-          </div>
-        </div>
-
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 lg:p-8">
           <div className="flex items-center justify-center w-12 sm:w-16 h-12 sm:h-16 bg-emerald-100 rounded-full mx-auto mb-4 sm:mb-6">
             <User className="w-6 sm:w-8 h-6 sm:h-8 text-emerald-600" />
           </div>
 
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">Edit Profile</h2>
+
           {/* Tabs */}
           <div className="flex justify-center mb-4 sm:mb-6">
-            <div className="flex flex-wrap space-x-2 sm:space-x-4 bg-gray-50 rounded-xl p-1 border border-gray-100 shadow-sm">
+            <div className="flex flex-wrap space-x-2 sm:space-x-4 bg-white rounded-xl p-1 border border-gray-100 shadow-sm">
               <button
                 onClick={() => setActiveTab('profile')}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 ${
-                  activeTab === 'profile'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-gray-600 hover:bg-emerald-50'
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 ${
+                  activeTab === 'profile' ? 'bg-green-300 text-white shadow-sm' : 'bg-white text-black'
                 }`}
                 aria-label="Edit Profile Information"
               >
@@ -131,10 +130,8 @@ const PatientEditProfile = () => {
               </button>
               <button
                 onClick={() => setActiveTab('password')}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 ${
-                  activeTab === 'password'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-gray-600 hover:bg-emerald-50'
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 ${
+                  activeTab === 'password' ? 'bg-green-300 text-white shadow-sm' : 'bg-white text-black'
                 }`}
                 aria-label="Change Password"
               >
@@ -209,8 +206,8 @@ const PatientEditProfile = () => {
                   icon={User}
                 />
                 <div className="space-y-1">
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">Profile Photo</label>
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 sm:p-6 text-center hover:border-emerald-500 transition-all duration-200 bg-gray-50 hover:bg-emerald-50 shadow-sm hover:shadow-md">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Profile Photo</label>
+                  <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 sm:p-6 text-center hover:border-emerald-500 transition-all duration-200 bg-white hover:bg-green-50 shadow-sm hover:shadow-md">
                     <input
                       type="file"
                       accept="image/*"
@@ -247,7 +244,7 @@ const PatientEditProfile = () => {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-3 sm:p-5 hover:shadow-md transition-all duration-200">
+              <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-lg p-3 sm:p-5 hover:shadow-md transition-all duration-200">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2 sm:space-x-3">
                     <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center shadow-sm">
@@ -274,7 +271,7 @@ const PatientEditProfile = () => {
               <div className="pt-4 sm:pt-6">
                 <button
                   onClick={() => console.log('Profile updated:', { ...formData, password: undefined, confirmPassword: undefined })}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
                   aria-label="Save Profile"
                 >
                   Save Profile
@@ -308,7 +305,7 @@ const PatientEditProfile = () => {
               <div className="pt-4 sm:pt-6">
                 <button
                   onClick={() => console.log('Password updated:', { password: formData.password, confirmPassword: formData.confirmPassword })}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
                   aria-label="Change Password"
                 >
                   Change Password

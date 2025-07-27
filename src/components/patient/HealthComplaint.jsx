@@ -222,10 +222,10 @@ const HealthComplaint = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Health Condition Field */}
                 <div ref={healthConditionRef}>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Health Condition</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Health Condition</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                      <Thermometer className="w-4 h-4 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Thermometer className="w-5 h-5 text-gray-400" />
                     </div>
                     <input
                       type="text"
@@ -233,10 +233,10 @@ const HealthComplaint = () => {
                       onChange={(e) => handleAutocomplete(e.target.value, healthConditions, setHealthCondition, 'healthCondition')}
                       onFocus={() => setIsDropdownOpen(prev => ({ ...prev, healthCondition: true }))}
                       placeholder="Enter or select health condition"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                      className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
                     />
                     {isDropdownOpen.healthCondition && filteredHealthConditions.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         {filteredHealthConditions.map((option, index) => (
                           <button
                             key={index}
@@ -245,22 +245,23 @@ const HealthComplaint = () => {
                               setHealthCondition(option);
                               setIsDropdownOpen(prev => ({ ...prev, healthCondition: false }));
                             }}
-                            className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                            className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                           >
                             {option}
                           </button>
                         ))}
                       </div>
                     )}
+
                   </div>
                 </div>
 
                 {/* Complaint Since When Field */}
                 <div ref={complaintSinceWhenRef}>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Complaint Since When</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Complaint Since When</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                      <Clock className="w-4 h-4 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Clock className="w-5 h-5 text-gray-400" />
                     </div>
                     <input
                       type="text"
@@ -268,10 +269,10 @@ const HealthComplaint = () => {
                       onChange={(e) => handleAutocomplete(e.target.value, timeOptions, setComplaintSinceWhen, 'complaintSinceWhen')}
                       onFocus={() => setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: true }))}
                       placeholder="Enter or select duration"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                      className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
                     />
                     {isDropdownOpen.complaintSinceWhen && filteredTimeOptions.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         {filteredTimeOptions.map((option, index) => (
                           <button
                             key={index}
@@ -280,23 +281,24 @@ const HealthComplaint = () => {
                               setComplaintSinceWhen(option);
                               setIsDropdownOpen(prev => ({ ...prev, complaintSinceWhen: false }));
                             }}
-                            className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                            className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                           >
                             {option}
                           </button>
                         ))}
                       </div>
                     )}
+
                   </div>
                 </div>
 
                 {/* Temperature Field */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Temperature</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Temperature</label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                        <Thermometer className="w-4 h-4 text-gray-400" />
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Thermometer className="w-5 h-5 text-gray-400" />
                       </div>
                       <input
                         type="text"
@@ -304,7 +306,7 @@ const HealthComplaint = () => {
                         onChange={handleNumericInput(setTemperature)}
                         onInput={handleNumericInput(setTemperature)}
                         placeholder={temperatureUnit === '°C' ? '37.0' : '98.6'}
-                        className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
                       />
                       <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 text-sm">
                         {temperatureUnit}
@@ -314,13 +316,15 @@ const HealthComplaint = () => {
                       <button
                         type="button"
                         onClick={() => setIsDropdownOpen(prev => ({ ...prev, temperatureUnit: !prev.temperatureUnit }))}
-                        className="w-full px-2 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500"
                       >
-                        <span className="text-gray-900">{temperatureUnit}</span>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen.temperatureUnit ? 'rotate-180' : ''}`} />
+                        <span className="text-gray-800">{temperatureUnit}</span>
+                        <svg className={`w-5 h-5 text-gray-400 transition-transform absolute right-3 top-1/2 -translate-y-1/2 ${isDropdownOpen.temperatureUnit ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
                       </button>
                       {isDropdownOpen.temperatureUnit && (
-                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl">
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
                           {['°C', '°F'].map((unit, index) => (
                             <button
                               key={index}
@@ -329,7 +333,7 @@ const HealthComplaint = () => {
                                 setTemperatureUnit(unit);
                                 setIsDropdownOpen(prev => ({ ...prev, temperatureUnit: false }));
                               }}
-                              className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                              className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                             >
                               {unit}
                             </button>
@@ -342,11 +346,11 @@ const HealthComplaint = () => {
 
                 {/* Height Field */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Height</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Height</label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                        <Ruler className="w-4 h-4 text-gray-400" />
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Ruler className="w-5 h-5 text-gray-400" />
                       </div>
                       <input
                         type="text"
@@ -354,7 +358,7 @@ const HealthComplaint = () => {
                         onChange={handleNumericInput(setHeight)}
                         onInput={handleNumericInput(setHeight)}
                         placeholder={heightUnit === 'cm' ? '170.0' : '5.7'}
-                        className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
                       />
                       <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 text-sm">
                         {heightUnit}
@@ -364,13 +368,15 @@ const HealthComplaint = () => {
                       <button
                         type="button"
                         onClick={() => setIsDropdownOpen(prev => ({ ...prev, heightUnit: !prev.heightUnit }))}
-                        className="w-full px-2 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500"
                       >
-                        <span className="text-gray-900">{heightUnit}</span>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen.heightUnit ? 'rotate-180' : ''}`} />
+                        <span className="text-gray-800">{heightUnit}</span>
+                        <svg className={`w-5 h-5 text-gray-400 transition-transform absolute right-3 top-1/2 -translate-y-1/2 ${isDropdownOpen.heightUnit ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
                       </button>
                       {isDropdownOpen.heightUnit && (
-                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl">
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
                           {['cm', 'ft/in'].map((unit, index) => (
                             <button
                               key={index}
@@ -379,7 +385,7 @@ const HealthComplaint = () => {
                                 setHeightUnit(unit);
                                 setIsDropdownOpen(prev => ({ ...prev, heightUnit: false }));
                               }}
-                              className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                              className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                             >
                               {unit}
                             </button>
@@ -392,10 +398,10 @@ const HealthComplaint = () => {
 
                 {/* Blood Pressure Field */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Blood Pressure (mmHg)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Blood Pressure (mmHg)</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                      <Activity className="w-4 h-4 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Activity className="w-5 h-5 text-gray-400" />
                     </div>
                     <input
                       type="text"
@@ -403,7 +409,7 @@ const HealthComplaint = () => {
                       value={bloodPressure}
                       onChange={handleBloodPressureInput}
                       placeholder="120/80"
-                      className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                      className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
                     />
                     <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 text-sm">
                       mmHg
@@ -413,10 +419,10 @@ const HealthComplaint = () => {
 
                 {/* Pulse Field */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Pulse (bpm)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Pulse (bpm)</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                      <Activity className="w-4 h-4 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Activity className="w-5 h-5 text-gray-400" />
                     </div>
                     <input
                       type="text"
@@ -424,7 +430,7 @@ const HealthComplaint = () => {
                       onChange={handleNumericInput(setPulse)}
                       onInput={handleNumericInput(setPulse)}
                       placeholder="73"
-                      className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                      className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
                     />
                     <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 text-sm">
                       bpm
@@ -434,11 +440,11 @@ const HealthComplaint = () => {
 
                 {/* Weight Field */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-900 mb-1">Weight</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Weight</label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                        <Weight className="w-4 h-4 text-gray-400" />
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Weight className="w-5 h-5 text-gray-400" />
                       </div>
                       <input
                         type="text"
@@ -446,7 +452,7 @@ const HealthComplaint = () => {
                         onChange={handleNumericInput(setWeight)}
                         onInput={handleNumericInput(setWeight)}
                         placeholder={weightUnit === 'kg' ? '50.0' : '110.0'}
-                        className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg shadow-sm text-gray-900"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
                       />
                       <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 text-sm">
                         {weightUnit}
@@ -456,13 +462,15 @@ const HealthComplaint = () => {
                       <button
                         type="button"
                         onClick={() => setIsDropdownOpen(prev => ({ ...prev, weightUnit: !prev.weightUnit }))}
-                        className="w-full px-2 py-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-lg flex items-center justify-between shadow-sm"
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500"
                       >
-                        <span className="text-gray-900">{weightUnit}</span>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen.weightUnit ? 'rotate-180' : ''}`} />
+                        <span className="text-gray-800">{weightUnit}</span>
+                        <svg className={`w-5 h-5 text-gray-400 transition-transform absolute right-3 top-1/2 -translate-y-1/2 ${isDropdownOpen.weightUnit ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
                       </button>
                       {isDropdownOpen.weightUnit && (
-                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl">
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
                           {['kg', 'lbs'].map((unit, index) => (
                             <button
                               key={index}
@@ -471,7 +479,7 @@ const HealthComplaint = () => {
                                 setWeightUnit(unit);
                                 setIsDropdownOpen(prev => ({ ...prev, weightUnit: false }));
                               }}
-                              className="w-full px-4 py-3 text-sm text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900"
+                              className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                             >
                               {unit}
                             </button>
@@ -529,7 +537,7 @@ const HealthComplaint = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="px-6 py-3 bg-green-500 text-white text-sm font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Submit
               </button>

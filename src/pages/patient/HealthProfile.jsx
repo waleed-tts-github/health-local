@@ -76,25 +76,29 @@ const HealthProfile = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-      <div className="relative">
-        <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">{label}</label>
+      <div className="space-y-1">
+        <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>
         <div className="relative">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-sm flex items-center justify-between"
+            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500"
             aria-label={`Select ${label}`}
           >
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              {Icon && <Icon className="w-3 sm:w-4 h-3 sm:h-4 text-gray-400 flex-shrink-0" />}
-              <span className={value ? 'text-gray-900 text-xs sm:text-sm' : 'text-gray-500 text-xs sm:text-sm'}>
-                {value || 'Select an option'}
-              </span>
-            </div>
-            <ChevronDown className={`w-4 sm:w-5 h-4 sm:h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            <span className={value ? 'text-gray-800' : 'text-gray-500'}>
+              {value || 'Select an option'}
+            </span>
+            <svg className={`w-5 h-5 text-gray-400 transition-transform absolute right-3 top-1/2 -translate-y-1/2 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
+          {Icon && (
+            <div className="absolute right-10 top-1/2 -translate-y-1/2">
+              <Icon className="w-5 h-5 text-gray-400" />
+            </div>
+          )}
           {isOpen && (
-            <div className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
               {options.map((option, index) => (
                 <button
                   key={index}
@@ -103,7 +107,7 @@ const HealthProfile = () => {
                     onChange(option);
                     setIsOpen(false);
                   }}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none transition-all duration-200 first:rounded-t-lg last:rounded-b-lg text-gray-900 text-xs sm:text-sm"
+                  className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
                 >
                   {option}
                 </button>
@@ -116,19 +120,21 @@ const HealthProfile = () => {
   };
 
   const InputField = ({ label, value, onChange, placeholder, icon: Icon, type = "text" }) => (
-    <div>
-      <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">{label}</label>
+    <div className="space-y-1">
+      <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
-          {Icon && <Icon className="w-3 sm:w-4 h-3 sm:h-4 text-gray-400 flex-shrink-0" />}
-        </div>
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent hover:border-emerald-300 transition-all duration-200 hover:shadow-sm text-gray-900 text-xs sm:text-sm leading-5"
+          className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
         />
+        {Icon && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <Icon className="w-5 h-5 text-gray-400" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -136,8 +142,6 @@ const HealthProfile = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      
-
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="text-center">
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Complete Your Health Profile</h2>

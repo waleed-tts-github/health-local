@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { ArrowLeft, Search, MapPin, Shield, Star, Phone, Clock, Users, Globe, Heart, CheckCircle, ChevronRight } from 'lucide-react';
 import logo from '../../assets/Group.png'
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+
 const AngillCyberClinics = () => {
-  const [activeTab, setActiveTab] = useState('partnership');
+  const [activeTab, setActiveTab] = useState('clinics');
   const [selectedClinic, setSelectedClinic] = useState(null);
-  const {setCurrentStep} =useConsultationFlow()
+  const {setCurrentStep} = useConsultationFlow();
 
   const clinics = [
     {
@@ -69,58 +70,58 @@ const AngillCyberClinics = () => {
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Hero Section */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl mb-6">
-          <img src={logo}/>
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl mb-6">
+          <img src={logo} alt="Angill Logo" />
         </div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">
           Become an Angill CyberClinic Partner
         </h1>
-        <p className="text-xl text-gray-600 mb-2">
+        <p className="text-sm text-gray-600 mb-2">
           Join the Movement to Make Healthcare Accessible Everywhere
         </p>
-        <p className="text-lg text-gray-500 max-w-3xl mx-auto">
+        <p className="text-sm text-gray-500 max-w-3xl mx-auto">
           Angill Healthcare invites you to be part of a revolutionary healthcare network through our CyberClinic Partnership Program — designed to bring verified medical services to underserved communities using digital technology.
         </p>
       </div>
 
       {/* Why Partner Section */}
       <div className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-          <Heart className="w-8 h-8 text-red-500 mr-3" />
+        <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center">
+          <Heart className="w-6 h-6 text-red-500 mr-3" />
           Why Partner with Angill?
         </h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
-            <CheckCircle className="w-8 h-8 text-green-600 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Launch Instantly</h3>
-            <p className="text-gray-600">Set up a ready-to-use smart clinic pod or digital access point with ease.</p>
+            <CheckCircle className="w-6 h-6 text-green-600 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Launch Instantly</h3>
+            <p className="text-sm text-gray-600">Set up a ready-to-use smart clinic pod or digital access point with ease.</p>
           </div>
           <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100">
-            <Shield className="w-8 h-8 text-blue-600 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Offer Verified Telemedicine</h3>
-            <p className="text-gray-600">Connect your community with qualified doctors via our secure platform.</p>
+            <Shield className="w-6 h-6 text-blue-600 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Offer Verified Telemedicine</h3>
+            <p className="text-sm text-gray-600">Connect your community with qualified doctors via our secure platform.</p>
           </div>
           <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-100">
-            <Globe className="w-8 h-8 text-purple-600 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Earn with Impact</h3>
-            <p className="text-gray-600">Build a sustainable income stream while delivering essential care.</p>
+            <Globe className="w-6 h-6 text-purple-600 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Earn with Impact</h3>
+            <p className="text-sm text-gray-600">Build a sustainable income stream while delivering essential care.</p>
           </div>
           <div className="bg-gradient-to-br from-orange-50 to-yellow-50 p-6 rounded-xl border border-orange-100">
-            <Users className="w-8 h-8 text-orange-600 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Full Support</h3>
-            <p className="text-gray-600">From training to tech, we provide everything you need to succeed.</p>
+            <Users className="w-6 h-6 text-orange-600 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Full Support</h3>
+            <p className="text-sm text-gray-600">From training to tech, we provide everything you need to succeed.</p>
           </div>
         </div>
         <div className="mt-6 bg-gradient-to-r from-teal-50 to-green-50 p-6 rounded-xl border border-teal-100">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Scalable Model</h3>
-          <p className="text-gray-600">Proven approach that works across developing regions like Pakistan, India, and beyond.</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Scalable Model</h3>
+          <p className="text-sm text-gray-600">Proven approach that works across developing regions like Pakistan, India, and beyond.</p>
         </div>
       </div>
 
       {/* Who Can Join Section */}
       <div className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-          <Users className="w-8 h-8 text-blue-600 mr-3" />
+        <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center">
+          <Users className="w-6 h-6 text-blue-600 mr-3" />
           Who Can Join?
         </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -134,16 +135,16 @@ const AngillCyberClinics = () => {
               <div className={`absolute inset-0 bg-gradient-to-br ${role.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
               <div className="relative p-6">
                 <div className="flex items-center space-x-4">
-                  <div className={`w-12 h-12 bg-gradient-to-br ${role.color} rounded-xl flex items-center justify-center shadow-lg`}>
-                    <role.icon className="w-6 h-6 text-white" />
+                  <div className={`w-10 h-10 bg-gradient-to-br ${role.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                    <role.icon className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-gray-800 transition-colors">
+                    <h3 className="text-base font-semibold text-gray-900 group-hover:text-gray-800 transition-colors">
                       {role.title}
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">Join our healthcare revolution</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300" />
+                  <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300" />
                 </div>
               </div>
             </div>
@@ -153,18 +154,18 @@ const AngillCyberClinics = () => {
 
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-green-600 to-teal-600 rounded-2xl p-8 text-center text-white">
-        <Phone className="w-12 h-12 mx-auto mb-4 opacity-90" />
-        <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
-        <p className="text-xl mb-6 opacity-90">
+        <Phone className="w-10 h-10 mx-auto mb-4 opacity-90" />
+        <h2 className="text-xl font-bold mb-4">Ready to Make a Difference?</h2>
+        <p className="text-sm mb-6 opacity-90">
           We're currently onboarding new partners.
         </p>
-        <p className="mb-8 opacity-90">
+        <p className="mb-8 text-sm opacity-90">
           Fill out the form below or contact us today to schedule a discovery call.
         </p>
-        <button className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-colors shadow-lg">
+        <button className="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 transition-colors shadow-lg">
           Get Started Today
         </button>
-        <p className="mt-6 text-lg opacity-90">
+        <p className="mt-6 text-sm opacity-90">
           Together, we can bridge the healthcare gap — one CyberClinic at a time
         </p>
       </div>
@@ -178,7 +179,7 @@ const AngillCyberClinics = () => {
           <input 
             type="text" 
             placeholder="Search clinics near me..."
-            className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 text-gray-700 placeholder-gray-500"
+            className="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm h-12"
           />
           <button className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
             <Search className="w-5 h-5" />
@@ -218,8 +219,8 @@ const AngillCyberClinics = () => {
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="bg-white/80 backdrop-blur-sm rounded-full p-4 shadow-lg flex items-center justify-center">
                 <div className="flex items-center space-x-2">
-                  <Shield className="w-8 h-8 text-green-600" />
-                  <span className="text-lg font-bold text-green-700">Angill</span>
+                  <Shield className="w-6 h-6 text-green-600" />
+                  <span className="text-base font-bold text-green-700">Angill</span>
                 </div>
               </div>
             </div>
@@ -231,13 +232,13 @@ const AngillCyberClinics = () => {
           {selectedClinic ? (
             <div>
               <div className="flex items-start space-x-3 mb-4">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Shield className="w-6 h-6 text-green-600" />
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Shield className="w-5 h-5 text-green-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 text-lg">{selectedClinic.name}</h3>
+                  <h3 className="font-semibold text-gray-900 text-base">{selectedClinic.name}</h3>
                   <div className="flex items-center space-x-1 mt-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <Star className="w-3 h-3 text-yellow-400 fill-current" />
                     <span className="text-sm text-gray-600">{selectedClinic.rating} ({selectedClinic.reviews} reviews)</span>
                   </div>
                 </div>
@@ -260,7 +261,7 @@ const AngillCyberClinics = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Services</h4>
+                  <h4 className="font-medium text-gray-900 mb-2 text-sm">Services</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedClinic.services.map((service, index) => (
                       <span key={index} className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
@@ -271,7 +272,7 @@ const AngillCyberClinics = () => {
                 </div>
 
                 <div className="pt-4 border-t border-gray-200">
-                  <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                  <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
                     Book Appointment
                   </button>
                 </div>
@@ -279,8 +280,8 @@ const AngillCyberClinics = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">Click on a clinic marker to view details</p>
+              <MapPin className="w-10 h-10 text-gray-300 mx-auto mb-4" />
+              <p className="text-sm text-gray-500">Click on a clinic marker to view details</p>
             </div>
           )}
         </div>
@@ -288,7 +289,7 @@ const AngillCyberClinics = () => {
 
       {/* Clinic List */}
       <div className="mt-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">All Clinics</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">All Clinics</h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {clinics.map((clinic) => (
             <div 
@@ -305,7 +306,7 @@ const AngillCyberClinics = () => {
                   <Shield className="w-5 h-5 text-green-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-gray-900 truncate">{clinic.name}</h4>
+                  <h4 className="font-medium text-gray-900 text-sm truncate">{clinic.name}</h4>
                   <div className="flex items-center space-x-1 mt-1">
                     <Star className="w-3 h-3 text-yellow-400 fill-current" />
                     <span className="text-xs text-gray-600">{clinic.rating} ({clinic.reviews})</span>
@@ -326,14 +327,14 @@ const AngillCyberClinics = () => {
       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center relative">
-            <button onClick={()=>{setCurrentStep(1)}} className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors">
+            <button onClick={() => setCurrentStep(1)} className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors">
               <ArrowLeft className="w-5 h-5 text-green-600" />
             </button>
             <div className="flex-1 flex items-center justify-center">
               <div className="flex items-center space-x-3">
-                <Shield className="w-8 h-8 text-green-600" />
+                <Shield className="w-6 h-6 text-green-600" />
                 <div>
-                  <h1 className="text-xl font-bold text-green-700">Angill Healthcare</h1>
+                  <h1 className="text-lg font-bold text-green-700">Angill Healthcare</h1>
                   <p className="text-sm text-gray-600">Revolutionary Healthcare Network</p>
                 </div>
               </div>
@@ -347,16 +348,6 @@ const AngillCyberClinics = () => {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex space-x-8">
             <button
-              onClick={() => setActiveTab('partnership')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'partnership'
-                  ? 'border-green-500 text-green-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Partnership Program
-            </button>
-            <button
               onClick={() => setActiveTab('clinics')}
               className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === 'clinics'
@@ -366,13 +357,23 @@ const AngillCyberClinics = () => {
             >
               Find Clinics
             </button>
+            <button
+              onClick={() => setActiveTab('partnership')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'partnership'
+                  ? 'border-green-500 text-green-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Partnership Program
+            </button>
           </div>
         </div>
       </div>
 
       {/* Tab Content */}
       <div className="py-8">
-        {activeTab === 'partnership' ? <PartnershipTab /> : <ClinicsTab />}
+        {activeTab === 'clinics' ? <ClinicsTab /> : <PartnershipTab />}
       </div>
     </div>
   );
