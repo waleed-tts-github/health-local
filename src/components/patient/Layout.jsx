@@ -26,7 +26,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
-
+import logo from '../../assets/Group.png'
 const Layout = ({ children }) => {
   const {setCurrentStep} = useConsultationFlow()
   const [activeItem, setActiveItem] = useState('Home');
@@ -41,7 +41,7 @@ const Layout = ({ children }) => {
     { name: 'Home', icon: Home, path: '/patient' },
     {
       name: 'EHR',
-      displayName: 'EHR (Health Record)',
+      displayName: 'EHR',
       icon: FileText,
       subItems: [
         { name: 'Appointment Record', icon: Calendar, path: '/patient/appointments' },
@@ -50,7 +50,6 @@ const Layout = ({ children }) => {
         { name: 'Health Profile', icon: User, path: '/patient/health-profile' },
       ],
     },
-   
     {
       name: 'FAN Volunteer',
       icon: Handshake,
@@ -70,7 +69,7 @@ const Layout = ({ children }) => {
         { name: 'Terms & Conditions', icon: File, path: '/patient/terms' },
       ],
     },
-     { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
+    { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
     { name: 'Send Feedback', icon: Send, path: '/patient/feedback' },
     { name: 'Refer A Friend', icon: UserPlus, path: '/patient/refer' },
     { name: 'Logout', icon: LogOut, path: '/logout' },
@@ -82,18 +81,17 @@ const Layout = ({ children }) => {
         setIsProfileDropdownOpen(false);
       }
     };
-  
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-    useEffect(()=>{
-      console.log("Location",location.pathname)
-      if(location.pathname=="/patient")
-      {
-        setCurrentStep(1)
-      }
-    },[location.pathname])
+
+  useEffect(() => {
+    console.log("Location", location.pathname)
+    if (location.pathname === "/patient") {
+      setCurrentStep(1)
+    }
+  }, [location.pathname])
 
   const toggleDropdown = (itemName) => {
     setOpenDropdown(openDropdown === itemName ? null : itemName);
@@ -245,11 +243,6 @@ const Layout = ({ children }) => {
         .custom-scroll::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.5);
         }
-
-        .ehr-text {
-          font-size: 0.65rem;
-          white-space: nowrap;
-        }
       `}</style>
 
       {/* Desktop Sidebar */}
@@ -260,8 +253,8 @@ const Layout = ({ children }) => {
             <button onClick={handleLogoClick} className="group">
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-12 h-12 glassmorphism rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                  <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                    <span className="text-lg font-bold text-emerald-600">A</span>
+                  <div className="w-10 h-10  rounded-lg flex items-center justify-center">
+                    <img src={logo}/>
                   </div>
                 </div>
                 <div>
@@ -275,7 +268,7 @@ const Layout = ({ children }) => {
             </button>
             
             {/* Anonymous Toggle */}
-            <div className="mt-2 p-3  rounded-2xl">
+            <div className="mt-2 p-3 rounded-2xl">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-white font-medium text-sm">Anonymous Mode</span>
                 <label className="toggle-switch">
@@ -434,7 +427,7 @@ const Layout = ({ children }) => {
                     >
                       <div className="flex items-center">
                         <item.icon className="w-5 h-5 mr-3" />
-                        <span className={`font-medium ${item.name === 'EHR' ? 'ehr-text' : ''}`}>
+                        <span className="font-medium">
                           {item.displayName || item.name}
                         </span>
                       </div>

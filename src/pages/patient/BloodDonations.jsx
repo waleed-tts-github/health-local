@@ -18,7 +18,8 @@ import {
   Award,
   TrendingUp,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  HandHeart
 } from 'lucide-react';
 
 const BloodDonations = () => {
@@ -150,6 +151,54 @@ const BloodDonations = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* FAN Volunteer Header Section */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center space-x-3 sm:space-x-4 mb-2 sm:mb-3">
+            <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
+              <HandHeart className="w-5 sm:w-6 h-5 sm:h-6 text-white" fill="currentColor" />
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">FAN Volunteer</h3>
+              <p className="text-xs sm:text-sm text-gray-600">"Feed A Need. Be The Help Someone's Been Hoping For."</p>
+            </div>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-600 space-y-2">
+            <p>Support your staff, domestic workers, or anyone in need by donating medical consultation fees through your virtual wallet via Social Pay.</p>
+            <p>Help those without insurance or financial means access quality medical care by covering their consultation cost — a small gesture that can make a life-changing impact.</p>
+            <p className="text-blue-600 font-medium">"Use Social Pay to sponsor a consultation for someone who needs it — because every need deserves care."</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-2">
+                <p className="flex items-start">
+                  <span className="text-blue-500 mr-2">•</span>
+                  Join our growing network of FAN Volunteers committed to supporting individuals in need.
+                </p>
+                <p className="flex items-start">
+                  <span className="text-blue-500 mr-2">•</span>
+                  Support blood donations, medical access, or emotional care for those in need.
+                </p>
+                <p className="flex items-start">
+                  <span className="text-blue-500 mr-2">•</span>
+                  Every action you take restores hope and makes a tangible difference.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <p className="flex items-start">
+                  <span className="text-blue-500 mr-2">•</span>
+                  Use Social Pay to easily donate consultation fees for underserved individuals.
+                </p>
+                <p className="flex items-start">
+                  <span className="text-blue-500 mr-2">•</span>
+                  Your contribution ensures access to quality medical care for those without means.
+                </p>
+                <p className="flex items-start">
+                  <span className="text-blue-500 mr-2">•</span>
+                  Be part of a community dedicated to bridging healthcare gaps.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Blood Volunteer Section */}
         <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-sm hover:shadow-md transition-all duration-300">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
