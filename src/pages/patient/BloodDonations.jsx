@@ -17,8 +17,6 @@ import {
   Activity,
   Award,
   TrendingUp,
-  ChevronUp,
-  ChevronDown,
   HandHeart
 } from 'lucide-react';
 
@@ -26,7 +24,6 @@ const BloodDonations = () => {
   const [activeTab, setActiveTab] = useState('donations');
   const [filterStatus, setFilterStatus] = useState('all');
   const [dateRange, setDateRange] = useState('all');
-  const [bloodSectionExpanded, setBloodSectionExpanded] = useState(false);
   const [isBloodVolunteer, setIsBloodVolunteer] = useState(false);
   const [bloodGroup, setBloodGroup] = useState('');
 
@@ -151,160 +148,83 @@ const BloodDonations = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* FAN Volunteer Header Section */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center space-x-3 sm:space-x-4 mb-2 sm:mb-3">
-            <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
-              <HandHeart className="w-5 sm:w-6 h-5 sm:h-6 text-white" fill="currentColor" />
+        {/* FAN Volunteer Section */}
+        <div className="mb-12">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-sm mb-6 shadow-lg">
+              <HandHeart className="w-6 h-6 text-white" fill="currentColor" />
             </div>
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">FAN Volunteer</h3>
-              <p className="text-xs sm:text-sm text-gray-600">"Feed A Need. Be The Help Someone's Been Hoping For."</p>
-            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+              <Heart className="w-6 h-6 text-red-500 mr-3" />
+              FAN Volunteer
+            </h2>
+            <p className="text-sm text-gray-600 mb-2">"Feed A Need. Be the Help Someone Wasn’t Expecting."</p>
+            <p className="text-sm text-gray-500 max-w-3xl mx-auto">
+              Join our growing network of FAN Volunteers — everyday people stepping up in extraordinary ways. Whether it’s through blood donation, sponsoring medical consultations, or simply being there in a time of need, your kindness matters. Every act of care helps restore dignity, hope, and health — when it’s needed the most, and often when it’s least expected.
+            </p>
           </div>
-          <div className="text-xs sm:text-sm text-gray-600 space-y-2">
-            <p>Support your staff, domestic workers, or anyone in need by donating medical consultation fees through your virtual wallet via Social Pay.</p>
-            <p>Help those without insurance or financial means access quality medical care by covering their consultation cost — a small gesture that can make a life-changing impact.</p>
-            <p className="text-blue-600 font-medium">"Use Social Pay to sponsor a consultation for someone who needs it — because every need deserves care."</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div className="space-y-2">
-                <p className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  Join our growing network of FAN Volunteers committed to supporting individuals in need.
-                </p>
-                <p className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  Support blood donations, medical access, or emotional care for those in need.
-                </p>
-                <p className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  Every action you take restores hope and makes a tangible difference.
-                </p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300">
+              <CheckCircle className="w-6 h-6 text-blue-600 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Feed A Need — Give the Gift of Health</h3>
+              <p className="text-sm text-gray-600">
+                Many people around us — domestic workers, staff, or community members — lack health insurance or financial means to consult a doctor. With Social Pay, you can donate consultation fees directly from your virtual wallet, allowing someone in need to access verified, quality medical care. A small gesture from you can make a life-changing impact for someone else.
+              </p>
+            </div>
+            <div className="bg-gradient-to-br from-red-50 to-rose-50 p-6 rounded-xl border border-red-100 hover:shadow-lg transition-all duration-300">
+              <Heart className="w-6 h-6 text-red-600 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Feed A Need — Donate Blood, Give the Gift of Life</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Donating blood is a simple, selfless act that can save lives and it is more than generosity — it's building bonds, creating new friendships, and saving lives. According to the Mental Health Foundation, blood donation can also improve your emotional and physical well-being, offering a sense of connection and purpose.
+              </p>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="text-sm font-medium text-gray-700">Become a volunteer</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isBloodVolunteer}
+                    onChange={handleBloodVolunteerChange}
+                    className="sr-only peer"
+                  />
+                  <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-pink-500 shadow-sm"></div>
+                </label>
               </div>
-              <div className="space-y-2">
-                <p className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  Use Social Pay to easily donate consultation fees for underserved individuals.
-                </p>
-                <p className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  Your contribution ensures access to quality medical care for those without means.
-                </p>
-                <p className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  Be part of a community dedicated to bridging healthcare gaps.
-                </p>
-              </div>
+              {isBloodVolunteer && (
+                <div>
+                  <label className="text-sm font-bold text-gray-700 block mb-2">Blood Group</label>
+                  <select
+                    value={bloodGroup}
+                    onChange={(e) => setBloodGroup(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-red-500 focus:outline-none transition-all duration-300 text-gray-900 text-sm shadow-sm hover:shadow-md"
+                    aria-label="Select Blood Group"
+                  >
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </select>
+                </div>
+              )}
+              <p className="text-sm text-red-600 font-medium mt-4">
+                Be the Reason Someone Survives. Donate Today.
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Blood Volunteer Section */}
-        <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-sm hover:shadow-md transition-all duration-300">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-red-500 via-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
-                <Heart className="w-5 sm:w-6 h-5 sm:h-6 text-white" fill="currentColor" />
-              </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900">Blood Donation Volunteer</h3>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">Help save lives by volunteering to donate blood</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <button
-                type="button"
-                onClick={() => setBloodSectionExpanded(!bloodSectionExpanded)}
-                className="p-1 sm:p-2 text-gray-500 hover:text-red-600 transition-colors duration-200 rounded-full hover:bg-red-100"
-                aria-label={bloodSectionExpanded ? 'Collapse volunteer section' : 'Expand volunteer section'}
-              >
-                {bloodSectionExpanded ? (
-                  <ChevronUp className="w-4 sm:w-5 h-4 sm:h-5" />
-                ) : (
-                  <ChevronDown className="w-4 sm:w-5 h-4 sm:h-5" />
-                )}
-              </button>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isBloodVolunteer}
-                  onChange={handleBloodVolunteerChange}
-                  className="sr-only peer"
-                />
-                <div className="w-8 sm:w-10 h-4 sm:h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-[18px] sm:peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-3 sm:after:h-4 after:w-3 sm:after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-pink-500 shadow-sm"></div>
-              </label>
-            </div>
-          </div>
-          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            bloodSectionExpanded ? 'max-h-[800px] opacity-100 mt-3 sm:mt-4' : 'max-h-0 opacity-0'
-          }`}>
-            <div className="bg-white bg-opacity-80 rounded-xl p-3 sm:p-4 space-y-2 sm:space-y-3 backdrop-blur-sm">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-700">
-                <div className="space-y-2">
-                  <p className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    Donating blood is a simple, selfless act that can save lives in your community.
-                  </p>
-                  <p className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    Blood donation benefits your physical and emotional health, per The Mental Health Foundation.
-                  </p>
-                  <p className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    Most people can donate whole blood every 56 days, according to the American Red Cross.
-                  </p>
-                  <p className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    Your eligibility is confirmed by checking temperature, blood pressure, pulse, and hemoglobin levels.
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <p className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    The donation area is cleaned and sterilized, and a new sterile needle is used for each donation.
-                  </p>
-                  <p className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    Relax during donation—some centers offer movies or TV to keep you comfortable.
-                  </p>
-                  <p className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    After donation, a bandage is applied, and you'll rest for 15 minutes with a snack or drink.
-                  </p>
-                </div>
-              </div>
-              <p className="text-red-500 text-xs">*Minimum Age For Blood Volunteer: Male: 18 - Female: 19</p>
-            </div>
-            {isBloodVolunteer && (
-              <div className="mt-3 sm:mt-4">
-                <label className="text-xs sm:text-sm font-bold text-gray-700 block">Blood Group</label>
-                <select
-                  value={bloodGroup}
-                  onChange={(e) => setBloodGroup(e.target.value)}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 text-xs sm:text-sm shadow-sm hover:shadow-md"
-                  aria-label="Select Blood Group"
-                >
-                  <option value="">Select Blood Group</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm text-gray-600">Total Donations</p>
+                <p className="text-xs sm:text-sm text-gray-600">Blodd Donation Requests</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">12</p>
               </div>
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -316,7 +236,7 @@ const BloodDonations = () => {
           <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm text-gray-600">Blood Received</p>
+                <p className="text-xs sm:text-sm text-gray-600">Blood Donation Received</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">3</p>
               </div>
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -328,7 +248,18 @@ const BloodDonations = () => {
           <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm text-gray-600">Lives Saved</p>
+                <p className="text-xs sm:text-sm text-gray-600">Doctor Fees Donation</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">36</p>
+              </div>
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                <Award className="h-5 sm:h-6 w-5 sm:w-6 text-red-600" />
+              </div>
+            </div>
+          </div>
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600">Donation Received</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">36</p>
               </div>
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center">

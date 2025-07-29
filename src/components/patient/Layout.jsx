@@ -367,8 +367,8 @@ const Layout = ({ children }) => {
             <div className="p-4 flex items-center justify-between">
               <button onClick={handleLogoClick} className="flex items-center gap-3">
                 <div className="w-10 h-10 glassmorphism rounded-lg flex items-center justify-center">
-                  <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
-                    <span className="text-base font-bold text-green-500">A</span>
+                                   <div className="w-10 h-10  rounded-lg flex items-center justify-center">
+                    <img src={logo}/>
                   </div>
                 </div>
                 <div>
@@ -479,9 +479,11 @@ const Layout = ({ children }) => {
               
               <div className="lg:hidden">
                 <button onClick={handleLogoClick} className="flex items-center gap-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                    <span className="text-lg font-bold text-white">A</span>
+                  
+                                      <div className="w-10 h-10  rounded-sm flex bg-green-500 items-center justify-center">
+                    <img src={logo}/>
                   </div>
+                  
                   <div>
                     <h1 className="text-lg font-bold text-gray-900">ANGILL</h1>
                   </div>

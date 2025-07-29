@@ -30,7 +30,7 @@ import FeedbackModal from '../../components/patient/FeedbackModel';
 
 const Doctors = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('Angel Doctors');
+  const [activeTab, setActiveTab] = useState('Angill Doctors');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
@@ -250,7 +250,7 @@ const Doctors = () => {
                 {/* Centered Responsive Tabs */}
                 <div className="flex-1 flex justify-center">
                   <div className="flex space-x-2 sm:space-x-4">
-                    {['Angel Doctors', 'Private Doctors'].map((tab) => (
+                    {['Angill Doctors', 'Private Doctors'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -273,7 +273,7 @@ const Doctors = () => {
               {/* Fee Information and Favorites Toggle */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
                 <p className="text-green-700 text-xs sm:text-sm font-bold bg-green-100 px-2 sm:px-4 py-1 sm:py-2 rounded-lg shadow-sm">
-                  {activeTab === 'Angel Doctors'
+                  {activeTab === 'Angill Doctors'
                     ? 'Angel Doctors have fixed fees'
                     : 'Private Doctors have own fees'}
                 </p>

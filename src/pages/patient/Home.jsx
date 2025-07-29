@@ -103,6 +103,19 @@ const ServiceSelection = () => (
           <ChevronDownCircle className="w-5 h-5" />
         </div>
       </button>
+
+
+
+
+
+
+
+
+
+
+
+
+      
       <button className="p-2 bg-green-100/80 text-green-700 rounded-full hover:bg-green-200/80 transition-all duration-300 transform hover:scale-110 shadow-md">
         <LogOut className="w-5 h-5" />
       </button>
@@ -114,11 +127,11 @@ const ServiceSelection = () => (
     <div className="mt-6 transition-all duration-500 ease-in-out">
       {/* Header with subtle divider */}
       <div className="flex items-center mb-5">
-        <div className="flex-1 h-px bg-gradient-to-r from-green-200/50 to-transparent"></div>
-        <h3 className="px-4 text-sm font-semibold text-green-700 bg-green-50/50 rounded-full py-1">
+        <div className="flex-1 h-px"></div>
+        <h3 className="px-0 text-sm font-semibold text-green-700 bg-green-50/50 rounded-full py-1">
           Your Appointments Today
         </h3>
-        <div className="flex-1 h-px bg-gradient-to-l from-green-200/50 to-transparent"></div>
+        <div className="flex-1 h-px"></div>
       </div>
 
       <div className="space-y-4">
@@ -126,7 +139,7 @@ const ServiceSelection = () => (
           appointments.map(appointment => (
             <div 
               key={appointment.id} 
-              className="group bg-gradient-to-r from-white to-green-50/30 p-4 rounded-2xl border border-green-100/60 hover:border-green-200/80 hover:shadow-lg transition-all duration-300 hover:transform hover:scale-[1.02]"
+              className=""
             >
               {/* Header Row */}
               <div className="flex justify-between items-start mb-3">

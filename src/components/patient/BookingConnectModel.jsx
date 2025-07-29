@@ -8,7 +8,6 @@ const BookingConnectModal = () => {
     closeModal,
     handleLiveConnect,
     handleBookingConfirm,
-    handleIsLaterTodayBooking,
     handleScheduleAppointment,
   } = useContext(BookingContext);
 
@@ -55,81 +54,87 @@ const BookingConnectModal = () => {
       <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
         <div className="relative z-10 flex flex-col h-full">
           {/* Header with close button */}
-          <div className="flex items-center justify-between p-4 pb-3">
-            <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+          <div className="flex items-center justify-between p-3 pb-1">
+            <h3 className="text-lg font-bold text-green-600 bg-white/20 px-2 py-1 rounded-full">
               Connect
             </h3>
             <button 
               onClick={closeModal} 
-              className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+              className="p-1 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Main content - centered */}
-          <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
+          {/* Main content - tightened spacing */}
+          <div className="flex-1 flex flex-col px-3 pt-1 pb-3 space-y-2">
             {/* Heart icon */}
-            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
               <Heart className="w-8 h-8 text-white" />
             </div>
 
-            {/* Connect Live Online button */}
-            <button
-              onClick={handleLiveConnect}
-              className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5"
-            >
-              <Video className="w-4 h-4" />
-              Connect Live Online
-            </button>
-
-            {/* OR separator */}
-            <div className="flex items-center w-full -mt-2 mb-2">
-              <div className="flex-1 h-px bg-gray-200"></div>
-              <span className="px-3 text-gray-600 text-xs font-medium">OR</span>
-              <div className="flex-1 h-px bg-gray-200"></div>
-            </div>
-
-            {/* Schedule Appointment Section */}
+            {/* Today Section */}
             <div className="w-full border border-gray-200 rounded-xl p-2">
-              <h6 className="text-sm font-bold text-gray-700 bg-white/20 py-1.5 px-3 rounded-full text-center mb-2">
-                Slide to select a time for your appointment later today
+              <h6 className="text-sm font-bold text-gray-700 bg-white/20 py-0.5 px-2 rounded-full text-center mb-1">
+                Connect Today
               </h6>
-              <div className="text-lg font-bold text-gray-800 mb-2 text-center">
-                {availableTimes.length > 0 ? formatTime(availableTimes[selectedTimeIndex]) : 'Loading...'}
+              {/* Connect Live Online button */}
+              <button
+                onClick={handleLiveConnect}
+                className="w-full bg-green-500 hover:bg-green-600 text-white py-1.5 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 mb-1"
+              >
+                <Video className="w-4 h-4" />
+                Connect Live Online
+              </button>
+
+              {/* OR separator */}
+              <div className="flex items-center w-full mb-1">
+                <div className="flex-1 h-px bg-gray-200"></div>
+                <span className="px-2 text-gray-600 text-xs font-medium">OR</span>
+                <div className="flex-1 h-px bg-gray-200"></div>
               </div>
-              <div className="mb-2">
-                <input
-                  type="range"
-                  min="0"
-                  max={availableTimes.length - 1}
-                  value={selectedTimeIndex}
-                  onChange={(e) => setSelectedTimeIndex(parseInt(e.target.value))}
-                  className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-500"
-                />
-                <div className="flex justify-between text-[10px] text-gray-600 mt-1">
-                  <span>Time: Available Slots</span>
+
+              {/* Schedule Appointment Later Today */}
+              <div className="w-full">
+                <h6 className="text-sm font-bold text-gray-700 bg-white/20 py-0.5 px-2 rounded-full text-center mb-1">
+                  Slide to select a time for your appointment later today
+                </h6>
+                <div className="text-lg font-bold text-gray-800 mb-1 text-center">
+                  {availableTimes.length > 0 ? formatTime(availableTimes[selectedTimeIndex]) : 'Loading...'}
+                </div>
+                <div className="mb-1">
+                  <input
+                    type="range"
+                    min="0"
+                    max={availableTimes.length - 1}
+                    value={selectedTimeIndex}
+                    onChange={(e) => setSelectedTimeIndex(parseInt(e.target.value))}
+                    className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-500"
+                  />
+                  <div className="flex justify-between text-[10px] text-gray-600 mt-0.5">
+                    <span>Time: Available Slots</span>
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleBookingConfirm}
+                    className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-xl font-medium text-xs transition-all"
+                  >
+                    Send Request
+                  </button>
                 </div>
               </div>
-              <div className="flex justify-end">
-                <button
-                  onClick={handleBookingConfirm}
-                  className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-xl font-medium text-xs transition-all"
-                >
-                  Send Request
-                </button>
-              </div>
             </div>
 
-            {/* Book Tomorrow & Onwards button with disclaimer */}
-            <div className="w-full border border-gray-200 rounded-xl p-2">
+            {/* Tomorrow & Onwards Section - increased height and moved downwards */}
+            <div className="w-full border border-gray-200 rounded-xl p-4 mt-3">
               <button
                 onClick={handleScheduleAppointment}
-                className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5"
+                className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5"
               >
                 <Calendar className="w-4 h-4" />
-                Schedule an appointment for any day from tomorrow onward
+                Schedule Appointment Tomorrow Onward
               </button>
               <p className="text-red-500 text-xs font-light text-center mt-2">
                 *Physical Appointment Can Only Be Booked For Private Doctors*
@@ -137,18 +142,18 @@ const BookingConnectModal = () => {
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className="px-4 pb-4">
-            <div className="flex gap-2">
+          {/* Buttons - tightened spacing */}
+          <div className="px-3 pb-2">
+            <div className="flex gap-1">
               <button 
                 onClick={closeModal}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-medium text-xs transition-all"
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-1.5 rounded-xl font-medium text-xs transition-all"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleLiveConnect}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all flex items-center justify-center gap-1.5"
+                className="flex-1 bg-green-500 hover:bg-green-600 text-white py-1.5 rounded-xl font-medium text-xs transition-all flex items-center justify-center gap-1.5"
               >
                 Continue
               </button>
