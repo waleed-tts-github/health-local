@@ -39,7 +39,6 @@ const BloodDonations = () => {
       address: 'Stadium Road, Karachi',
       recipient: 'Emergency Case #12345',
       status: 'completed',
-      certificate: 'CERT-2024-001',
       nextEligible: '2024-06-15'
     },
     {
@@ -50,9 +49,8 @@ const BloodDonations = () => {
       quantity: '450ml',
       location: 'Liaquat National Hospital',
       address: 'National Stadium Road, Karachi',
-      recipient: 'Patient: Ahmed Ali',
+      recipient: 'Ahmed Ali',
       status: 'completed',
-      certificate: 'CERT-2024-002',
       nextEligible: '2024-04-20'
     },
     {
@@ -65,7 +63,6 @@ const BloodDonations = () => {
       address: 'Clifton, Karachi',
       recipient: 'Scheduled Donation',
       status: 'scheduled',
-      certificate: null,
       nextEligible: null
     }
   ];
@@ -99,6 +96,46 @@ const BloodDonations = () => {
       status: 'completed',
       doctor: 'Dr. Ahmed Hassan',
       batchNumber: 'BAT-2023-456'
+    }
+  ];
+
+  // Sample data for fee donations
+  const feeDonations = [
+    {
+      id: 1,
+      date: '2024-05-10',
+      time: '10:00 AM',
+      amount: 'PKR 5000',
+      donatedTo: 'Fatima Khan',
+      status: 'completed'
+    },
+    {
+      id: 2,
+      date: '2024-06-15',
+      time: '01:30 PM',
+      amount: 'PKR 3000',
+      donatedTo: 'Ali Raza',
+      status: 'completed'
+    }
+  ];
+
+  // Sample data for donations received
+  const donationsReceived = [
+    {
+      id: 1,
+      date: '2024-04-20',
+      time: '09:45 AM',
+      amount: 'PKR 7000',
+      receivedFrom: 'Sana Malik',
+      status: 'completed'
+    },
+    {
+      id: 2,
+      date: '2024-07-01',
+      time: '03:00 PM',
+      amount: 'PKR 4000',
+      receivedFrom: 'Imran Ahmed',
+      status: 'completed'
     }
   ];
 
@@ -138,6 +175,16 @@ const BloodDonations = () => {
     return received.status === filterStatus;
   });
 
+  const filteredFeeDonations = feeDonations.filter(donation => {
+    if (filterStatus === 'all') return true;
+    return donation.status === filterStatus;
+  });
+
+  const filteredDonationsReceived = donationsReceived.filter(received => {
+    if (filterStatus === 'all') return true;
+    return received.status === filterStatus;
+  });
+
   const handleBloodVolunteerChange = (e) => {
     setIsBloodVolunteer(e.target.checked);
     if (!e.target.checked) {
@@ -172,8 +219,8 @@ const BloodDonations = () => {
                 Many people around us — domestic workers, staff, or community members — lack health insurance or financial means to consult a doctor. With Social Pay, you can donate consultation fees directly from your virtual wallet, allowing someone in need to access verified, quality medical care. A small gesture from you can make a life-changing impact for someone else.
               </p>
             </div>
-            <div className="bg-gradient-to-br from-red-50 to-rose-50 p-6 rounded-xl border border-red-100 hover:shadow-lg transition-all duration-300">
-              <Heart className="w-6 h-6 text-red-600 mb-4" />
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300">
+              <Heart className="w-6 h-6 text-blue-600 mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Feed A Need — Donate Blood, Give the Gift of Life</h3>
               <p className="text-sm text-gray-600 mb-4">
                 Donating blood is a simple, selfless act that can save lives and it is more than generosity — it's building bonds, creating new friendships, and saving lives. According to the Mental Health Foundation, blood donation can also improve your emotional and physical well-being, offering a sense of connection and purpose.
@@ -187,7 +234,7 @@ const BloodDonations = () => {
                     onChange={handleBloodVolunteerChange}
                     className="sr-only peer"
                   />
-                  <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-pink-500 shadow-sm"></div>
+                  <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-cyan-500 shadow-sm"></div>
                 </label>
               </div>
               {isBloodVolunteer && (
@@ -196,7 +243,7 @@ const BloodDonations = () => {
                   <select
                     value={bloodGroup}
                     onChange={(e) => setBloodGroup(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-red-500 focus:outline-none transition-all duration-300 text-gray-900 text-sm shadow-sm hover:shadow-md"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:outline-none transition-all duration-300 text-gray-900 text-sm shadow-sm hover:shadow-md"
                     aria-label="Select Blood Group"
                   >
                     <option value="">Select Blood Group</option>
@@ -211,68 +258,53 @@ const BloodDonations = () => {
                   </select>
                 </div>
               )}
-              <p className="text-sm text-red-600 font-medium mt-4">
+              <p className="text-sm text-blue-600 font-medium mt-4">
                 Be the Reason Someone Survives. Donate Today.
               </p>
             </div>
           </div>
         </div>
 
-
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm text-gray-600">Blodd Donation Requests</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">12</p>
+                <p className="text-xs sm:text-sm text-gray-600">Blood Donations</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{filteredDonations.length}</p>
               </div>
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <Heart className="h-5 sm:h-6 w-5 sm:w-6 text-green-600" />
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm text-gray-600">Blood Donation Received</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">3</p>
+                <p className="text-xs sm:text-sm text-gray-600">Blood Donations Received</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{filteredReceived.length}</p>
               </div>
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Activity className="h-5 sm:h-6 w-5 sm:w-6 text-blue-600" />
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm text-gray-600">Doctor Fees Donation</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">36</p>
+                <p className="text-xs sm:text-sm text-gray-600">Fee Donation</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{filteredFeeDonations.length}</p>
               </div>
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center">
                 <Award className="h-5 sm:h-6 w-5 sm:w-6 text-red-600" />
               </div>
             </div>
           </div>
-            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs sm:text-sm text-gray-600">Donation Received</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">36</p>
-              </div>
-              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <Award className="h-5 sm:h-6 w-5 sm:w-6 text-red-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm text-gray-600">Next Eligible</p>
-                <p className="text-base sm:text-lg font-bold text-gray-900">15 Jun 2024</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{filteredDonationsReceived.length}</p>
               </div>
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                 <TrendingUp className="h-5 sm:h-6 w-5 sm:w-6 text-orange-600" />
@@ -292,9 +324,9 @@ const BloodDonations = () => {
                     ? 'border-green-500 text-green-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
-                aria-label="View My Donations"
+                aria-label="View Blood Donations"
               >
-                My Donations ({filteredDonations.length})
+                Blood Donations ({filteredDonations.length})
               </button>
               <button
                 onClick={() => setActiveTab('received')}
@@ -303,9 +335,31 @@ const BloodDonations = () => {
                     ? 'border-green-500 text-green-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
-                aria-label="View Blood Received"
+                aria-label="View Blood Donations Received"
               >
-                Blood Received ({filteredReceived.length})
+                Blood Donations Received ({filteredReceived.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('feeDonations')}
+                className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-xs sm:text-sm ${
+                  activeTab === 'feeDonations'
+                    ? 'border-green-500 text-green-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+                aria-label="View Fee Donation"
+              >
+                Fee Donation ({filteredFeeDonations.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('donationsReceived')}
+                className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-xs sm:text-sm ${
+                  activeTab === 'donationsReceived'
+                    ? 'border-green-500 text-green-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+                aria-label="View Donation Received"
+              >
+                Donation Received ({filteredDonationsReceived.length})
               </button>
             </div>
           </div>
@@ -328,7 +382,6 @@ const BloodDonations = () => {
                     <option value="cancelled">Cancelled</option>
                   </select>
                 </div>
-
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value)}
@@ -341,7 +394,6 @@ const BloodDonations = () => {
                   <option value="year">This Year</option>
                 </select>
               </div>
-
               <div className="flex items-center space-x-2">
                 <button className="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all bg-white shadow-sm hover:shadow-md" aria-label="Export data">
                   <Download className="h-3 sm:h-4 w-3 sm:w-4 text-gray-600" />
@@ -383,43 +435,25 @@ const BloodDonations = () => {
                         </span>
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Blood Type</p>
-                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.bloodType}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Quantity</p>
-                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.quantity}</p>
-                      </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Location</p>
                         <p className="font-medium text-sm sm:text-base text-gray-900">{donation.location}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Blood Group</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.bloodType}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Recipient</p>
                         <p className="font-medium text-sm sm:text-base text-gray-900">{donation.recipient}</p>
                       </div>
                     </div>
-
-                    <div className="flex flex-wrap items-center justify-between">
-                      <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-600">
-                        <MapPin className="h-3 sm:h-4 w-3 sm:w-4" />
-                        <span>{donation.address}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-                        {donation.certificate && (
-                          <button className="text-green-600 hover:text-green-700 text-xs sm:text-sm font-medium" aria-label={`View certificate for donation ${donation.id}`}>
-                            View Certificate
-                          </button>
-                        )}
-                        <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for donation ${donation.id}`}>
-                          <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
-                        </button>
-                      </div>
+                    <div className="flex items-center justify-end space-x-2">
+                      <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for donation ${donation.id}`}>
+                        <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
+                      </button>
                     </div>
-
                     {donation.nextEligible && (
                       <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-blue-50 rounded-lg">
                         <p className="text-xs sm:text-sm text-blue-800">
@@ -430,7 +464,7 @@ const BloodDonations = () => {
                   </div>
                 ))}
               </div>
-            ) : (
+            ) : activeTab === 'received' ? (
               <div className="space-y-4">
                 {filteredReceived.map((received) => (
                   <div key={received.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all bg-white">
@@ -460,45 +494,128 @@ const BloodDonations = () => {
                         </span>
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Blood Type</p>
+                        <p className="text-xs text-gray-500 mb-1">Location</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.location}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Blood Group</p>
                         <p className="font-medium text-sm sm:text-base text-gray-900">{received.bloodType}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Quantity</p>
-                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.quantity}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Reason</p>
-                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.reason}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Doctor</p>
-                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.doctor}</p>
+                        <p className="text-xs text-gray-500 mb-1">Received From</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.donor}</p>
                       </div>
                     </div>
-
-                    <div className="flex flex-wrap items-center justify-between">
-                      <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-600">
-                        <MapPin className="h-3 sm:h-4 w-3 sm:w-4" />
-                        <span>{received.address}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-                        <span className="text-xs sm:text-sm text-gray-500">
-                          Batch: {received.batchNumber}
-                        </span>
-                        <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for transfusion ${received.id}`}>
-                          <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
-                        </button>
+                    <div className="flex items-center justify-end space-x-2">
+                      <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for transfusion ${received.id}`}>
+                        <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : activeTab === 'feeDonations' ? (
+              <div className="space-y-4">
+                {filteredFeeDonations.map((donation) => (
+                  <div key={donation.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all bg-white">
+                    <div className="flex items-start justify-between mb-2 sm:mb-3">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-10 sm:w-12 h-10 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Award className="h-5 sm:h-6 w-5 sm:w-6 text-red-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm sm:text-base text-gray-900">Fee Donation</h4>
+                          <div className="flex flex-wrap items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
+                            <span className="flex items-center space-x-1">
+                              <Calendar className="h-3 sm:h-4 w-3 sm:w-4" />
+                              <span>{donation.date}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <Clock className="h-3 sm:h-4 w-3 sm:w-4" />
+                              <span>{donation.time}</span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-green-50 rounded-lg">
-                      <p className="text-xs sm:text-sm text-green-800">
-                        <strong>Donor:</strong> {received.donor}
-                      </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Date</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.date}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Time</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.time}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Donated To</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.donatedTo}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Amount</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{donation.amount}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end space-x-2">
+                      <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for fee donation ${donation.id}`}>
+                        <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredDonationsReceived.map((received) => (
+                  <div key={received.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all bg-white">
+                    <div className="flex items-start justify-between mb-2 sm:mb-3">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-10 sm:w-12 h-10 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <TrendingUp className="h-5 sm:h-6 w-5 sm:w-6 text-orange-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm sm:text-base text-gray-900">Donation Received</h4>
+                          <div className="flex flex-wrap items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
+                            <span className="flex items-center space-x-1">
+                              <Calendar className="h-3 sm:h-4 w-3 sm:w-4" />
+                              <span>{received.date}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <Clock className="h-3 sm:h-4 w-3 sm:w-4" />
+                              <span>{received.time}</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Date</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.date}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Time</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.time}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Received From</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.receivedFrom}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Amount</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{received.amount}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end space-x-2">
+                      <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for donation received ${received.id}`}>
+                        <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
+                      </button>
                     </div>
                   </div>
                 ))}

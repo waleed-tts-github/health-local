@@ -10,10 +10,19 @@ import {
   ArrowRight,
   CheckCircle
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function Landing() {
+  const navigate  = useNavigate()
   const handleJoinAs = (userType) => {
     console.log(`Joining as ${userType}`);
+    if(userType=="doctor")
+    {
+      navigate("/doctor/sign-up")
+    }
+    else{
+      navigate("/patient/sign-up")
+    }
     // Navigate to appropriate registration page
   };
 

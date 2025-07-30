@@ -85,160 +85,137 @@ const ServiceSelection = () => (
       </div>
     </div>
 
-
     <div className="bg-white/90 backdrop-blur-lg p-3 sm:p-4 rounded-xl mb-2 sm:mb-3 border border-green-100/50 hover:shadow-xl transition-all duration-300">
-  <div className="flex flex-col sm:flex-row items-center justify-between">
-    <div className="mb-3 sm:mb-0 text-center sm:text-left">
-      <h2 className="text-lg sm:text-xl font-bold text-green-700">Welcome, Niaz Ahmed</h2>
-      <p className="text-xs sm:text-sm text-gray-600 font-light">We strive to connect you with highly skilled medical professionals.</p>
-    </div>
-    <div className="flex items-center space-x-3">
-      <button
-        onClick={() => setIsAppointmentsExpanded(!isAppointmentsExpanded)}
-        className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-medium text-sm flex items-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg"
-      >
-        <Calendar className="w-4 h-4" />
-        <span>Today's Appointments</span>
-        <div className={`transform transition-transform duration-300 ${isAppointmentsExpanded ? 'rotate-180' : 'rotate-0'}`}>
-          <ChevronDownCircle className="w-5 h-5" />
+      <div className="flex flex-col sm:flex-row items-center justify-between relative">
+        <div className="mb-3 sm:mb-0 text-center sm:text-left">
+          <h2 className="text-lg sm:text-xl font-bold text-green-700">Welcome, Niaz Ahmed</h2>
+          <p className="text-xs sm:text-sm text-gray-600 font-light">We strive to connect you with highly skilled medical professionals.</p>
         </div>
-      </button>
-
-
-
-
-
-
-
-
-
-
-
-
-      
-      <button className="p-2 bg-green-100/80 text-green-700 rounded-full hover:bg-green-200/80 transition-all duration-300 transform hover:scale-110 shadow-md">
-        <LogOut className="w-5 h-5" />
-      </button>
-    </div>
-  </div>
-
-  {/* Expandable Appointments Section */}
-  {isAppointmentsExpanded && (
-    <div className="mt-6 transition-all duration-500 ease-in-out">
-      {/* Header with subtle divider */}
-      <div className="flex items-center mb-5">
-        <div className="flex-1 h-px"></div>
-        <h3 className="px-0 text-sm font-semibold text-green-700 bg-green-50/50 rounded-full py-1">
-          Your Appointments Today
-        </h3>
-        <div className="flex-1 h-px"></div>
+        <div className="flex items-center justify-center w-full sm:w-auto sm:justify-end relative">
+          <button
+            onClick={() => setIsAppointmentsExpanded(!isAppointmentsExpanded)}
+            className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-medium text-sm flex items-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Today's Appointments</span>
+            <div className={`transform transition-transform duration-300 ${isAppointmentsExpanded ? 'rotate-180' : 'rotate-0'}`}>
+              <ChevronDownCircle className="w-5 h-5" />
+            </div>
+          </button>
+          <button className="p-2 bg-green-100/80 text-green-700 rounded-full hover:bg-green-200/80 transition-all duration-300 transform hover:scale-110 shadow-md absolute right-0 sm:static sm:ml-3">
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {appointments.length > 0 ? (
-          appointments.map(appointment => (
-            <div 
-              key={appointment.id} 
-              className=""
-            >
-              {/* Header Row */}
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <span className="text-green-600 font-semibold text-sm">
-                      {appointment.doctorName.split(' ').map(n => n[0]).join('')}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="text-base font-semibold text-gray-800 group-hover:text-green-700 transition-colors">
-                      Dr. {appointment.doctorName}
-                    </h4>
-                    <p className="text-xs text-gray-500 font-medium">
-                      {appointment.specialty || 'General Practice'}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="text-right">
-                  <span className={`text-xs px-3 py-1.5 rounded-full font-medium shadow-sm ${
-                    appointment.status === "Upcoming"
-                      ? "bg-green-100 text-green-700 border border-green-200/50"
-                      : "bg-gray-100 text-gray-600 border border-gray-200/50"
-                  }`}>
-                    {appointment.status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Details Row */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/60 rounded-xl p-3 border border-green-50">
-                <div className="flex items-center space-x-4 mb-2 sm:mb-0">
-                  <div className="flex items-center space-x-2 text-gray-600">
-                    <Clock className="w-4 h-4 text-green-500" />
-                    <span className="text-sm font-medium">
-                      {new Date(appointment.dateTime).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
-                  </div>
-                  
-                  <div className="w-px h-4 bg-gray-300"></div>
-                  
-                  <div className="flex items-center space-x-2 text-gray-600">
-                    {appointment.type === "Physical" ? (
-                      <>
-                        <MapPin className="w-4 h-4 text-green-500" />
-                        <span className="text-sm">In Person</span>
-                      </>
-                    ) : (
-                      <>
-                        <Video className="w-4 h-4 text-green-500" />
-                        <span className="text-sm">Video Call</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-green-600">
-                    {getRemainingTime(appointment.dateTime)}
-                  </p>
-                  <p className="text-xs text-gray-500">remaining</p>
-                </div>
-              </div>
-
-              {/* Location for physical appointments */}
-              {appointment.type === "Physical" && appointment.location && (
-                <div className="mt-3 flex items-center space-x-2 text-gray-600 bg-green-50/50 rounded-lg p-2">
-                  <MapPin className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">{appointment.location}</span>
-                </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Calendar className="w-8 h-8 text-green-500" />
-            </div>
-            <h4 className="text-base font-medium text-gray-700 mb-2">No appointments today</h4>
-            <p className="text-sm text-gray-500 mb-4">You have a clear schedule for today</p>
-            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md">
-              Schedule New Appointment
-            </button>
+      {/* Expandable Appointments Section */}
+      {isAppointmentsExpanded && (
+        <div className="mt-6 transition-all duration-500 ease-in-out">
+          {/* Header with subtle divider */}
+          <div className="flex items-center mb-5">
+            <div className="flex-1 h-px"></div>
+            <h3 className="px-0 text-sm font-semibold text-green-700 bg-green-50/50 rounded-full py-1">
+              Your Appointments Today
+            </h3>
+            <div className="flex-1 h-px"></div>
           </div>
-        )}
-      </div>
+          <div className="space-y-4">
+            {appointments.length > 0 ? (
+              appointments.map(appointment => (
+                <div key={appointment.id}>
+                  {/* Header Row */}
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                        <span className="text-green-600 font-semibold text-sm">
+                          {appointment.doctorName.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="text-base font-semibold text-gray-800 group-hover:text-green-700 transition-colors">
+                          Dr. {appointment.doctorName}
+                        </h4>
+                        <p className="text-xs text-gray-500 font-medium">
+                          {appointment.specialty || 'General Practice'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-xs px-3 py-1.5 rounded-full font-medium shadow-sm ${
+                        appointment.status === "Upcoming"
+                          ? "bg-green-100 text-green-700 border border-green-200/50"
+                          : "bg-gray-100 text-gray-600 border border-gray-200/50"
+                      }`}>
+                        {appointment.status}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Details Row */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/60 rounded-xl p-3 border border-green-50">
+                    <div className="flex items-center space-x-4 mb-2 sm:mb-0">
+                      <div className="flex items-center space-x-2 text-gray-600">
+                        <Clock className="w-4 h-4 text-green-500" />
+                        <span className="text-sm font-medium">
+                          {new Date(appointment.dateTime).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      </div>
+                      <div className="w-px h-4 bg-gray-300"></div>
+                      <div className="flex items-center space-x-2 text-gray-600">
+                        {appointment.type === "Physical" ? (
+                          <>
+                            <MapPin className="w-4 h-4 text-green-500" />
+                            <span className="text-sm">In Person</span>
+                          </>
+                        ) : (
+                          <>
+                            <Video className="w-4 h-4 text-green-500" />
+                            <span className="text-sm">Video Call</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-green-600">
+                        {getRemainingTime(appointment.dateTime)}
+                      </p>
+                      <p className="text-xs text-gray-500">remaining</p>
+                    </div>
+                  </div>
+                  {/* Location for physical appointments */}
+                  {appointment.type === "Physical" && appointment.location && (
+                    <div className="mt-3 flex items-center space-x-2 text-gray-600 bg-green-50/50 rounded-lg p-2">
+                      <MapPin className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-sm">{appointment.location}</span>
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="w-8 h-8 text-green-500" />
+                </div>
+                <h4 className="text-base font-medium text-gray-700 mb-2">No appointments today</h4>
+                <p className="text-sm text-gray-500 mb-4">You have a clear schedule for today</p>
+                <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md">
+                  Schedule New Appointment
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
-  )}
-</div>
 
     <div className="text-center mb-1 sm:mb-2">
       <h3 className="text-base sm:text-lg font-semibold text-gray-900">Choose Your Service</h3>
     </div>
+
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10">
-      <div 
+      <div
         onClick={() => handleServiceSelect('angill')}
         className="bg-gradient-to-br from-green-500/80 to-teal-500/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-green-600/90 hover:to-teal-600/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-green-300/20 backdrop-blur-sm"
       >
@@ -250,8 +227,7 @@ const ServiceSelection = () => (
         <h4 className="text-sm sm:text-base font-semibold text-center">Angill Doctors</h4>
         <p className="text-xs text-center text-teal-100 font-light">Fixed consultation fees</p>
       </div>
-
-      <div 
+      <div
         onClick={() => handleServiceSelect('private')}
         className="bg-gradient-to-br from-blue-800/80 to-blue-600/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-blue-900/90 hover:to-blue-700/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-blue-200/20 backdrop-blur-sm"
       >
@@ -263,8 +239,7 @@ const ServiceSelection = () => (
         <h4 className="text-sm sm:text-base font-semibold text-center">Private Doctors</h4>
         <p className="text-xs text-center text-cyan-100 font-light">Flexible consultation fees</p>
       </div>
-
-      <div 
+      <div
         onClick={handleShowCyberClinics}
         className="bg-gradient-to-br from-green-700/80 to-teal-700/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-green-800/90 hover:to-teal-800/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-lg border border-gray-200/20 backdrop-blur-sm"
       >

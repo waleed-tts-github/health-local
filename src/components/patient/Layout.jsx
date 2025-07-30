@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import logo from '../../assets/Group.png'
+
 const Layout = ({ children }) => {
   const {setCurrentStep} = useConsultationFlow()
   const [activeItem, setActiveItem] = useState('Home');
@@ -54,7 +55,7 @@ const Layout = ({ children }) => {
       name: 'FAN Volunteer',
       icon: Handshake,
       subItems: [
-        { name: 'Blood Donations', icon: Droplet, path: '/patient/blood-donations' },
+        { name: 'Join As Volunteer', icon: Droplet, path: '/patient/blood-donations' },
         { name: 'Find Volunteers', icon: Users, path: '/patient/blood-volunteers' },
       ],
     },
@@ -253,7 +254,7 @@ const Layout = ({ children }) => {
             <button onClick={handleLogoClick} className="group">
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-12 h-12 glassmorphism rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                  <div className="w-10 h-10  rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <img src={logo}/>
                   </div>
                 </div>
@@ -367,7 +368,7 @@ const Layout = ({ children }) => {
             <div className="p-4 flex items-center justify-between">
               <button onClick={handleLogoClick} className="flex items-center gap-3">
                 <div className="w-10 h-10 glassmorphism rounded-lg flex items-center justify-center">
-                                   <div className="w-10 h-10  rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <img src={logo}/>
                   </div>
                 </div>
@@ -388,6 +389,9 @@ const Layout = ({ children }) => {
             {/* Mobile Navigation */}
             <nav className="flex-1 px-4 pb-6 overflow-y-auto custom-scroll">
               <div className="space-y-1">
+                <p className="text-green-200 text-xs italic font-light px-4 mb-4">
+                  Every Illness Deserves An Angel
+                </p>
                 {/* Anonymous Toggle */}
                 <div className="p-3 glassmorphism rounded-2xl mb-4">
                   <div className="flex items-center justify-between mb-1">
@@ -403,9 +407,6 @@ const Layout = ({ children }) => {
                   </div>
                   <p className="text-green-200 text-xs">Hide your identity</p>
                 </div>
-                <p className="text-green-200 text-xs italic font-light px-4 mb-4">
-                  Every Illness Deserves An Angel
-                </p>
 
                 {menuItems.map((item) => (
                   <div key={item.name}>
@@ -479,11 +480,9 @@ const Layout = ({ children }) => {
               
               <div className="lg:hidden">
                 <button onClick={handleLogoClick} className="flex items-center gap-2">
-                  
-                                      <div className="w-10 h-10  rounded-sm flex bg-green-500 items-center justify-center">
+                  <div className="w-10 h-10 rounded-sm flex bg-green-500 items-center justify-center">
                     <img src={logo}/>
                   </div>
-                  
                   <div>
                     <h1 className="text-lg font-bold text-gray-900">ANGILL</h1>
                   </div>

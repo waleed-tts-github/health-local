@@ -501,8 +501,9 @@ const PatientSignup = () => {
                         className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.dateOfBirth ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder="DD/MM/YYYY"
+                        placeholder=""
                       />
+                      <span className="absolute left-2 top-0 text-xs text-gray-400 transform -translate-y-1/2 bg-white px-1">DD/MM/YYYY</span>
                       <input
                         type="date"
                         name="dateOfBirth"
