@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Search, Heart, Star, MapPin, Calendar, CheckCircle, Award, Shield } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
-
+import logo from '../../assets/Group.png'
 const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate, resetFilters }) => {
   const { setCurrentModal } = useContext(BookingContext);
 
@@ -38,7 +38,7 @@ const DoctorList = ({ filteredDoctors, likedDoctors, toggleLike, navigate, reset
                 </span>
                 {doctor.isAngel && (
                   <span className="bg-yellow-400 text-white text-xs sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex items-center gap-0.5 sm:gap-1">
-                    <Award className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                    <img src={logo} className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                     Angel Doctor
                   </span>
                 )}

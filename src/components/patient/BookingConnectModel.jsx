@@ -1,15 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { X, Heart, Video, Calendar } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
-
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+import logo from '../../assets/Group.png'
 const BookingConnectModal = () => {
   const {
     currentModal,
     closeModal,
     handleLiveConnect,
     handleBookingConfirm,
+    
     handleScheduleAppointment,
   } = useContext(BookingContext);
+  const {isBookingThroughClinic} =useConsultationFlow()
 
   const [selectedTimeIndex, setSelectedTimeIndex] = useState(0);
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -71,7 +74,7 @@ const BookingConnectModal = () => {
           <div className="flex-1 flex flex-col px-3 pt-1 pb-3 space-y-2">
             {/* Heart icon */}
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
-              <Heart className="w-8 h-8 text-white" />
+              <img src={logo} className="w-8 h-8 rounded-sm" />
             </div>
 
             {/* Today Section */}
@@ -81,6 +84,7 @@ const BookingConnectModal = () => {
               </h6>
               {/* Connect Live Online button */}
               <button
+              disabled={isBookingThroughClinic}
                 onClick={handleLiveConnect}
                 className="w-full bg-green-500 hover:bg-green-600 text-white py-1.5 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 mb-1"
               >

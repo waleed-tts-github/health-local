@@ -8,6 +8,7 @@ import {
   Heart,
   ChevronDown,
   Award,
+  
   Shield,
   ArrowLeft,
   Star as StarIcon,
@@ -27,6 +28,8 @@ import BookAppointmentModal from '../../components/patient/BookingAppointmentMod
 import MeetingModal from '../../components/patient/MeetingModel';
 import NextInLineModal from '../../components/patient/NextInLineModel';
 import FeedbackModal from '../../components/patient/FeedbackModel';
+import AppointmentRescheduledModal from '../../components/patient/AppointmentRescheduledModel';
+import logo from '../../assets/Group.png'
 
 const Doctors = () => {
   const navigate = useNavigate();
@@ -142,7 +145,7 @@ const Doctors = () => {
       (selectedExperience === '10+ years' && doctor.experience >= 10) ||
       (selectedExperience === '5+ years' && doctor.experience >= 5) ||
       (selectedExperience === '1+ years' && doctor.experience >= 1);
-    const matchesTab = activeTab === 'Angel Doctors' ? doctor.isAngel : !doctor.isAngel;
+    const matchesTab = activeTab === 'Angill Doctors' ? doctor.isAngel : !doctor.isAngel;
     const matchesFavorites = !showFavorites || likedDoctors.has(doctor.id);
 
     return (
@@ -260,10 +263,10 @@ const Doctors = () => {
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
                         } flex items-center gap-1 sm:gap-2`}
                       >
-                        {tab === 'Angel Doctors' && <Award className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
+                        {tab === 'Angill Doctors' && <img src={logo} className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
                         {tab === 'Private Doctors' && <Shield className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
                         <span className="hidden sm:inline">{tab}</span>
-                        <span className="sm:hidden">{tab === 'Angel Doctors' ? 'Angel' : 'Private'}</span>
+                        <span className="sm:hidden">{tab === 'Angill Doctors' ? 'Angill' : 'Private'}</span>
                       </button>
                     ))}
                   </div>
@@ -523,6 +526,7 @@ const Doctors = () => {
 
         {/* Modals */}
         <BookingConnectModal />
+        <AppointmentRescheduledModal/>
         <WaitingModal />
         <NotAvailableModal />
         <ConfirmedModal />

@@ -7,8 +7,7 @@ const AngillCyberClinics = () => {
   const [activeTab, setActiveTab] = useState('clinics');
   const [selectedClinic, setSelectedClinic] = useState(null);
   const [showContactForm, setShowContactForm] = useState(false);
-  const { setCurrentStep } = useConsultationFlow();
-
+  const { setCurrentStep,handleServiceSelect,setIsBookingThroughClinic } = useConsultationFlow();
   const clinics = [
     {
       id: 1,
@@ -399,7 +398,11 @@ const AngillCyberClinics = () => {
                       </div>
                     </div>
                     <div className="pt-4 border-t border-gray-200">
-                      <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
+                      <button onClick={()=>{
+                    setIsBookingThroughClinic(true)
+
+                        handleServiceSelect("")
+                        setCurrentStep(2)}} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
                         Book Appointment
                       </button>
                     </div>
@@ -450,7 +453,11 @@ const AngillCyberClinics = () => {
                   </div>
                 </div>
                 <div className="pt-4 border-t border-gray-200">
-                  <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
+                  <button onClick={()=>{
+                    setIsBookingThroughClinic(true)
+                    handleServiceSelect("")
+                    setCurrentStep(2)
+                  }} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
                     Book Appointment
                   </button>
                 </div>
@@ -476,8 +483,8 @@ const AngillCyberClinics = () => {
               <ArrowLeft className="w-5 h-5 text-green-600" />
             </button>
             <div className="flex-1 flex items-center justify-center">
-              <div className="flex items-center space-x-3">
-                <img src={logo} className="bg-green-150"/>
+              <div className="flex  items-center space-x-3">
+                <img src={logo} className="bg-green-300 h-14 w-14 rounded-sm p-1"/>
                 <div>
                   <h1 className="text-lg font-bold text-green-700">Angill Cyber Clinics</h1>
                   <p className="text-sm text-gray-600">Revolutionary Healthcare Network</p>

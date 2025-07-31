@@ -18,6 +18,9 @@ const Home = () => {
     handleConsultationClick,
     resetFlow,
     goBack,
+    setCurrentStep,
+    setIsBookingThroughClinic,
+    isBookingThroughClinic,
     handleAddDependentClick,
     handleDependentSelect,
   } = useConsultationFlow();
@@ -216,7 +219,7 @@ const ServiceSelection = () => (
 
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10">
       <div
-        onClick={() => handleServiceSelect('angill')}
+        onClick={() => {setIsBookingThroughClinic(false);handleServiceSelect('angill')}}
         className="bg-gradient-to-br from-green-500/80 to-teal-500/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-green-600/90 hover:to-teal-600/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-green-300/20 backdrop-blur-sm"
       >
         <div className="flex justify-center mb-3 sm:mb-4">
@@ -228,7 +231,8 @@ const ServiceSelection = () => (
         <p className="text-xs text-center text-teal-100 font-light">Fixed consultation fees</p>
       </div>
       <div
-        onClick={() => handleServiceSelect('private')}
+        onClick={() =>{setIsBookingThroughClinic(false);
+           handleServiceSelect('private')}}
         className="bg-gradient-to-br from-blue-800/80 to-blue-600/80 p-4 sm:p-6 rounded-xl text-white cursor-pointer hover:from-blue-900/90 hover:to-blue-700/90 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border border-blue-200/20 backdrop-blur-sm"
       >
         <div className="flex justify-center mb-3 sm:mb-4">
@@ -261,7 +265,16 @@ const ServiceSelection = () => (
       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4 mb-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
           <button 
-            onClick={goBack}
+            onClick={()=>{
+              if(isBookingThroughClinic)
+              {
+                handleServiceSelect("cyber")
+                setCurrentStep(2)
+              }
+              else{
+                goBack()
+              }
+            }}
             className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />

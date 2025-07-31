@@ -8,6 +8,7 @@ export const ConsultationFlowProvider = ({ children }) => {
   const [selectedDependent, setSelectedDependent] = useState(null);
   const [showAddDependent, setShowAddDependent] = useState(false);
   const [cameFromAddDependent, setCameFromAddDependent] = useState(false);
+  const [isBookingThroughClinic,setIsBookingThroughClinic] = useState(false)
 
   const handleServiceSelect = (service) => {
     setSelectedService(service);
@@ -47,6 +48,8 @@ export const ConsultationFlowProvider = ({ children }) => {
     }
   };
 
+
+
   const handleAddDependentClick = () => {
     setShowAddDependent(true);
     setCurrentStep(4);
@@ -82,6 +85,8 @@ export const ConsultationFlowProvider = ({ children }) => {
         handleServiceSelect,
         handleConsultationClick,
         resetFlow,
+        isBookingThroughClinic,
+        setIsBookingThroughClinic,
         goBack,
         handleAddDependentClick,
         handleDependentSelect,

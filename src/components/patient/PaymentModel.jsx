@@ -33,10 +33,10 @@ const PaymentModal = () => {
             </button>
           </div>
 
-          {/* Main content */}
-          <div className="flex-1 flex flex-col px-4 pb-4 space-y-4">
-            {/* Payment summary */}
-            <div className="border border-gray-200 rounded-xl p-3">
+          {/* Main content - centered */}
+          <div className="flex-1 flex flex-col justify-center px-6 pb-4 space-y-6">
+            {/* Payment summary - centered with max-width */}
+            <div className="border border-gray-200 rounded-xl p-4 max-w-sm mx-auto w-full">
               <div className="flex justify-between items-center">
                 <span className="text-gray-700 font-medium text-xs">Initial Amount</span>
                 <span className="font-bold text-gray-700 text-xs">Rs. 1500</span>
@@ -52,8 +52,8 @@ const PaymentModal = () => {
               </div>
             </div>
 
-            {/* Payment options */}
-            <div>
+            {/* Payment options - centered with max-width */}
+            <div className="max-w-sm mx-auto w-full">
               <h4 className="text-sm font-bold text-gray-700 bg-gray-100 py-1.5 px-3 rounded-full text-center mb-3">
                 Select Payment Source
               </h4>

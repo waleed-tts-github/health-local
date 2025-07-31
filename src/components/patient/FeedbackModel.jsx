@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { X, Heart } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
-
+import logo from '../../assets/Group.png'
 const FeedbackModal = () => {
   const { currentModal, closeModal } = useContext(BookingContext);
   const [rating, setRating] = useState(5);
@@ -45,7 +45,7 @@ const FeedbackModal = () => {
           <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
             {/* Heart icon */}
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-              <Heart className="w-8 h-8 text-white" />
+              <img src={logo} className="w-8 h-8" />
             </div>
 
             {/* Feedback description */}

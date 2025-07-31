@@ -87,12 +87,6 @@ const Layout = ({ children }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    console.log("Location", location.pathname)
-    if (location.pathname === "/patient") {
-      setCurrentStep(1)
-    }
-  }, [location.pathname])
 
   const toggleDropdown = (itemName) => {
     setOpenDropdown(openDropdown === itemName ? null : itemName);
@@ -105,7 +99,16 @@ const Layout = ({ children }) => {
   const handleNavigation = (item) => {
     setActiveItem(item.name);
     if (item.path) {
+      if(item.path=="/patient")
+      {
+        setCurrentStep(1)
+        navigate(item.path)
+      }
+      else{
       navigate(item.path);
+
+
+      }
     }
     if (!item.subItems) {
       setIsDrawerOpen(false);

@@ -3,6 +3,7 @@ import { Eye, EyeOff, User, Mail, Phone, Calendar, CreditCard, Camera, Heart, Ch
 import logo from '../../assets/Group.png';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
+import MaskedInput from 'react-maskedinput';
 
 const PatientSignup = () => {
   const navigate = useNavigate();
@@ -50,29 +51,28 @@ const PatientSignup = () => {
   }, [formData.dateOfBirth]);
 
   const handleDateInputChange = (e) => {
-    let value = e.target.value.replace(/[^0-9/]/g, '');
-    
-    // Remove extra slashes
-    value = value.replace(/\/+/g, '/');
-    
-    // Format the date as DD/MM/YYYY
-    if (value.length > 2 && value[2] !== '/') {
-      value = value.slice(0, 2) + '/' + value.slice(2);
-    }
-    if (value.length > 5 && value[5] !== '/') {
-      value = value.slice(0, 5) + '/' + value.slice(5);
-    }
-    
-    // Limit to DD/MM/YYYY format (10 characters)
-    value = value.slice(0, 10);
-    
+    const value = e.target.value;
     setDateInput(value);
-    
-    // Validate complete date format DD/MM/YYYY
-    if (value.length === 10 && /^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+
+    if (value.length === 10) {
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date format (DD/MM/YYYY)' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+        return;
+      }
+
       const [day, month, year] = value.split('/').map(Number);
+      if (day < 1 || day > 31) {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Day must be between 01 and 31' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+        return;
+      }
+      if (month < 1 || month > 12) {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Month must be between 01 and 12' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+        return;
+      }
       const date = new Date(year, month - 1, day);
-      
       if (
         date.getFullYear() === year &&
         date.getMonth() === month - 1 &&
@@ -86,9 +86,11 @@ const PatientSignup = () => {
         setErrors(prev => ({ ...prev, dateOfBirth: '' }));
       } else {
         setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
       }
-    } else if (value.length === 10) {
-      setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date format (DD/MM/YYYY)' }));
+    } else {
+      setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+      setFormData(prev => ({ ...prev, dateOfBirth: '' }));
     }
   };
 
@@ -98,8 +100,14 @@ const PatientSignup = () => {
       ...prev,
       dateOfBirth: value
     }));
-    setDateInput(value.split('-').reverse().join('/'));
-    setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+    if (value) {
+      const [year, month, day] = value.split('-').map(Number);
+      setDateInput(`${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`);
+      setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+    } else {
+      setDateInput('');
+      setErrors(prev => ({ ...prev, dateOfBirth: 'Date of birth is required' }));
+    }
   };
 
   const handleInputChange = (e) => {
@@ -324,11 +332,14 @@ const PatientSignup = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.firstName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder="Enter your first name"
+                        placeholder=" "
                       />
+                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                        Enter your first name
+                      </span>
                     </div>
                     {errors.firstName && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -345,11 +356,14 @@ const PatientSignup = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.lastName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder="Enter your last name"
+                        placeholder=" "
                       />
+                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                        Enter your last name
+                      </span>
                     </div>
                     {errors.lastName && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -367,11 +381,14 @@ const PatientSignup = () => {
                       name="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                         errors.username ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                       }`}
-                      placeholder="Enter your username"
+                      placeholder=" "
                     />
+                    <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                      Enter your username
+                    </span>
                     <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   </div>
                   {errors.username && (
@@ -389,11 +406,14 @@ const PatientSignup = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                         errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                       }`}
-                      placeholder="Enter your email address"
+                      placeholder=" "
                     />
+                    <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                      Enter your email address
+                    </span>
                     <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   </div>
                   {errors.email && (
@@ -412,11 +432,14 @@ const PatientSignup = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder="Create a strong password"
+                        placeholder=" "
                       />
+                      <span className="absolute left-4 top-3 text-sm text-gray- Icelandic-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                        Create a strong password
+                      </span>
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
@@ -440,11 +463,14 @@ const PatientSignup = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder="Confirm your password"
+                        placeholder=" "
                       />
+                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                        Confirm your password
+                      </span>
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -483,7 +509,7 @@ const PatientSignup = () => {
             <div>
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <CreditCard className="w-8 h-8 text-green-600" />
+                  <CreditCard className=" MATLAB  w-8 h-8 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Personal Information</h2>
                 <p className="text-gray-600 text-sm">Complete your profile to get personalized care</p>
@@ -493,17 +519,19 @@ const PatientSignup = () => {
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Date of Birth</label>
                     <div className="relative">
-                      <input
-                        type="text"
+                      <span className="absolute -top-2 left-4 text-sm text-green-600 bg-white px-1 z-10">
+                        DD/MM/YYYY
+                      </span>
+                      <MaskedInput
+                        mask="11/11/1111"
                         name="dateInput"
                         value={dateInput}
                         onChange={handleDateInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.dateOfBirth ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder=""
+                      
                       />
-                      <span className="absolute left-2 top-0 text-xs text-gray-400 transform -translate-y-1/2 bg-white px-1">DD/MM/YYYY</span>
                       <input
                         type="date"
                         name="dateOfBirth"
@@ -529,11 +557,14 @@ const PatientSignup = () => {
                         name="cNIC"
                         value={formData.cNIC}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.cNIC ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder="34604-0515319-5"
+                        placeholder=" "
                       />
+                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                        34604-0515319-5
+                      </span>
                       <CreditCard className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
                     {errors.cNIC && (
@@ -553,11 +584,14 @@ const PatientSignup = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder="03001234567"
+                        placeholder=" "
                       />
+                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
+                        03001234567
+                      </span>
                       <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
                     {errors.phone && (
@@ -574,11 +608,11 @@ const PatientSignup = () => {
                         name="gender"
                         value={formData.gender}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                           errors.gender ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
                       >
-                        <option value="">Select Gender</option>
+                        <option value="" disabled hidden>Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>
@@ -626,7 +660,6 @@ const PatientSignup = () => {
                     )}
                   </div>
                 </div>
-                {/* Enhanced Blood Volunteer Section */}
                 <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-3xl overflow-hidden hover:shadow-lg transition-all duration-300">
                   <div className="p-5">
                     <div className="flex items-center justify-between">
@@ -711,11 +744,11 @@ const PatientSignup = () => {
                               name="bloodGroup"
                               value={formData.bloodGroup}
                               onChange={handleInputChange}
-                              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
                                 errors.bloodGroup ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                               }`}
                             >
-                              <option value="">Select Blood Group</option>
+                              <option value="" disabled hidden>Select Blood Group</option>
                               <option value="A+">A+</option>
                               <option value="A-">A-</option>
                               <option value="B+">B+</option>

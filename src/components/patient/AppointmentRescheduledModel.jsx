@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
-import { X, Heart } from 'lucide-react';
+import { X } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
-import logo from '../../assets/Group.png'
+import logo from '../../assets/Group.png';
 
-const ConfirmedModal = () => {
+const AppointmentRescheduledModal = () => {
   const { currentModal, closeModal, handleDoctorConfirm } = useContext(BookingContext);
 
-  if (currentModal !== 'confirmed') return null;
+  if (currentModal !== 'rescheduled') return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
@@ -15,7 +15,7 @@ const ConfirmedModal = () => {
           {/* Header with close button */}
           <div className="flex items-center justify-between p-4 pb-3">
             <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
-              Appointment Confirmed
+              Appointment Rescheduled
             </h3>
             <button 
               onClick={closeModal} 
@@ -28,19 +28,19 @@ const ConfirmedModal = () => {
 
           {/* Main content - centered */}
           <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
-            {/* Heart icon */}
+            {/* Logo icon */}
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-              <img src={logo} className="w-8 h-8" />
+              <img src={logo} className="w-8 h-8" alt="ANGILL Logo" />
             </div>
             
             {/* Status message */}
             <div className="text-center w-full border border-gray-200 rounded-xl p-2">
               <h4 className="text-sm font-bold text-gray-700 bg-white/20 py-1.5 px-3 rounded-full text-center">
-                Scheduled Appointment
+                New Appointment Schedule
               </h4>
               <div className="flex justify-center items-center gap-4 mt-2">
-                <p className="text-sm font-semibold text-gray-600">Today</p>
-                <p className="text-sm font-semibold text-gray-600">9:30 PM</p>
+                <p className="text-sm font-semibold text-gray-600">Tomorrow</p>
+                <p className="text-sm font-semibold text-gray-600">10:00 AM</p>
               </div>
             </div>
 
@@ -65,7 +65,7 @@ const ConfirmedModal = () => {
                 onClick={handleDoctorConfirm}
                 className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
               >
-                Pay Now
+                Confirm Reschedule
               </button>
             </div>
           </div>
@@ -126,4 +126,4 @@ const ConfirmedModal = () => {
   );
 };
 
-export default ConfirmedModal;
+export default AppointmentRescheduledModal;

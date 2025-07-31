@@ -23,6 +23,8 @@ import CompleteProfile from './pages/doctor/CompleteProfile';
 import DoctorHome from './pages/doctor/Home';
 import Doctors from './pages/patient/Doctors';
 import Landing from './pages/Landing';
+import DoctorFinancialAccount from './pages/doctor/FinancialAccount';
+import DoctorPatientRecord from './pages/doctor/PatientRecord';
 
 const App = () => {
   return (
@@ -75,6 +77,8 @@ const App = () => {
                       <Route path='create-appointment-slots' element={<CreateAppointmentSlots/>}></Route>
                       <Route path='/profile/complete' element={<CompleteProfile/>}></Route>
                       <Route path='/' element={<DoctorHome/>}></Route>
+                      <Route path='financial-account' element={<DoctorFinancialAccount/>}></Route>
+                      <Route path='patient-record' element={<DoctorPatientRecord/>}></Route>
 
 
                     </Routes>
