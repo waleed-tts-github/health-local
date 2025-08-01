@@ -221,7 +221,7 @@ const BloodDonations = () => {
             </div>
             <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300">
               <Heart className="w-6 h-6 text-blue-600 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Feed A Need — Donate Blood, Give the Gift of Life</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Feed A Need — Give the Gift of Life</h3>
               <p className="text-sm text-gray-600 mb-4">
                 Donating blood is a simple, selfless act that can save lives and it is more than generosity — it's building bonds, creating new friendships, and saving lives. According to the Mental Health Foundation, blood donation can also improve your emotional and physical well-being, offering a sense of connection and purpose.
               </p>

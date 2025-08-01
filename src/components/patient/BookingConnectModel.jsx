@@ -3,16 +3,16 @@ import { X, Heart, Video, Calendar } from 'lucide-react';
 import { BookingContext } from '../../contexts/BookingContext';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import logo from '../../assets/Group.png'
+
 const BookingConnectModal = () => {
   const {
     currentModal,
     closeModal,
     handleLiveConnect,
     handleBookingConfirm,
-    
     handleScheduleAppointment,
   } = useContext(BookingContext);
-  const {isBookingThroughClinic} =useConsultationFlow()
+  const { isBookingThroughClinic } = useConsultationFlow();
 
   const [selectedTimeIndex, setSelectedTimeIndex] = useState(0);
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -82,22 +82,25 @@ const BookingConnectModal = () => {
               <h6 className="text-sm font-bold text-gray-700 bg-white/20 py-0.5 px-2 rounded-full text-center mb-1">
                 Connect Today
               </h6>
-              {/* Connect Live Online button */}
-              <button
-              disabled={isBookingThroughClinic}
-                onClick={handleLiveConnect}
-                className="w-full bg-green-500 hover:bg-green-600 text-white py-1.5 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 mb-1"
-              >
-                <Video className="w-4 h-4" />
-                Connect Live Online
-              </button>
+              {/* Connect Live Online button - only show if isBookingThroughClinic is false */}
+              {!isBookingThroughClinic && (
+                <button
+                  onClick={handleLiveConnect}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white py-1.5 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 mb-1"
+                >
+                  <Video className="w-4 h-4" />
+                  Connect Live Online
+                </button>
+              )}
 
-              {/* OR separator */}
-              <div className="flex items-center w-full mb-1">
-                <div className="flex-1 h-px bg-gray-200"></div>
-                <span className="px-2 text-gray-600 text-xs font-medium">OR</span>
-                <div className="flex-1 h-px bg-gray-200"></div>
-              </div>
+              {/* OR separator - only show if Connect Live Online button is shown */}
+              {!isBookingThroughClinic && (
+                <div className="flex items-center w-full mb-1">
+                  <div className="flex-1 h-px bg-gray-200"></div>
+                  <span className="px-2 text-gray-600 text-xs font-medium">OR</span>
+                  <div className="flex-1 h-px bg-gray-200"></div>
+                </div>
+              )}
 
               {/* Schedule Appointment Later Today */}
               <div className="w-full">

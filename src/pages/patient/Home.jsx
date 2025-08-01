@@ -7,7 +7,7 @@ import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import ScheduledAppointments from '../../components/patient/ScheduledAppointments';
 import homepagebg from '../../assets/homepagebg.png'
 import AngillCyberClinics from '../../components/patient/CyberClinics';
-
+import logo from '../../assets/Group.png'
 const Home = () => {
   const {
     currentStep,
@@ -287,7 +287,7 @@ const ServiceSelection = () => (
         <div className="bg-white p-4 text-center max-w-4xl mx-auto">
           <div className="flex items-center justify-center mb-3 sm:mb-4">
             <div className={`w-10 h-10 sm:w-12 sm:h-12 ${selectedService === 'private' ? 'bg-blue-100' : 'bg-green-100'} rounded-full flex items-center justify-center`}>
-              <Heart className={`w-5 h-5 sm:w-6 sm:h-6 ${selectedService === 'private' ? 'text-blue-600' : 'text-green-600'}`}/>
+              <img src ={logo} className={`w-5 h-5 sm:w-6 sm:h-6 ${selectedService === 'private' ? 'text-blue-600' : 'text-green-600'}`}/>
             </div>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
@@ -363,7 +363,7 @@ const ServiceSelection = () => (
               Who Needs Help?
             </h2>
             <p className="text-gray-600 text-xs sm:text-sm">
-              Tell me who needs our doctor's help, you or other dependents.
+            Your or other dependent.
             </p>
           </div>
 
@@ -372,8 +372,8 @@ const ServiceSelection = () => (
               <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-3">Me</h3>
               <div 
                 onClick={() => {
-                  setSelectedPatient('Thomas K.');
-                  handleDependentSelect('Thomas K.');
+                  setSelectedPatient('Niaz Ahmad.');
+                  handleDependentSelect('Niaz Ahmad.');
                 }}
                 className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
               >
@@ -381,10 +381,10 @@ const ServiceSelection = () => (
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
                     <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
                   </div>
-                  <span className="text-gray-900 font-medium text-sm sm:text-base">Thomas K.</span>
+                  <span className="text-gray-900 font-medium text-sm sm:text-base">Niaz Ahmad.</span>
                 </div>
-                <div className={`w-5 h-5 rounded border-2 ${selectedPatient === 'Thomas K.' ? 'bg-green-600 border-green-600' : 'border-gray-300'}`}>
-                  {selectedPatient === 'Thomas K.' && <Check className="w-4 h-4 text-white" />}
+                <div className={`w-5 h-5 rounded border-2 ${selectedPatient === 'Niaz Ahmad.' ? 'bg-green-600 border-green-600' : 'border-gray-300'}`}>
+                  {selectedPatient === 'Niaz Ahmad.' && <Check className="w-4 h-4 text-white" />}
                 </div>
               </div>
             </div>
