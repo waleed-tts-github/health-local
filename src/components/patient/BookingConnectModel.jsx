@@ -158,12 +158,7 @@ const BookingConnectModal = () => {
               >
                 Cancel
               </button>
-              <button 
-                onClick={handleLiveConnect}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white py-1.5 rounded-xl font-medium text-xs transition-all flex items-center justify-center gap-1.5"
-              >
-                Continue
-              </button>
+             
             </div>
           </div>
 

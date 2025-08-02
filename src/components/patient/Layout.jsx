@@ -59,6 +59,7 @@ const Layout = ({ children }) => {
         { name: 'Find Volunteers', icon: Users, path: '/patient/blood-volunteers' },
       ],
     },
+    { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
     {
       name: 'Need Help',
       icon: HelpCircle,
@@ -68,10 +69,9 @@ const Layout = ({ children }) => {
         { name: 'App Language', icon: Globe, path: '/patient/language' },
         { name: 'Privacy Policy', icon: Lock, path: '/patient/privacy' },
         { name: 'Terms & Conditions', icon: File, path: '/patient/terms' },
+        { name: 'Send Feedback', icon: Send, path: '/patient/feedback' },
       ],
     },
-    { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
-    { name: 'Send Feedback', icon: Send, path: '/patient/feedback' },
     { name: 'Refer A Friend', icon: UserPlus, path: '/patient/refer' },
     { name: 'Logout', icon: LogOut, path: '/logout' },
   ];
@@ -106,8 +106,6 @@ const Layout = ({ children }) => {
       }
       else{
       navigate(item.path);
-
-
       }
     }
     if (!item.subItems) {

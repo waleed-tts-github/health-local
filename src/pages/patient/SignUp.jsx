@@ -13,7 +13,10 @@ const PatientSignup = () => {
   const [errors, setErrors] = useState({});
   const [bloodSectionExpanded, setBloodSectionExpanded] = useState(false);
   const [showAgeErrorModal, setShowAgeErrorModal] = useState(false);
+  const [calendarAgeError, setCalendarAgeError] = useState('');
   const [dateInput, setDateInput] = useState('');
+  const [tempDate, setTempDate] = useState('');
+  const [isCalendarInput, setIsCalendarInput] = useState(false);
 
   const steps = [
     { id: 1, title: 'Account Setup', description: 'Basic credentials', icon: User },
@@ -39,20 +42,19 @@ const PatientSignup = () => {
   };
 
   useEffect(() => {
-    if (formData.dateOfBirth) {
-      const timer = setTimeout(() => {
-        const age = calculateAge(formData.dateOfBirth);
-        setShowAgeErrorModal(age < 18);
-      }, 1000);
-      return () => clearTimeout(timer);
+    if (formData.dateOfBirth && !isCalendarInput) {
+      const age = calculateAge(formData.dateOfBirth);
+      setShowAgeErrorModal(age < 18);
     } else {
       setShowAgeErrorModal(false);
     }
-  }, [formData.dateOfBirth]);
+  }, [formData.dateOfBirth, isCalendarInput]);
 
   const handleDateInputChange = (e) => {
     const value = e.target.value;
     setDateInput(value);
+    setCalendarAgeError('');
+    setIsCalendarInput(false);
 
     if (value.length === 10) {
       if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
@@ -96,17 +98,26 @@ const PatientSignup = () => {
 
   const handleDatePickerChange = (e) => {
     const value = e.target.value;
-    setFormData(prev => ({
-      ...prev,
-      dateOfBirth: value
-    }));
+    setTempDate(value);
+    setIsCalendarInput(true);
     if (value) {
+      setFormData(prev => ({
+        ...prev,
+        dateOfBirth: value
+      }));
       const [year, month, day] = value.split('-').map(Number);
       setDateInput(`${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`);
       setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+      const age = calculateAge(value);
+      if (age < 18) {
+        setCalendarAgeError('You must be 18 or older to register');
+      } else {
+        setCalendarAgeError('');
+      }
     } else {
       setDateInput('');
       setErrors(prev => ({ ...prev, dateOfBirth: 'Date of birth is required' }));
+      setCalendarAgeError('');
     }
   };
 
@@ -193,7 +204,7 @@ const PatientSignup = () => {
       }
     }
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length === 0 && !calendarAgeError;
   };
 
   const handleNext = () => {
@@ -205,10 +216,11 @@ const PatientSignup = () => {
   const handlePrevious = () => {
     setCurrentStep(currentStep - 1);
     setErrors({});
+    setCalendarAgeError('');
   };
 
   const handleSubmit = () => {
-    if (validateStep(2) && !showAgeErrorModal) {
+    if (validateStep(2) && !showAgeErrorModal && !calendarAgeError) {
       setCurrentStep(3);
       console.log('Form submitted:', formData);
     }
@@ -218,11 +230,11 @@ const PatientSignup = () => {
     setShowAgeErrorModal(false);
     setFormData(prev => ({ ...prev, dateOfBirth: '' }));
     setDateInput('');
+    setTempDate('');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br font-poppins from-emerald-50 via-green-50 to-teal-50 flex">
-      {/* Sidebar Section (Left ~16%) */}
       <div className="hidden md:block w-full md:w-1/6 bg-gradient-to-br from-emerald-600 to-green-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative z-10 flex flex-col h-full p-6">
@@ -247,7 +259,6 @@ const PatientSignup = () => {
         </div>
       </div>
 
-      {/* Form Section (Right ~84%) */}
       <div className="w-full md:w-5/6 flex items-start justify-center py-6 px-4 mt-[-10px] relative">
         <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-8 relative">
           <div className="text-center mb-6">
@@ -255,7 +266,6 @@ const PatientSignup = () => {
             <p className="text-gray-600 text-base">Join our healthcare in just a few steps</p>
           </div>
 
-          {/* Step Indicator */}
           <div className="flex justify-center mb-8">
             <div className="flex items-center space-x-3 bg-gray-50 rounded-full p-2 shadow-md border border-gray-100">
               {steps.map((step, index) => {
@@ -296,9 +306,8 @@ const PatientSignup = () => {
             </div>
           </div>
 
-          {/* Age Error Modal */}
           {showAgeErrorModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
               <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl transform transition-all">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-bold text-red-600">Age Restriction</h3>
@@ -319,7 +328,6 @@ const PatientSignup = () => {
             </div>
           )}
 
-          {/* Form Container */}
           {currentStep === 1 && (
             <div>
               <div className="space-y-6">
@@ -332,14 +340,11 @@ const PatientSignup = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.firstName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder=" "
+                        placeholder="Enter your first name"
                       />
-                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                        Enter your first name
-                      </span>
                     </div>
                     {errors.firstName && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -356,14 +361,11 @@ const PatientSignup = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.lastName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder=" "
+                        placeholder="Enter your last name"
                       />
-                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                        Enter your last name
-                      </span>
                     </div>
                     {errors.lastName && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -381,14 +383,11 @@ const PatientSignup = () => {
                       name="username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                         errors.username ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                       }`}
-                      placeholder=" "
+                      placeholder="Enter your username"
                     />
-                    <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                      Enter your username
-                    </span>
                     <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   </div>
                   {errors.username && (
@@ -406,14 +405,11 @@ const PatientSignup = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                         errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                       }`}
-                      placeholder=" "
+                      placeholder="Enter your email address"
                     />
-                    <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                      Enter your email address
-                    </span>
                     <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   </div>
                   {errors.email && (
@@ -432,14 +428,11 @@ const PatientSignup = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder=" "
+                        placeholder="Create a strong password"
                       />
-                      <span className="absolute left-4 top-3 text-sm text-gray- Icelandic-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                        Create a strong password
-                      </span>
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
@@ -463,14 +456,11 @@ const PatientSignup = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder=" "
+                        placeholder="Confirm your password"
                       />
-                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                        Confirm your password
-                      </span>
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -504,12 +494,11 @@ const PatientSignup = () => {
             </div>
           )}
 
-          {/* Step 2: Personal Details */}
           {currentStep === 2 && (
             <div>
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <CreditCard className=" MATLAB  w-8 h-8 text-green-600" />
+                  <CreditCard className="w-8 h-8 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Personal Information</h2>
                 <p className="text-gray-600 text-sm">Complete your profile to get personalized care</p>
@@ -519,23 +508,20 @@ const PatientSignup = () => {
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Date of Birth</label>
                     <div className="relative">
-                      <span className="absolute -top-2 left-4 text-sm text-green-600 bg-white px-1 z-10">
-                        DD/MM/YYYY
-                      </span>
                       <MaskedInput
                         mask="11/11/1111"
                         name="dateInput"
                         value={dateInput}
                         onChange={handleDateInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
-                          errors.dateOfBirth ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
+                          errors.dateOfBirth || calendarAgeError ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                      
+                        placeholder="DD/MM/YYYY"
                       />
                       <input
                         type="date"
                         name="dateOfBirth"
-                        value={formData.dateOfBirth}
+                        value={tempDate}
                         onChange={handleDatePickerChange}
                         max={getTodayDate()}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 w-8 cursor-pointer"
@@ -548,6 +534,12 @@ const PatientSignup = () => {
                         {errors.dateOfBirth}
                       </p>
                     )}
+                    {calendarAgeError && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={16} className="mr-1" />
+                        {calendarAgeError}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">CNIC Number</label>
@@ -557,14 +549,11 @@ const PatientSignup = () => {
                         name="cNIC"
                         value={formData.cNIC}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.cNIC ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder=" "
+                        placeholder="34604-0515319-5"
                       />
-                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                        34604-0515319-5
-                      </span>
                       <CreditCard className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
                     {errors.cNIC && (
@@ -584,14 +573,11 @@ const PatientSignup = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
-                        placeholder=" "
+                        placeholder="03001234567"
                       />
-                      <span className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:-top-2 peer-focus:text-sm peer-focus:text-green-600 peer-focus:bg-white peer-focus:px-1">
-                        03001234567
-                      </span>
                       <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
                     {errors.phone && (
@@ -608,7 +594,7 @@ const PatientSignup = () => {
                         name="gender"
                         value={formData.gender}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                           errors.gender ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                         }`}
                       >
@@ -744,7 +730,7 @@ const PatientSignup = () => {
                               name="bloodGroup"
                               value={formData.bloodGroup}
                               onChange={handleInputChange}
-                              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 peer ${
+                              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
                                 errors.bloodGroup ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
                               }`}
                             >
@@ -780,7 +766,7 @@ const PatientSignup = () => {
                   <button
                     onClick={handleSubmit}
                     className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center"
-                    disabled={showAgeErrorModal}
+                    disabled={showAgeErrorModal || calendarAgeError}
                   >
                     Create Account
                   </button>
@@ -789,7 +775,6 @@ const PatientSignup = () => {
             </div>
           )}
 
-          {/* Step 3: Success */}
           {currentStep === 3 && (
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -816,7 +801,6 @@ const PatientSignup = () => {
             </div>
           )}
 
-          {/* Login Link */}
           <div className="text-center mt-6">
             <p className="text-gray-600 text-base">
               Already have an account?{' '}

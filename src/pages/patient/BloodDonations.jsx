@@ -17,7 +17,8 @@ import {
   Activity,
   Award,
   TrendingUp,
-  HandHeart
+  HandHeart,
+  Users
 } from 'lucide-react';
 
 const BloodDonations = () => {
@@ -139,6 +140,37 @@ const BloodDonations = () => {
     }
   ];
 
+  // Sample data for blood requests
+  const bloodRequests = [
+    {
+      id: 1,
+      name: 'Ayesha Siddiqui',
+      contact: '+92 321 1234567',
+      email: 'ayesha.siddiqui@email.com',
+      message: 'Urgent blood needed for surgery',
+      location: 'Agha Khan Hospital, Stadium Road, Karachi',
+      bloodType: 'AB+',
+      status: 'pending',
+      potentialDonors: [
+        { id: 1, name: 'Hassan Ali', contact: '+92 333 9876543', bloodType: 'AB+', status: 'pending' },
+        { id: 2, name: 'Zainab Khan', contact: '+92 300 4567890', bloodType: 'AB+', status: 'pending' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Omar Farooq',
+      contact: '+92 345 6789012',
+      email: 'omar.farooq@email.com',
+      message: 'Blood required for dialysis treatment',
+      location: 'Liaquat National Hospital, National Stadium Road, Karachi',
+      bloodType: 'O+',
+      status: 'pending',
+      potentialDonors: [
+        { id: 3, name: 'Bilal Ahmed', contact: '+92 322 3456789', bloodType: 'O+', status: 'pending' }
+      ]
+    }
+  ];
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'completed':
@@ -147,6 +179,8 @@ const BloodDonations = () => {
         return 'bg-blue-100 text-blue-800';
       case 'cancelled':
         return 'bg-red-100 text-red-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -160,6 +194,8 @@ const BloodDonations = () => {
         return <Clock className="h-3 sm:h-4 w-3 sm:w-4" />;
       case 'cancelled':
         return <XCircle className="h-3 sm:h-4 w-3 sm:w-4" />;
+      case 'pending':
+        return <AlertCircle className="h-3 sm:h-4 w-3 sm:w-4" />;
       default:
         return <AlertCircle className="h-3 sm:h-4 w-3 sm:w-4" />;
     }
@@ -185,11 +221,22 @@ const BloodDonations = () => {
     return received.status === filterStatus;
   });
 
+  const filteredBloodRequests = bloodRequests.filter(request => {
+    if (filterStatus === 'all') return true;
+    return request.status === filterStatus;
+  });
+
   const handleBloodVolunteerChange = (e) => {
     setIsBloodVolunteer(e.target.checked);
     if (!e.target.checked) {
       setBloodGroup('');
     }
+  };
+
+  const handleAcknowledgeDonor = (requestId, donorId) => {
+    // Placeholder for acknowledging donor - in a real app, this would update the backend
+    console.log(`Acknowledging donor ${donorId} for request ${requestId}`);
+    // You would typically make an API call here to update the donor status to 'acknowledged'
   };
 
   return (
@@ -311,6 +358,17 @@ const BloodDonations = () => {
               </div>
             </div>
           </div>
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600">Blood Requests</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{filteredBloodRequests.length}</p>
+              </div>
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Users className="h-5 sm:h-6 w-5 sm:w-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -361,6 +419,17 @@ const BloodDonations = () => {
               >
                 Donation Received ({filteredDonationsReceived.length})
               </button>
+              <button
+                onClick={() => setActiveTab('bloodRequests')}
+                className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-xs sm:text-sm ${
+                  activeTab === 'bloodRequests'
+                    ? 'border-green-500 text-green-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+                aria-label="View Blood Requests"
+              >
+                Blood Requests ({filteredBloodRequests.length})
+              </button>
             </div>
           </div>
 
@@ -380,6 +449,7 @@ const BloodDonations = () => {
                     <option value="completed">Completed</option>
                     <option value="scheduled">Scheduled</option>
                     <option value="cancelled">Cancelled</option>
+                    <option value="pending">Pending</option>
                   </select>
                 </div>
                 <select
@@ -568,7 +638,7 @@ const BloodDonations = () => {
                   </div>
                 ))}
               </div>
-            ) : (
+            ) : activeTab === 'donationsReceived' ? (
               <div className="space-y-4">
                 {filteredDonationsReceived.map((received) => (
                   <div key={received.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all bg-white">
@@ -614,6 +684,87 @@ const BloodDonations = () => {
                     </div>
                     <div className="flex items-center justify-end space-x-2">
                       <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for donation received ${received.id}`}>
+                        <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredBloodRequests.map((request) => (
+                  <div key={request.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all bg-white">
+                    <div className="flex items-start justify-between mb-2 sm:mb-3">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-10 sm:w-12 h-10 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Users className="h-5 sm:h-6 w-5 sm:w-6 text-purple-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm sm:text-base text-gray-900">Blood Request</h4>
+                          <div className="flex flex-wrap items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
+                            <span className="flex items-center space-x-1">
+                              <User className="h-3 sm:h-4 w-3 sm:w-4" />
+                              <span>{request.name}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <MapPin className="h-3 sm:h-4 w-3 sm:w-4" />
+                              <span>{request.location}</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className={`inline-flex items-center space-x-1 px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(request.status)}`}>
+                          {getStatusIcon(request.status)}
+                          <span className="capitalize">{request.status}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Contact</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{request.contact}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Email</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{request.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Blood Group</p>
+                        <p className="font-medium text-sm sm:text-base text-gray-900">{request.bloodType}</p>
+                      </div>
+                    </div>
+                    <div className="mb-3 sm:mb-4">
+                      <p className="text-xs text-gray-500 mb-1">Message</p>
+                      <p className="font-medium text-sm sm:text-base text-gray-900">{request.message}</p>
+                    </div>
+                    <div className="mb-3 sm:mb-4">
+                      <p className="text-xs text-gray-500 mb-2">Potential Donors</p>
+                      {request.potentialDonors.length > 0 ? (
+                        <div className="space-y-2">
+                          {request.potentialDonors.map((donor) => (
+                            <div key={donor.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                              <div>
+                                <p className="font-medium text-sm text-gray-900">{donor.name}</p>
+                                <p className="text-xs text-gray-500">{donor.contact} | {donor.bloodType}</p>
+                              </div>
+                              <button
+                                onClick={() => handleAcknowledgeDonor(request.id, donor.id)}
+                                className="flex items-center space-x-1 px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all"
+                                aria-label={`Acknowledge donor ${donor.name} for request ${request.id}`}
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                                <span className="text-xs">Acknowledge</span>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">No potential donors yet</p>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-end space-x-2">
+                      <button className="text-blue-600 hover:text-blue-700" aria-label={`View details for request ${request.id}`}>
                         <Eye className="h-3 sm:h-4 w-3 sm:w-4" />
                       </button>
                     </div>
