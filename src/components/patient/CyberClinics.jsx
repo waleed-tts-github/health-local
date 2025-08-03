@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Search, MapPin, Shield, Star, Phone, Clock, Users, Globe, Heart, CheckCircle, ChevronRight, X } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Shield, Star, Phone, Clock, Users, Globe, Heart, CheckCircle, ChevronRight, X, Stethoscope } from 'lucide-react';
 import logo from '../../assets/Group.png';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
@@ -341,7 +341,7 @@ const AngillCyberClinics = () => {
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="bg-white/80 backdrop-blur-sm rounded-full p-4 shadow-lg flex items-center justify-center z-20">
                 <div className="flex items-center space-x-2">
-                  <Shield className="w-6 h-6 text-green-600" />
+                  <Stethoscope className="w-6 h-6 text-green-600" />
                   <span className="text-base font-bold text-green-700">Angill</span>
                 </div>
               </div>
@@ -402,7 +402,7 @@ const AngillCyberClinics = () => {
                     setIsBookingThroughClinic(true)
 
                         handleServiceSelect("")
-                        setCurrentStep(2)}} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
+                        setCurrentStep(3)}} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
                         Book Appointment
                       </button>
                     </div>
@@ -418,7 +418,7 @@ const AngillCyberClinics = () => {
             <div>
               <div className="flex items-start space-x-3 mb-4">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Shield className="w-5 h-5 text-green-600" />
+                  <Stethoscope className="w-5 h-5 text-green-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 text-base">{selectedClinic.name}</h3>
@@ -456,7 +456,7 @@ const AngillCyberClinics = () => {
                   <button onClick={()=>{
                     setIsBookingThroughClinic(true)
                     handleServiceSelect("")
-                    setCurrentStep(2)
+                    setCurrentStep(3)
                   }} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
                     Book Appointment
                   </button>

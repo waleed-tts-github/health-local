@@ -6,7 +6,6 @@ import PrescriptionDetailsModal from './PrescriptionDetailsModel';
 const MeetingModal = ({ doctorName = "Dr. Smith", patientName = "You", meetingTime = "15:00" }) => {
   const [isPrescriptionModalOpen, setIsPrescriptionModalOpen] = useState(false);
   const [isMicOn, setIsMicOn] = useState(true);
-
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(true);
   const [remainingTime, setRemainingTime] = useState(1800); // 30 minutes in seconds
@@ -46,127 +45,166 @@ const MeetingModal = ({ doctorName = "Dr. Smith", patientName = "You", meetingTi
   if (currentModal !== 'meeting') return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4 sm:px-6 lg:px-8">
-      <div className="relative w-full max-w-md h-[98vh] bg-gradient-to-br from-slate-100 to-slate-200 rounded-3xl overflow-hidden shadow-2xl border border-gray-200/70">
-        {/* Content Container to Clip to Rounded Corners */}
-        <div className="relative h-full w-full p-6 sm:p-8 lg:p-10">
-          {/* Main Doctor Video Background */}
-          <div className="absolute inset-0">
-            <img
-              src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&h=600&fit=crop&crop=face"
-              alt="Doctor"
-              className="w-full h-full object-cover"
-            />
-            {/* Overlay for better contrast */}
-            <div className="absolute inset-0 bg-black/20"></div>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
+        <div className="relative z-10 flex flex-col h-full">
+          {/* Header with close button */}
+          <div className="flex items-center justify-between p-4 pb-3">
+            <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+              Video Consultation
+            </h3>
+            <button
+              onClick={handleEndCall}
+              className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Prescription Button with Badge */}
-          <div className="absolute top-6 sm:top-8 lg:top-10 right-6 sm:right-8 lg:right-10 z-30" onClick={handleOpenPrescription}>
-            <div className="relative">
+          {/* Main content - centered */}
+          <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
+            {/* Doctor Video Background */}
+            <div className="relative w-full h-48 sm:h-56 rounded-xl overflow-hidden shadow-lg border border-gray-200/70">
+              <img
+                src="https://tse3.mm.bing.net/th/id/OIP.Vm0gkWyZpEsZcBlbC8ZAlQHaE7?pid=Api&P=0&h=220"
+                alt="Doctor"
+                className="w-full h-full object-cover"
+              />
+              <p className="absolute bottom-2 left-2 text-white text-xs font-medium">{doctorName}</p>
+            </div>
+
+            {/* Picture-in-Picture Patient Video */}
+            <div className="relative w-24 sm:w-28 h-16 sm:h-20 bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200/70">
+              {isVideoOn ? (
+                <img
+                  src="https://tse1.mm.bing.net/th/id/OIP.oLeEicCQNDLCvvFQmLfsowHaE7?pid=Api&P=0&h=220"
+                  alt="Patient"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-white">
+                  <div className="text-center">
+                    <div className="w-6 sm:w-8 h-6 sm:h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-1 mx-auto">
+                      <span className="text-white font-bold text-xs sm:text-sm">{patientName.charAt(0)}</span>
+                    </div>
+                    <p className="text-gray-600 text-xs">Camera off</p>
+                  </div>
+                </div>
+              )}
+              {!isMicOn && (
+                <div className="absolute top-1 right-1">
+                  <div className="bg-red-500 rounded-full p-1">
+                    <MicOff className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Remaining Time Display */}
+            <div className="text-center w-full border border-gray-200 rounded-xl p-2">
+              <h4 className="text-sm font-bold text-gray-700 bg-white/20 py-1.5 px-3 rounded-full text-center">
+                Time Remaining
+              </h4>
+              <p className="text-gray-600 mt-2 text-xs">{formatTime(remainingTime)}</p>
+            </div>
+
+            {/* Prescription Button with Badge */}
+            <div className="relative" onClick={handleOpenPrescription}>
               <button
-                className="w-12 h-12 bg-indigo-600 hover:bg-indigo-700 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-lg"
+                className="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg"
               >
-                <svg className="w-4 h-4 sm:w-4 lg:w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </button>
-              {/* Badge */}
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-indigo-600 font-bold text-xs sm:text-xs lg:text-[10px]">1</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Picture-in-Picture Patient Video */}
-          <div className="absolute top-20 sm:top-24 lg:top-28 right-6 sm:right-8 lg:right-10 w-32 sm:w-36 h-24 sm:h-28 bg-white rounded-2xl overflow-hidden shadow-lg border-2 border-white/50 z-20">
-            {isVideoOn ? (
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=face"
-                alt="Patient"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
-                <div className="text-center">
-                  <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-2 mx-auto">
-                    <span className="text-white font-bold text-xs sm:text-sm lg:text-xs">
-                      {patientName.charAt(0)}
-                    </span>
-                  </div>
-                  <p className="text-white/80 text-xs sm:text-sm lg:text-xs">Camera off</p>
-                </div>
-              </div>
-            )}
-
-            {/* Muted Indicator on Patient Video */}
-            {!isMicOn && (
-              <div className="absolute top-2 right-2">
-                <div className="bg-red-500 rounded-full p-1">
-                  <MicOff className="w-3 sm:w-4 h-3 sm:h-4 lg:w-3 lg:h-3 text-white" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Remaining Time Display */}
-          <div className="absolute bottom-32 sm:bottom-36 lg:bottom-40 left-1/2 transform -translate-x-1/2 z-20">
-            <div className="bg-white/20 backdrop-blur-md rounded-2xl px-4 sm:px-6 py-2 sm:py-3 border border-white/30">
-              <div className="text-white text-lg sm:text-xl lg:text-lg font-light tracking-wide">
-                {formatTime(remainingTime)}
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-green-600 font-bold text-xs">1</span>
               </div>
             </div>
           </div>
 
           {/* Control Buttons */}
-          <div className="absolute bottom-8 sm:bottom-10 lg:bottom-12 left-1/2 transform -translate-x-1/2 z-20">
-            <div className="flex items-center gap-4 sm:gap-6">
-              {/* Screen Share Button */}
-              <button className="w-12 sm:w-14 h-12 sm:h-14 bg-indigo-600 hover:bg-indigo-700 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-lg">
-                <Monitor className="w-4 sm:w-5 h-4 sm:h-5 lg:w-4 lg:h-4 text-white" />
-              </button>
-
-              {/* End Call Button */}
-              <button
-                onClick={handleGiveFeedback}
-                className="w-12 sm:w-14 h-12 sm:h-14 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-lg"
-              >
-                <PhoneOff className="w-4 sm:w-5 h-4 sm:h-5 lg:w-4 lg:h-4 text-white" />
-              </button>
-
-              {/* Microphone Button */}
+          <div className="px-4 pb-4">
+            <div className="flex gap-2">
               <button
                 onClick={() => setIsMicOn(!isMicOn)}
-                className={`w-12 sm:w-14 h-12 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-lg ${
-                  isMicOn
-                    ? 'bg-indigo-600 hover:bg-indigo-700'
-                    : 'bg-red-500 hover:bg-red-600'
+                className={`flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-medium text-xs transition-all ${
+                  isMicOn ? '' : 'bg-red-500 hover:bg-red-600 text-white'
                 }`}
               >
-                {isMicOn ? (
-                  <Mic className="w-4 sm:w-5 h-4 sm:h-5 lg:w-4 lg:h-4 text-white" />
-                ) : (
-                  <MicOff className="w-4 sm:w-5 h-4 sm:h-5 lg:w-4 lg:h-4 text-white" />
-                )}
+                {isMicOn ? 'Mute Mic' : 'Unmute Mic'}
+              </button>
+              <button
+                onClick={() => setIsVideoOn(!isVideoOn)}
+                className={`flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-medium text-xs transition-all ${
+                  isVideoOn ? '' : 'bg-red-500 hover:bg-red-600 text-white'
+                }`}
+              >
+                {isVideoOn ? 'Turn Off Video' : 'Turn On Video'}
+              </button>
+              <button
+                onClick={handleEndCall}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
+              >
+                End Call
               </button>
             </div>
+            <button
+              className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all mt-2"
+              onClick={handleGiveFeedback}
+            >
+              Give Feedback
+            </button>
           </div>
 
           {/* Call Status Overlay */}
           {!isCallActive && (
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-40">
               <div className="text-center">
-                <div className="w-12 sm:w-16 h-12 sm:h-16 bg-red-500/80 rounded-full flex items-center justify-center mb-4 mx-auto">
-                  <PhoneOff className="w-6 sm:w-8 h-6 sm:h-8 lg:w-6 text-white" />
+                <div className="w-12 h-12 bg-red-500/80 rounded-full flex items-center justify-center mb-4 mx-auto">
+                  <PhoneOff className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-white text-lg sm:text-xl lg:text-lg font-medium mb-2">Call Ended</h3>
-                <p className="text-white/70 text-xs sm:text-sm lg:text-xs">Thank you for your consultation</p>
+                <h3 className="text-white text-lg font-medium mb-2">Call Ended</h3>
+                <p className="text-white/70 text-xs">Thank you for your consultation</p>
               </div>
             </div>
           )}
-        </div>
 
-        <PrescriptionDetailsModal isOpen={isPrescriptionModalOpen} onClose={handleClosePrescription} />
+          <PrescriptionDetailsModal isOpen={isPrescriptionModalOpen} onClose={handleClosePrescription} />
+
+          <style jsx>{`
+            /* Enhanced scrollbar styling - only for small devices */
+            .h-[98vh] {
+              scrollbar-width: thin;
+              scrollbar-color: #10b981 #e5e7eb;
+            }
+            .h-[98vh]::-webkit-scrollbar {
+              width: 8px;
+            }
+            .h-[98vh]::-webkit-scrollbar-track {
+              background: #e5e7eb;
+              border-radius: 4px;
+            }
+            .h-[98vh]::-webkit-scrollbar-thumb {
+              background: #10b981;
+              border-radius: 4px;
+            }
+            .h-[98vh]::-webkit-scrollbar-thumb:hover {
+              background: #059669;
+            }
+
+            /* Hide scrollbar on larger screens */
+            @media (min-width: 640px) {
+              .h-[98vh] {
+                scrollbar-width: none;
+              }
+              .h-[98vh]::-webkit-scrollbar {
+                display: none;
+              }
+            }
+          `}</style>
+        </div>
       </div>
     </div>
   );
