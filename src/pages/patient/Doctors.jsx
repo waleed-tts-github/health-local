@@ -277,8 +277,8 @@ const Doctors = () => {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
                 <p className="text-green-700 text-xs sm:text-sm font-bold bg-green-100 px-2 sm:px-4 py-1 sm:py-2 rounded-lg shadow-sm">
                   {activeTab === 'Angill Doctors'
-                    ? 'Angel Doctors have fixed fees'
-                    : 'Private Doctors have own fees'}
+                    ? 'Consultations through Angill Doctors are priced at a consistent, fixed fee'
+                    : 'Unlike Angill, private doctors operate with self-determined pricing'}
                 </p>
                 <div className="flex items-center gap-2 self-end sm:self-auto">
                   <span className="text-xs font-medium text-gray-900">

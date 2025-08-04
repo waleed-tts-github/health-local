@@ -175,9 +175,7 @@ const AngillCyberClinics = () => {
   const PartnershipTab = () => (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-green-300 rounded-sm mb-6">
-          <img src={logo} alt="Angill Logo" />
-        </div>
+  
         <h1 className="text-2xl font-bold text-gray-900 mb-4">
           Become an Angill CyberClinic Partner
         </h1>

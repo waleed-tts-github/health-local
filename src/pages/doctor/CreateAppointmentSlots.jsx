@@ -89,11 +89,11 @@ const CreateAppointmentSlots = () => {
   };
 
   const getSlotTypeIcon = (type) => {
-    return type === 'online' ? <Video className="w-4 h-4" /> : <MapPin className="w-4 h-4" />;
+    return type === 'online' ? <Video className="w-5 h-5 text-green-600" /> : <MapPin className="w-5 h-5 text-green-600" />;
   };
 
   const getServiceTypeColor = (serviceType) => {
-    return serviceType === 'angill' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
+    return serviceType === 'angill' ? 'bg-green-100 text-green-700' : 'bg-teal-100 text-teal-700';
   };
 
   const formatTime = (time) => {
@@ -128,95 +128,95 @@ const CreateAppointmentSlots = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Create Appointment Slots</h1>
-            <p className="text-gray-600 mt-1">Set your availability for patient consultations</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Create Appointment Slots</h1>
+            <p className="text-sm text-gray-600 mt-1">Set your availability for patient consultations</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <button 
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 text-green-700 rounded-lg hover:bg-green-100 transition-colors duration-200"
             >
               {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              {showPreview ? 'Hide Preview' : 'Preview Schedule'}
+              <span className="text-sm font-medium">{showPreview ? 'Hide Preview' : 'Preview Schedule'}</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200">
               <Save className="w-4 h-4" />
-              Save All Slots
+              <span className="text-sm font-medium">Save All Slots</span>
             </button>
           </div>
         </div>
 
         {/* Doctor Profile Summary */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              <Users className="w-8 h-8 text-green-500" />
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+              <Users className="w-6 h-6 text-green-500" />
             </div>
             <div>
               <h2 className="text-xl font-semibold text-gray-900">{doctorProfile.name}</h2>
-              <p className="text-gray-600">{doctorProfile.specialty}</p>
+              <p className="text-sm text-gray-600">{doctorProfile.specialty}</p>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-gray-50 rounded-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 bg-green-50 rounded-xl border border-green-100">
               <div className="flex items-center gap-2 mb-2">
-                <Building className="w-4 h-4 text-gray-500" />
-                <span className="font-medium text-gray-700">Clinic Address</span>
+                <Building className="w-4 h-4 text-green-500" />
+                <span className="text-sm font-medium text-gray-700">Clinic Address</span>
               </div>
               <p className="text-sm text-gray-600">{doctorProfile.clinicAddress}</p>
             </div>
             
-            <div className="p-4 bg-green-50 rounded-xl">
+            <div className="p-4 bg-green-50 rounded-xl border border-green-100">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className="w-4 h-4 text-green-500" />
-                <span className="font-medium text-gray-700">Angill Rate</span>
+                <span className="text-sm font-medium text-gray-700">Angill Rate</span>
               </div>
               <p className="text-sm text-green-600 font-semibold">${doctorProfile.angillFixedRate} (Fixed)</p>
             </div>
             
-            <div className="p-4 bg-blue-50 rounded-xl">
+            <div className="p-4 bg-green-50 rounded-xl border border-green-100">
               <div className="flex items-center gap-2 mb-2">
-                <Monitor className="w-4 h-4 text-blue-500" />
-                <span className="font-medium text-gray-700">Private Rates</span>
+                <Monitor className="w-4 h-4 text-green-500" />
+                <span className="text-sm font-medium text-gray-700">Private Rates</span>
               </div>
-              <p className="text-sm text-blue-600">Online: ${doctorProfile.privateRates.onlineConsultation}</p>
-              <p className="text-sm text-blue-600">Physical: ${doctorProfile.privateRates.physicalVisit}</p>
+              <p className="text-sm text-green-600">Online: ${doctorProfile.privateRates.onlineConsultation}</p>
+              <p className="text-sm text-green-600">Physical: ${doctorProfile.privateRates.physicalVisit}</p>
             </div>
           </div>
         </div>
 
         {/* Date Selection */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Date</h3>
           <div className="grid grid-cols-7 gap-2">
             {getDaysOfWeek().map((day) => (
               <button
                 key={day.date}
                 onClick={() => setSelectedDate(day.date)}
-                className={`p-4 rounded-xl text-center transition-colors ${
+                className={`p-3 rounded-xl text-center transition-all duration-200 transform hover:scale-105 ${
                   selectedDate === day.date
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-green-500 text-white shadow-md'
                     : day.isToday
-                    ? 'bg-green-50 text-green-700 border border-green-200'
-                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    ? 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100'
+                    : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
                 }`}
               >
-                <div className="font-medium text-sm">{day.day}</div>
+                <div className="text-sm font-medium">{day.day}</div>
                 <div className="text-lg font-bold">{day.dayNum}</div>
               </button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Create New Slot */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center gap-2 mb-6">
               <Plus className="w-5 h-5 text-green-500" />
               <h3 className="text-lg font-semibold text-gray-900">Create New Slot</h3>
@@ -230,7 +230,7 @@ const CreateAppointmentSlots = () => {
                   <select
                     value={currentSlot.startTime}
                     onChange={(e) => setCurrentSlot({...currentSlot, startTime: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 outline-none bg-white transition-colors duration-200"
                   >
                     <option value="">Select start time</option>
                     {timeSlots.map(time => (
@@ -244,7 +244,7 @@ const CreateAppointmentSlots = () => {
                   <select
                     value={currentSlot.endTime}
                     onChange={(e) => setCurrentSlot({...currentSlot, endTime: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 outline-none bg-white transition-colors duration-200"
                   >
                     <option value="">Select end time</option>
                     {timeSlots.map(time => (
@@ -260,31 +260,31 @@ const CreateAppointmentSlots = () => {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setCurrentSlot({...currentSlot, type: 'online'})}
-                    className={`p-4 rounded-xl border-2 transition-colors flex items-center gap-3 ${
+                    className={`p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 hover:shadow-sm ${
                       currentSlot.type === 'online'
-                        ? 'border-green-500 bg-green-50 text-green-700'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-green-400 bg-green-50 text-green-700'
+                        : 'border-gray-200 hover:border-green-300 hover:bg-green-50'
                     }`}
                   >
-                    <Video className="w-5 h-5" />
+                    <Video className="w-5 h-5 text-green-600" />
                     <div className="text-left">
                       <div className="font-medium">Online</div>
-                      <div className="text-sm opacity-75">Video consultation</div>
+                      <div className="text-sm text-gray-500">Video consultation</div>
                     </div>
                   </button>
                   
                   <button
                     onClick={() => setCurrentSlot({...currentSlot, type: 'physical'})}
-                    className={`p-4 rounded-xl border-2 transition-colors flex items-center gap-3 ${
+                    className={`p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 hover:shadow-sm ${
                       currentSlot.type === 'physical'
-                        ? 'border-green-500 bg-green-50 text-green-700'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-green-400 bg-green-50 text-green-700'
+                        : 'border-gray-200 hover:border-green-300 hover:bg-green-50'
                     }`}
                   >
-                    <MapPin className="w-5 h-5" />
+                    <MapPin className="w-5 h-5 text-green-600" />
                     <div className="text-left">
                       <div className="font-medium">Physical</div>
-                      <div className="text-sm opacity-75">In-person visit</div>
+                      <div className="text-sm text-gray-500">In-person visit</div>
                     </div>
                   </button>
                 </div>
@@ -296,16 +296,16 @@ const CreateAppointmentSlots = () => {
                 <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={() => setCurrentSlot({...currentSlot, serviceType: 'private'})}
-                    className={`p-4 rounded-xl border-2 transition-colors text-left ${
+                    className={`p-4 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-sm ${
                       currentSlot.serviceType === 'private'
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-teal-400 bg-teal-50 text-teal-700'
+                        : 'border-gray-200 hover:border-teal-300 hover:bg-teal-50'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-medium">Private Doctor</div>
-                        <div className="text-sm opacity-75">Set your own rates</div>
+                        <div className="text-sm text-gray-500">Set your own rates</div>
                       </div>
                       <div className="text-right">
                         <div className="font-semibold">
@@ -318,20 +318,20 @@ const CreateAppointmentSlots = () => {
                   {doctorProfile.workingWithAngill && currentSlot.type === 'online' && (
                     <button
                       onClick={() => setCurrentSlot({...currentSlot, serviceType: 'angill'})}
-                      className={`p-4 rounded-xl border-2 transition-colors text-left ${
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-sm ${
                         currentSlot.serviceType === 'angill'
-                          ? 'border-green-500 bg-green-50 text-green-700'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-green-400 bg-green-50 text-green-700'
+                          : 'border-gray-200 hover:border-green-300 hover:bg-green-50'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium">Angill Doctor</div>
-                          <div className="text-sm opacity-75">Fixed rate, online only</div>
+                          <div className="text-sm text-gray-500">Fixed rate, online only</div>
                         </div>
                         <div className="text-right">
                           <div className="font-semibold">${doctorProfile.angillFixedRate}</div>
-                          <div className="text-xs opacity-75">Fixed</div>
+                          <div className="text-xs text-gray-500">Fixed</div>
                         </div>
                       </div>
                     </button>
@@ -344,13 +344,13 @@ const CreateAppointmentSlots = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Custom Price (Optional)</label>
                   <div className="relative">
-                    <DollarSign className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <DollarSign className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500" />
                     <input
                       type="number"
                       value={currentSlot.price}
                       onChange={(e) => setCurrentSlot({...currentSlot, price: e.target.value})}
                       placeholder={currentSlot.type === 'online' ? doctorProfile.privateRates.onlineConsultation : doctorProfile.privateRates.physicalVisit}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 outline-none bg-white transition-colors duration-200"
                     />
                   </div>
                   <p className="text-sm text-gray-500 mt-1">Leave empty to use default rate</p>
@@ -361,13 +361,16 @@ const CreateAppointmentSlots = () => {
               {currentSlot.type === 'physical' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                  <input
-                    type="text"
-                    value={currentSlot.location}
-                    onChange={(e) => setCurrentSlot({...currentSlot, location: e.target.value})}
-                    placeholder={doctorProfile.clinicAddress}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                  />
+                  <div className="relative">
+                    <MapPin className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500" />
+                    <input
+                      type="text"
+                      value={currentSlot.location}
+                      onChange={(e) => setCurrentSlot({...currentSlot, location: e.target.value})}
+                      placeholder={doctorProfile.clinicAddress}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 outline-none bg-white transition-colors duration-200"
+                    />
+                  </div>
                   <p className="text-sm text-gray-500 mt-1">Leave empty to use default clinic address</p>
                 </div>
               )}
@@ -376,21 +379,21 @@ const CreateAppointmentSlots = () => {
               <button
                 onClick={addSlot}
                 disabled={!currentSlot.startTime || !currentSlot.endTime}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
               >
                 <Plus className="w-4 h-4" />
-                Add Slot to Schedule
+                <span className="text-sm font-medium">Add Slot to Schedule</span>
               </button>
             </div>
           </div>
 
           {/* Created Slots */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">
                 Created Slots ({slots.filter(slot => slot.date === selectedDate).length})
               </h3>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-600">
                 {new Date(selectedDate).toLocaleDateString('en-US', { 
                   weekday: 'long', 
                   year: 'numeric', 
@@ -403,19 +406,19 @@ const CreateAppointmentSlots = () => {
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {slots.filter(slot => slot.date === selectedDate).length === 0 ? (
                 <div className="text-center py-8">
-                  <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No slots created for this date</p>
-                  <p className="text-sm text-gray-400 mt-1">Add your first slot using the form</p>
+                  <Clock className="w-12 h-12 text-green-200 mx-auto mb-4" />
+                  <p className="text-gray-600 font-medium">No slots created for this date</p>
+                  <p className="text-sm text-gray-500 mt-1">Add your first slot using the form</p>
                 </div>
               ) : (
                 slots
                   .filter(slot => slot.date === selectedDate)
                   .sort((a, b) => a.startTime.localeCompare(b.startTime))
                   .map((slot) => (
-                    <div key={slot.id} className="p-4 border border-gray-200 rounded-xl hover:border-gray-300 transition-colors">
+                    <div key={slot.id} className="p-4 border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-sm transition-all duration-200">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                             {getSlotTypeIcon(slot.type)}
                           </div>
                           <div>
@@ -441,14 +444,14 @@ const CreateAppointmentSlots = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => duplicateSlot(slot)}
-                            className="p-2 text-gray-500 hover:text-green-500 hover:bg-green-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
                             title="Duplicate slot"
                           >
                             <Copy className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => removeSlot(slot.id)}
-                            className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                             title="Delete slot"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -457,9 +460,9 @@ const CreateAppointmentSlots = () => {
                       </div>
                       
                       {slot.type === 'physical' && (
-                        <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="mt-3 p-3 bg-green-50 rounded-lg">
                           <div className="flex items-start gap-2">
-                            <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
+                            <MapPin className="w-4 h-4 text-green-500 mt-0.5" />
                             <span className="text-sm text-gray-600">
                               {slot.location || doctorProfile.clinicAddress}
                             </span>
@@ -475,33 +478,33 @@ const CreateAppointmentSlots = () => {
 
         {/* Schedule Preview */}
         {showPreview && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Weekly Schedule Preview</h3>
             
             <div className="grid grid-cols-7 gap-4">
               {getDaysOfWeek().map((day) => {
                 const daySlots = slots.filter(slot => slot.date === day.date);
                 return (
-                  <div key={day.date} className="border border-gray-200 rounded-xl overflow-hidden">
+                  <div key={day.date} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
                     <div className={`p-3 text-center font-medium ${
                       day.isToday ? 'bg-green-100 text-green-700' : 'bg-gray-50 text-gray-700'
                     }`}>
                       <div className="text-sm">{day.day}</div>
-                      <div className="text-lg">{day.dayNum}</div>
+                      <div className="text-lg font-bold">{day.dayNum}</div>
                     </div>
                     
-                    <div className="p-3 space-y-2 min-h-32">
+                    <div className="p-3 space-y-2 min-h-32 bg-white">
                       {daySlots.length === 0 ? (
                         <p className="text-xs text-gray-400 text-center">No slots</p>
                       ) : (
                         daySlots
                           .sort((a, b) => a.startTime.localeCompare(b.startTime))
                           .map((slot) => (
-                            <div key={slot.id} className="p-2 bg-gray-50 rounded text-xs">
-                              <div className="font-medium">{formatTime(slot.startTime)}</div>
+                            <div key={slot.id} className="p-2 bg-green-50 rounded-lg text-xs">
+                              <div className="font-medium text-gray-900">{formatTime(slot.startTime)}</div>
                               <div className="text-gray-600 flex items-center gap-1">
                                 {getSlotTypeIcon(slot.type)}
-                                ${slot.price || (slot.type === 'online' ? doctorProfile.privateRates.onlineConsultation : doctorProfile.privateRates.physicalVisit)}
+                                <span>${slot.price || (slot.type === 'online' ? doctorProfile.privateRates.onlineConsultation : doctorProfile.privateRates.physicalVisit)}</span>
                               </div>
                             </div>
                           ))

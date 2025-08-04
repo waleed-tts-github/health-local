@@ -7,18 +7,19 @@ import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 const SelectedServiceInfo = ({ isImageLoaded, selectedService, handleConsultationClick, setCurrentStep, goBack, setIsBookingThroughClinic, isBookingThroughClinic }) => {
   return (
     <div className="min-h-screen bg-white">
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4 mb-4">
-        <div className="flex items-center max-w-4xl mx-auto relative">
-          <button
-            onClick={() => {
-            
-                goBack();
-              
-            }}
-            className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-          </button>
+     <div className="bg-gradient-to-r h-[86px] from-emerald-50 to-teal-50 rounded-sm border border-gray-100 p-3 sm:p-4">
+            <div className="flex items-center max-w-4xl mx-auto mt-[2px] relative">
+              <button
+                onClick={()=>{
+                  
+                        goBack()
+                    
+    
+                }}
+                className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+              </button>
           <div className="flex-1 text-center h-10 sm:h-[48px]"></div>
         </div>
       </div>

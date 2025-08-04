@@ -7,7 +7,7 @@ const PatientSelection = ({ selectedPatient, setSelectedPatient }) => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-gray-100 p-3 sm:p-4">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-sm border border-gray-100 p-3 sm:p-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
           <button
             onClick={()=>{

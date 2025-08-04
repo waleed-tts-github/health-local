@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Filter, Calendar, Clock, FileText, X, ChevronDown, Trash2, Printer } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Search, Filter, Calendar, Clock, FileText, X, ChevronDown, Trash2, Printer, ToggleLeft, ToggleRight } from 'lucide-react';
 import BackButton from '../../components/BackButton';
 import PrescriptionDetailsModal from '../../components/patient/PrescriptionDetailsModel';
 
@@ -13,6 +13,8 @@ const Prescriptions = () => {
   const [endDate, setEndDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [activeFilter, setActiveFilter] = useState(null);
+  const [prescriptionToggles, setPrescriptionToggles] = useState({});
+  const [mainToggle, setMainToggle] = useState(false);
 
   // Sample prescription data
   const prescriptions = [
@@ -95,6 +97,14 @@ const Prescriptions = () => {
     }
   ];
 
+  useEffect(() => {
+    const initialToggles = {};
+    prescriptions.forEach(prescription => {
+      initialToggles[prescription.id] = false;
+    });
+    setPrescriptionToggles(initialToggles);
+  }, []);
+
   const getDateRange = (days) => {
     const end = new Date();
     const start = new Date();
@@ -142,6 +152,29 @@ const Prescriptions = () => {
     setEndDate(null);
     setShowFilterDropdown(false);
     setShowDatePicker(false);
+  };
+
+  const handleMainToggle = () => {
+    const newToggleState = !mainToggle;
+    setMainToggle(newToggleState);
+    const newToggles = {};
+    prescriptions.forEach(prescription => {
+      newToggles[prescription.id] = newToggleState;
+    });
+    setPrescriptionToggles(newToggles);
+  };
+
+  const handlePrescriptionToggle = (prescriptionId) => {
+    setPrescriptionToggles(prev => ({
+      ...prev,
+      [prescriptionId]: !prev[prescriptionId]
+    }));
+    const updatedToggles = {
+      ...prescriptionToggles,
+      [prescriptionId]: !prescriptionToggles[prescriptionId]
+    };
+    const allToggled = Object.values(updatedToggles).every(toggle => toggle);
+    setMainToggle(allToggled);
   };
 
   const filteredPrescriptions = useMemo(() => {
@@ -264,11 +297,23 @@ const Prescriptions = () => {
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div className="pb-4 sm:pb-6">
-          <div className="mb-4 sm:mb-6">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">My Prescriptions</h1>
-            <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
-              Manage and track your prescriptions.
-            </p>
+          <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">My Prescriptions</h1>
+              <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
+                Manage and track your prescriptions.
+              </p>
+            </div>
+            <button
+              onClick={handleMainToggle}
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 sm:py-3 bg-white text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200 border border-gray-200"
+              aria-label="Toggle all prescriptions"
+            >
+              <div className={`relative w-8 sm:w-10 h-4 sm:h-5 rounded-full transition-all duration-300 ${mainToggle ? 'bg-green-500' : 'bg-gray-300'}`}>
+                <div className={`absolute top-0.5 w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-white shadow-sm transform transition-all duration-300 ${mainToggle ? 'translate-x-4 sm:translate-x-5' : 'translate-x-0.5'}`} />
+              </div>
+              <span className="text-xs sm:text-sm font-medium">Toggle All</span>
+            </button>
           </div>
 
           {/* Search and Filters Section */}
@@ -445,6 +490,19 @@ const Prescriptions = () => {
                     <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 truncate">{prescription.doctorName}</h3>
                     <p className="text-emerald-600 font-medium text-xs sm:text-sm">{prescription.specialty}</p>
                   </div>
+                  <button
+                    onClick={() => handlePrescriptionToggle(prescription.id)}
+                    className="relative w-8 sm:w-10 h-4 sm:h-5 rounded-full transition-all duration-300"
+                    style={{ backgroundColor: prescriptionToggles[prescription.id] ? '#10B981' : '#D1D5DB' }}
+                    aria-label={`Toggle visibility for prescription ${prescription.prescriptionId}`}
+                    title="Toggle Prescription"
+                  >
+                    <div
+                      className={`absolute top-0.5 w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-white shadow-sm transform transition-all duration-300 ${
+                        prescriptionToggles[prescription.id] ? 'translate-x-4 sm:translate-x-5' : 'translate-x-0.5'
+                      }`}
+                    />
+                  </button>
                 </div>
                 
                 <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4 flex-1">

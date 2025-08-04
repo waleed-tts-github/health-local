@@ -25,7 +25,7 @@ const DoctorLayout = ({ children }) => {
 
   const menuItems = [
     { name: 'Home', icon: Home, path: '/doctor' },
-    { name: 'Appointment Slots', icon: Calendar, path: '/doctor/appointments' },
+    { name: 'Appointment Slots', icon: Calendar, path: '/doctor/create-appointment-slots' },
     { name: 'Financial Account', icon: Wallet, path: '/doctor/financial-account' },
     { name: 'Patient Record', icon: FileText, path: '/doctor/patient-record' },
     { name: 'Logout', icon: LogOut, path: '/logout' },

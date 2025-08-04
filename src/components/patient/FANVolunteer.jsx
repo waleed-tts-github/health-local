@@ -1,6 +1,6 @@
 import React from 'react';
 import { Droplet, Wallet, HandHeart, Hand } from 'lucide-react';
-
+import help from '../../assets/help.png'
 const FANVolunteer = ({ isBloodVolunteer, setIsBloodVolunteer, bloodGroup, setBloodGroup }) => {
   const handleBloodVolunteerChange = (e) => {
     setIsBloodVolunteer(e.target.checked);
@@ -12,11 +12,9 @@ const FANVolunteer = ({ isBloodVolunteer, setIsBloodVolunteer, bloodGroup, setBl
   return (
     <div className="mb-12">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-sm mb-6 shadow-lg">
-          <HandHeart className="w-6 h-6 text-white" fill="currentColor" />
-        </div>
+       
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center justify-center">
-          <Hand className="w-6 h-6 text-blue-600 mr-3" />
+          <img src={help} className="w-10 h-10 text-blue-600 mr-3" />
           FAN Volunteer
         </h2>
         <p className="text-sm text-gray-600 mb-2">"Feed A Need. Be the Help Someone Wasn't Expecting."</p>

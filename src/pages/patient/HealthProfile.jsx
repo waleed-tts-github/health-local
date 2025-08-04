@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, User, Calendar, Droplets, Heart, Pill, Users, Stethoscope, Shield } from 'lucide-react';
+import { ChevronDown, User, Calendar, Droplets, Heart, Pill, Users, Stethoscope, Shield, ToggleLeft, ToggleRight } from 'lucide-react';
 import BackButton from '../../components/BackButton';
 
 const HealthProfile = () => {
@@ -15,12 +15,17 @@ const HealthProfile = () => {
     surgicalHistory: '',
     drugAllergySecond: ''
   });
+  const [formToggle, setFormToggle] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleFormToggle = () => {
+    setFormToggle(prev => !prev);
   };
 
   const genderOptions = ['Male', 'Female', 'Other', 'Prefer not to say'];
@@ -128,7 +133,7 @@ const HealthProfile = () => {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-10"
+          className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500"
         />
         {Icon && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -143,9 +148,21 @@ const HealthProfile = () => {
     <div className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
-          <div className="text-center">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Complete Your Health Profile</h2>
-            <p className="text-xs sm:text-sm text-gray-600">Help us provide you with personalized healthcare services</p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-center sm:text-left">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Complete Your Health Profile</h2>
+              <p className="text-xs sm:text-sm text-gray-600">Help us provide you with personalized healthcare services</p>
+            </div>
+            <button
+              onClick={handleFormToggle}
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 sm:py-3 bg-white text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200 border border-gray-200"
+              aria-label="Toggle health profile form"
+            >
+              <div className={`relative w-8 sm:w-10 h-4 sm:h-5 rounded-full transition-all duration-300 ${formToggle ? 'bg-green-500' : 'bg-gray-300'}`}>
+                <div className={`absolute top-0.5 w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-white shadow-sm transform transition-all duration-300 ${formToggle ? 'translate-x-4 sm:translate-x-5' : 'translate-x-0.5'}`} />
+              </div>
+              <span className="text-xs sm:text-sm font-medium">Hide Health Profile</span>
+            </button>
           </div>
         </div>
 

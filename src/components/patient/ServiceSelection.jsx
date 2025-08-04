@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, ChevronDownCircle, LogOut, Shield, Stethoscope } from 'lucide-react';
+import { Calendar, ChevronDownCircle, LogOut, Shield,Clock,MapPin, Stethoscope } from 'lucide-react';
 import homepagebg from '../../assets/homepagebg.png';
 import logo from '../../assets/Group.png';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
