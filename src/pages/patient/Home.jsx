@@ -12,17 +12,13 @@ const Home = () => {
   const {
     currentStep,
     selectedService,
-    handleShowCyberClinics,
-    handleServiceSelect,
-    handleShowHealthComplaint,
     handleConsultationClick,
-    resetFlow,
+  
     goBack,
     setCurrentStep,
     setIsBookingThroughClinic,
     isBookingThroughClinic,
-    handleAddDependentClick,
-    handleDependentSelect,
+  
   } = useConsultationFlow();
 
   const [selectedPatient, setSelectedPatient] = useState(null);

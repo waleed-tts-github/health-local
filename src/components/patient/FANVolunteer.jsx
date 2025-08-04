@@ -70,7 +70,7 @@ const FANVolunteer = ({ isBloodVolunteer, setIsBloodVolunteer, bloodGroup, setBl
               </select>
             </div>
           )}
-          <p className="text-sm text-blue-600 font-medium mt-4">
+          <p className="text-sm text-gray-600 font-medium mt-4">
             Be the Reason Someone Survives. Donate Today.
           </p>
         </div>

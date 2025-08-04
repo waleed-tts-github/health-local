@@ -8,7 +8,6 @@ import {
   Heart,
   ChevronDown,
   Award,
-  
   Shield,
   ArrowLeft,
   Star as StarIcon,
@@ -21,19 +20,25 @@ import BookingConnectModal from '../../components/patient/BookingConnectModel';
 import WaitingModal from '../../components/patient/WaitingModel';
 import NotAvailableModal from '../../components/patient/NotAvailableModel';
 import ConfirmedModal from '../../components/patient/ConfirmedModel';
-import QueueModal from '../../components/patient/QueueModel'
-import PaymentModal from '../../components/patient/PaymentModel'
-import SuccessModal from '../../components/patient/BookingSuccessModel'
-import BookAppointmentModal from '../../components/patient/BookingAppointmentModel'
+import QueueModal from '../../components/patient/QueueModel';
+import PaymentModal from '../../components/patient/PaymentModel';
+import SuccessModal from '../../components/patient/BookingSuccessModel';
+import BookAppointmentModal from '../../components/patient/BookingAppointmentModel';
 import MeetingModal from '../../components/patient/MeetingModel';
 import NextInLineModal from '../../components/patient/NextInLineModel';
 import FeedbackModal from '../../components/patient/FeedbackModel';
 import AppointmentRescheduledModal from '../../components/patient/AppointmentRescheduledModel';
-import logo from '../../assets/Group.png'
+import logo from '../../assets/Group.png';
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const Doctors = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('Angill Doctors');
+  const { selectedService } = useConsultationFlow();
+  const [activeTab, setActiveTab] = useState(
+    selectedService && (selectedService.toLowerCase() === 'private')
+      ? 'Private Doctors'
+      : 'Angill Doctors'
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
@@ -76,7 +81,7 @@ const Doctors = () => {
       id: 2,
       name: 'Dr. Ahmad Hassan',
       specialty: 'Dermatology',
-            description: 'Renowned dermatologist offering advanced skincare treatments and cosmetic procedures.',
+      description: 'Renowned dermatologist offering advanced skincare treatments and cosmetic procedures.',
       rating: 4.8,
       reviews: 203,
       experience: 12,
@@ -180,7 +185,7 @@ const Doctors = () => {
   };
 
   const handleBack = () => {
-    navigate("/patient", { replace: true });
+    navigate('/patient', { replace: true });
   };
 
   return (
@@ -259,12 +264,14 @@ const Doctors = () => {
                         onClick={() => setActiveTab(tab)}
                         className={`px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-full font-semibold sm:font-bold text-xs sm:text-sm md:text-base transition-all duration-300 shadow-md ${
                           activeTab === tab
-                            ? 'bg-green-500 text-white shadow-lg transform scale-105'
+                            ? tab === 'Angill Doctors'
+                              ? 'bg-green-500 text-white shadow-lg transform scale-105'
+                              : 'bg-blue-500 text-white shadow-lg transform scale-105'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
                         } flex items-center gap-1 sm:gap-2`}
                       >
-                        {tab === 'Angill Doctors' && <img src={logo} className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
-                        {tab === 'Private Doctors' && <Shield className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
+                        {tab === 'Angill Doctors' && <img src={logo} alt="Angill Logo" className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
+                        {tab === 'Private Doctors' && <Shield className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-white" />}
                         <span className="hidden sm:inline">{tab}</span>
                         <span className="sm:hidden">{tab === 'Angill Doctors' ? 'Angill' : 'Private'}</span>
                       </button>
@@ -330,172 +337,172 @@ const Doctors = () => {
         </div>
 
         {/* Responsive Filter Modal */}
-{isFilterModalOpen && (
-  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
-      <div className="relative z-10 flex flex-col h-full">
-        {/* Header with close button */}
-        <div className="flex items-center justify-between p-4 pb-3">
-          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
-            Filter Doctors
-          </h3>
-          <button
-            onClick={closeFilterModal}
-            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
-            aria-label="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        {isFilterModalOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
+              <div className="relative z-10 flex flex-col h-full">
+                {/* Header with close button */}
+                <div className="flex items-center justify-between p-4 pb-3">
+                  <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+                    Filter Doctors
+                  </h3>
+                  <button
+                    onClick={closeFilterModal}
+                    className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+                    aria-label="Close modal"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
 
-        {/* Main content */}
-        <div className="flex-1 flex flex-col px-4 pb-4 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Specialty</label>
-              <select
-                value={selectedSpecialty}
-                onChange={(e) => setSelectedSpecialty(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
-              >
-                {specialties.map((specialty) => (
-                  <option key={specialty} value={specialty} className="text-gray-900">
-                    {specialty}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {/* Main content */}
+                <div className="flex-1 flex flex-col px-4 pb-4 space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Specialty</label>
+                      <select
+                        value={selectedSpecialty}
+                        onChange={(e) => setSelectedSpecialty(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
+                      >
+                        {specialties.map((specialty) => (
+                          <option key={specialty} value={specialty} className="text-gray-900">
+                            {specialty}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Location</label>
-              <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
-              >
-                {locations.map((location) => (
-                  <option key={location} value={location} className="text-gray-900">
-                    {location}
-                  </option>
-                ))}
-              </select>
-            </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Location</label>
+                      <select
+                        value={selectedLocation}
+                        onChange={(e) => setSelectedLocation(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
+                      >
+                        {locations.map((location) => (
+                          <option key={location} value={location} className="text-gray-900">
+                            {location}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Gender</label>
-              <select
-                value={selectedGender}
-                onChange={(e) => setSelectedGender(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
-              >
-                {genders.map((gender) => (
-                  <option key={gender} value={gender} className="text-gray-900">
-                    {gender}
-                  </option>
-                ))}
-              </select>
-            </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Gender</label>
+                      <select
+                        value={selectedGender}
+                        onChange={(e) => setSelectedGender(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
+                      >
+                        {genders.map((gender) => (
+                          <option key={gender} value={gender} className="text-gray-900">
+                            {gender}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Rating</label>
-              <select
-                value={selectedRating}
-                onChange={(e) => setSelectedRating(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
-              >
-                {ratings.map((rating) => (
-                  <option key={rating} value={rating} className="text-gray-900">
-                    {rating}
-                  </option>
-                ))}
-              </select>
-            </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Rating</label>
+                      <select
+                        value={selectedRating}
+                        onChange={(e) => setSelectedRating(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
+                      >
+                        {ratings.map((rating) => (
+                          <option key={rating} value={rating} className="text-gray-900">
+                            {rating}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Availability</label>
-              <select
-                value={selectedAvailability}
-                onChange={(e) => setSelectedAvailability(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
-              >
-                {availabilities.map((availability) => (
-                  <option key={availability} value={availability} className="text-gray-900">
-                    {availability}
-                  </option>
-                ))}
-              </select>
-            </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Availability</label>
+                      <select
+                        value={selectedAvailability}
+                        onChange={(e) => setSelectedAvailability(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
+                      >
+                        {availabilities.map((availability) => (
+                          <option key={availability} value={availability} className="text-gray-900">
+                            {availability}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Experience</label>
-              <select
-                value={selectedExperience}
-                onChange={(e) => setSelectedExperience(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
-              >
-                {experiences.map((experience) => (
-                  <option key={experience} value={experience} className="text-gray-900">
-                    {experience}
-                  </option>
-                ))}
-              </select>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Experience</label>
+                      <select
+                        value={selectedExperience}
+                        onChange={(e) => setSelectedExperience(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 hover:border-gray-300 transition-all"
+                      >
+                        {experiences.map((experience) => (
+                          <option key={experience} value={experience} className="text-gray-900">
+                            {experience}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="px-4 pb-4">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={closeFilterModal}
+                      className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={closeFilterModal}
+                      className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all"
+                    >
+                      Apply Filters
+                    </button>
+                  </div>
+                </div>
+
+                <style jsx>{`
+                  /* Enhanced scrollbar styling - only for small devices */
+                  .h-[98vh] {
+                    scrollbar-width: thin;
+                    scrollbar-color: #10b981 #e5e7eb;
+                  }
+                  .h-[98vh]::-webkit-scrollbar {
+                    width: 8px;
+                  }
+                  .h-[98vh]::-webkit-scrollbar-track {
+                    background: #e5e7eb;
+                    border-radius: 4px;
+                  }
+                  .h-[98vh]::-webkit-scrollbar-thumb {
+                    background: #10b981;
+                    border-radius: 4px;
+                  }
+                  .h-[98vh]::-webkit-scrollbar-thumb:hover {
+                    background: #059669;
+                  }
+                  
+                  /* Hide scrollbar on larger screens */
+                  @media (min-width: 640px) {
+                    .h-[98vh] {
+                      scrollbar-width: none;
+                    }
+                    .h-[98vh]::-webkit-scrollbar {
+                      display: none;
+                    }
+                  }
+                `}</style>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="px-4 pb-4">
-          <div className="flex gap-2">
-            <button
-              onClick={closeFilterModal}
-              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={closeFilterModal}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all"
-            >
-              Apply Filters
-            </button>
-          </div>
-        </div>
-
-        <style jsx>{`
-          /* Enhanced scrollbar styling - only for small devices */
-          .h-[98vh] {
-            scrollbar-width: thin;
-            scrollbar-color: #10b981 #e5e7eb;
-          }
-          .h-[98vh]::-webkit-scrollbar {
-            width: 8px;
-          }
-          .h-[98vh]::-webkit-scrollbar-track {
-            background: #e5e7eb;
-            border-radius: 4px;
-          }
-          .h-[98vh]::-webkit-scrollbar-thumb {
-            background: #10b981;
-            border-radius: 4px;
-          }
-          .h-[98vh]::-webkit-scrollbar-thumb:hover {
-            background: #059669;
-          }
-          
-          /* Hide scrollbar on larger screens */
-          @media (min-width: 640px) {
-            .h-[98vh] {
-              scrollbar-width: none;
-            }
-            .h-[98vh]::-webkit-scrollbar {
-              display: none;
-            }
-          }
-        `}</style>
-      </div>
-    </div>
-  </div>
-)}
+        )}
 
         {/* Responsive Results Section */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
@@ -526,7 +533,7 @@ const Doctors = () => {
 
         {/* Modals */}
         <BookingConnectModal />
-        <AppointmentRescheduledModal/>
+        <AppointmentRescheduledModal />
         <WaitingModal />
         <NotAvailableModal />
         <ConfirmedModal />

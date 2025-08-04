@@ -141,7 +141,7 @@ const BookingConnectModal = () => {
                 className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5"
               >
                 <Calendar className="w-4 h-4" />
-                Schedule Appointment Tomorrow Onward
+                Schedule Appointment For Tomorrow Onward
               </button>
               <p className="text-red-500 text-xs font-light text-center mt-2">
                 *Physical Appointment Can Only Be Booked For Private Doctors*

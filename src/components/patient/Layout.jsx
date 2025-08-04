@@ -29,7 +29,7 @@ import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import logo from '../../assets/Group.png'
 
 const Layout = ({ children }) => {
-  const {setCurrentStep} = useConsultationFlow()
+  const { setCurrentStep } = useConsultationFlow();
   const [activeItem, setActiveItem] = useState('Home');
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -87,7 +87,6 @@ const Layout = ({ children }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-
   const toggleDropdown = (itemName) => {
     setOpenDropdown(openDropdown === itemName ? null : itemName);
   };
@@ -99,13 +98,11 @@ const Layout = ({ children }) => {
   const handleNavigation = (item) => {
     setActiveItem(item.name);
     if (item.path) {
-      if(item.path=="/patient")
-      {
-        setCurrentStep(1)
-        navigate(item.path)
-      }
-      else{
-      navigate(item.path);
+      if (item.path === '/patient') {
+        setCurrentStep(1);
+        navigate(item.path);
+      } else {
+        navigate(item.path);
       }
     }
     if (!item.subItems) {
@@ -129,7 +126,7 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-inter">
+    <div className="flex min-h-screen bg-gray-50 font-inter">
       <style jsx>{`
         .glassmorphism {
           background: rgba(255, 255, 255, 0.25);
@@ -253,15 +250,15 @@ const Layout = ({ children }) => {
           {/* Header */}
           <div className="p-4">
             <button onClick={handleLogoClick} className="group">
-              <div className="flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 glassmorphism rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
-                    <img src={logo}/>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-12 h-12 glassmorphism rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300 p-2">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                    <img src={logo} alt="ANGILL Logo" />
                   </div>
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-white tracking-wide">ANGILL</h1>
-                  <p className="text-emerald-100 text-xs font-medium">Healthcare</p>
+                  <p className="text-emerald-100 text-xs font-medium mt-[-2px]">Healthcare</p>
                 </div>
               </div>
               <p className="text-green-200 text-xs italic font-light">
@@ -368,14 +365,14 @@ const Layout = ({ children }) => {
             {/* Mobile Header */}
             <div className="p-4 flex items-center justify-between">
               <button onClick={handleLogoClick} className="flex items-center gap-3">
-                <div className="w-10 h-10 glassmorphism rounded-lg flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
-                    <img src={logo}/>
+                <div className="w-12 h-12 glassmorphism rounded-xl flex items-center justify-center p-2">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                    <img src={logo} alt="ANGILL Logo" />
                   </div>
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-white">ANGILL</h1>
-                  <p className="text-green-100 text-xs">Healthcare</p>
+                  <p className="text-green-100 text-xs mt-[-2px]">Healthcare</p>
                 </div>
               </button>
               
@@ -480,12 +477,13 @@ const Layout = ({ children }) => {
               </button>
               
               <div className="lg:hidden">
-                <button onClick={handleLogoClick} className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-sm flex bg-green-500 items-center justify-center">
-                    <img src={logo}/>
+                <button onClick={handleLogoClick} className="flex items-center gap-2 p-2">
+                  <div className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center p-2">
+                    <img src={logo} alt="ANGILL Logo" className="w-8 h-8" />
                   </div>
                   <div>
                     <h1 className="text-lg font-bold text-gray-900">ANGILL</h1>
+                    <p className="text-gray-500 text-xs mt-[-2px]">Healthcare</p>
                   </div>
                 </button>
               </div>

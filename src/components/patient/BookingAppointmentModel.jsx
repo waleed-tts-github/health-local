@@ -34,6 +34,10 @@ const BookAppointmentModal = () => {
     'Patel Hospital'
   ];
 
+  const segments = selectedAppointmentType === 'physical' 
+    ? ['Private Doctors'] 
+    : ['Private Doctors', 'ANGILL Doctors'];
+
   if (currentModal !== 'bookAppointment') return null;
 
   const handlePayment = () => {
@@ -41,126 +45,83 @@ const BookAppointmentModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-green-900/60 via-green-800/50 to-emerald-900/60 backdrop-blur-md flex items-center justify-center z-50 px-4">
-      <div className="bg-green-50/20 backdrop-blur-2xl rounded-3xl max-w-3xl w-full h-[98vh] flex flex-col shadow-2xl border border-green-200/30 overflow-y-auto sm:overflow-visible relative">
-        {/* Glass overlay effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-green-100/10 via-white/5 to-green-200/10 rounded-3xl pointer-events-none"></div>
-        
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-white rounded-2xl max-w-3xl w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
         <div className="relative z-10 flex flex-col h-full">
           {/* Header with close button */}
-          <div className="flex items-center justify-between p-6 pb-4">
-            <h3 className="text-xl font-bold text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+          <div className="flex items-center justify-between p-4 pb-3">
+            <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
               Book Appointment
             </h3>
             <button 
               onClick={closeModal} 
-              className="p-2 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 backdrop-blur-sm border border-white/20"
+              className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+              aria-label="Close modal"
             >
-              <X className="w-6 h-6 text-white" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Main content */}
-          <div className="flex-1 px-6 pb-6 overflow-y-auto">
-            <div className="space-y-8">
-              {/* Appointment Type */}
-              <div>
-                <h4 className="text-sm font-bold text-white mb-2">Appointment Type</h4>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setSelectedAppointmentType('online')}
-                    className={`flex-1 py-3 px-4 rounded-xl font-medium text-sm transition-all duration-300 backdrop-blur-sm border border-white/20 ${
-                      selectedAppointmentType === 'online'
-                        ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-md'
-                        : 'bg-white/20 text-white hover:bg-white/30'
-                    }`}
-                  >
-                    Online
-                  </button>
-                  <button
-                    onClick={() => setSelectedAppointmentType('physical')}
-                    className={`flex-1 py-3 px-4 rounded-xl font-medium text-sm transition-all duration-300 backdrop-blur-sm border border-white/20 ${
-                      selectedAppointmentType === 'physical'
-                        ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-md'
-                        : 'bg-white/20 text-white hover:bg-white/30'
-                    }`}
-                  >
-                    Physical
-                  </button>
-                </div>
-              </div>
-
-              {/* Segment Type */}
-              <div className="relative" style={{ zIndex: showSegmentDropdown ? 30 : 10 }}>
-                <h4 className="text-sm font-bold text-white mb-2">Segment Type</h4>
-                <div className="relative">
-                  <button
-                    onClick={() => setShowSegmentDropdown(!showSegmentDropdown)}
-                    className="w-full flex items-center justify-between p-3 bg-white/20 rounded-xl border border-white/20 text-white text-sm font-medium hover:bg-white/30 transition-all duration-300 backdrop-blur-sm"
-                  >
-                    <span>{selectedSegment}</span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-white transition-transform ${
-                        showSegmentDropdown ? 'rotate-180' : ''
+          <div className="flex-1 px-4 pb-4 overflow-y-auto">
+            <div className="lg:grid lg:grid-cols-2 lg:gap-4 space-y-4 lg:space-y-0">
+              {/* Left Side: Appointment Type, Segment Type, Health Complaint, Describe Problem */}
+              <div className="space-y-4">
+                {/* Appointment Type */}
+                <div>
+                  <h4 className="text-sm font-bold text-gray-700 mb-2">Appointment Type</h4>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setSelectedAppointmentType('online')}
+                      className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-xs transition-all ${
+                        selectedAppointmentType === 'online'
+                          ? 'bg-green-500 text-white shadow-md'
+                          : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                       }`}
-                    />
-                  </button>
-                  {showSegmentDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-green-800/95 border border-green-700 rounded-xl shadow-xl z-50 backdrop-blur-lg">
-                      <div className="p-1">
-                        <button
-                          onClick={() => {
-                            setSelectedSegment('Private Doctors');
-                            setShowSegmentDropdown(false);
-                          }}
-                          className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium"
-                        >
-                          Private Doctors
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedSegment('ANGILL Doctors');
-                            setShowSegmentDropdown(false);
-                          }}
-                          className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium"
-                        >
-                          ANGILL Doctors
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                    >
+                      Online
+                    </button>
+                    <button
+                      onClick={() => setSelectedAppointmentType('physical')}
+                      className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-xs transition-all ${
+                        selectedAppointmentType === 'physical'
+                          ? 'bg-green-500 text-white shadow-md'
+                          : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                      }`}
+                    >
+                      Physical
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Location Dropdown (Shown only for Physical Appointments) */}
-              {selectedAppointmentType === 'physical' && (
-                <div className="relative" style={{ zIndex: showLocationDropdown ? 25 : 10 }}>
-                  <h4 className="text-sm font-bold text-white mb-2">Location</h4>
+                {/* Segment Type */}
+                <div className="relative">
+                  <h4 className="text-sm font-bold text-gray-700 mb-2">Segment Type</h4>
                   <div className="relative">
                     <button
-                      onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                      className="w-full flex items-center justify-between p-3 bg-white/20 rounded-xl border border-white/20 text-white text-sm font-medium hover:bg-white/30 transition-all duration-300 backdrop-blur-sm"
+                      onClick={() => setShowSegmentDropdown(!showSegmentDropdown)}
+                      className="w-full flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-xs font-medium hover:bg-gray-100 transition-all"
                     >
-                      <span>{selectedLocation || 'Select Location'}</span>
+                      <span>{selectedSegment}</span>
                       <ChevronDown
-                        className={`w-5 h-5 text-white transition-transform ${
-                          showLocationDropdown ? 'rotate-180' : ''
+                        className={`w-4 h-4 text-gray-600 transition-transform ${
+                          showSegmentDropdown ? 'rotate-180' : ''
                         }`}
                       />
                     </button>
-                    {showLocationDropdown && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-green-800/95 border border-green-700 rounded-xl shadow-xl z-50 backdrop-blur-lg">
+                    {showSegmentDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
                         <div className="p-1">
-                          {locations.map((location) => (
+                          {segments.map((segment) => (
                             <button
-                              key={location}
+                              key={segment}
                               onClick={() => {
-                                setSelectedLocation(location);
-                                setShowLocationDropdown(false);
+                                setSelectedSegment(segment);
+                                setShowSegmentDropdown(false);
                               }}
-                              className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium"
+                              className="w-full text-left p-3 hover:bg-gray-100 rounded-lg text-xs text-gray-700 transition-all font-medium"
                             >
-                              {location}
+                              {segment}
                             </button>
                           ))}
                         </div>
@@ -168,48 +129,86 @@ const BookAppointmentModal = () => {
                     )}
                   </div>
                 </div>
-              )}
 
-              {/* Health Complaint */}
-              <div className="relative" style={{ zIndex: showComplaintDropdown ? 20 : 10 }}>
-                <h4 className="text-sm font-bold text-white mb-2">Health Complaint</h4>
-                <div className="relative">
-                  <button
-                    onClick={() => setShowComplaintDropdown(!showComplaintDropdown)}
-                    className="w-full flex items-center justify-between p-3 bg-white/20 rounded-xl border border-white/20 text-white text-sm font-medium hover:bg-white/30 transition-all duration-300 backdrop-blur-sm"
-                  >
-                    <span>Health Complaint (Auto Fetch)</span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-white transition-transform ${
-                        showComplaintDropdown ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </button>
-                  {showComplaintDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-green-800/95 border border-green-700 rounded-xl shadow-xl z-50 backdrop-blur-lg">
-                      <div className="p-1">
-                        <button className="w-full text-left p-3 hover:bg-green-700/80 rounded-lg text-sm text-white transition-all duration-300 font-medium">
-                          Auto-generated complaint options will appear here
-                        </button>
-                      </div>
+                {/* Location Dropdown (Shown only for Physical Appointments) */}
+                {selectedAppointmentType === 'physical' && (
+                  <div className="relative">
+                    <h4 className="text-sm font-bold text-gray-700 mb-2">Location</h4>
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                        className="w-full flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-xs font-medium hover:bg-gray-100 transition-all"
+                      >
+                        <span>{selectedLocation || 'Select Location'}</span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-gray-600 transition-transform ${
+                            showLocationDropdown ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      {showLocationDropdown && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
+                          <div className="p-1">
+                            {locations.map((location) => (
+                              <button
+                                key={location}
+                                onClick={() => {
+                                  setSelectedLocation(location);
+                                  setShowLocationDropdown(false);
+                                }}
+                                className="w-full text-left p-3 hover:bg-gray-100 rounded-lg text-xs text-gray-700 transition-all font-medium"
+                              >
+                                {location}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
+                )}
+
+                {/* Health Complaint */}
+                <div className="relative">
+                  <h4 className="text-sm font-bold text-gray-700 mb-2">Health Complaint</h4>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowComplaintDropdown(!showComplaintDropdown)}
+                      className="w-full flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-xs font-medium hover:bg-gray-100 transition-all"
+                    >
+                      <span>Health Complaint (Auto Fetch)</span>
+                      <ChevronDown
+                        className={`w-4 h-4 text-gray-600 transition-transform ${
+                          showComplaintDropdown ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {showComplaintDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
+                        <div className="p-1">
+                          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg text-xs text-gray-700 transition-all font-medium">
+                            Auto-generated complaint options will appear here
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <textarea
+                    value={complaint}
+                    onChange={(e) => setComplaint(e.target.value)}
+                    placeholder="Describe your problem"
+                    className="w-full mt-2 p-3 border border-gray-200 rounded-xl text-xs text-gray-700 bg-gray-50 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-200 transition-all resize-none placeholder-gray-400"
+                    rows={3}
+                  />
                 </div>
-                <textarea
-                  value={complaint}
-                  onChange={(e) => setComplaint(e.target.value)}
-                  placeholder="Describe your problem"
-                  className="w-full mt-2 p-3 border border-white/20 rounded-xl text-sm text-white bg-white/10 focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all duration-300 resize-none backdrop-blur-sm placeholder:text-white/50"
-                  rows={3}
-                />
               </div>
 
-              {/* Date and Time Selection */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 backdrop-blur-sm">
+              {/* Right Side: Date and Time Selection (on larger devices) */}
+              <div className="space-y-4">
+                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                   <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="w-5 h-5 text-white" />
-                    <h4 className="text-sm font-bold text-white">Select Date</h4>
+                    <Calendar className="w-4 h-4 text-gray-600" />
+                    <h4 className="text-sm font-bold text-gray-700">Select Date</h4>
                   </div>
                   <div className="space-y-2">
                     {days.map((day) => (
@@ -217,12 +216,12 @@ const BookAppointmentModal = () => {
                         key={day.date}
                         onClick={() => setSelectedDate(day.date)}
                         disabled={day.slots === 0}
-                        className={`w-full flex items-center justify-between p-3 rounded-xl text-sm font-medium transition-all duration-300 backdrop-blur-sm ${
+                        className={`w-full flex items-center justify-between p-3 rounded-xl text-xs font-medium transition-all ${
                           selectedDate === day.date
-                            ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-md border border-white/20'
+                            ? 'bg-green-500 text-white shadow-md'
                             : day.slots > 0
-                            ? 'bg-white/20 text-white hover:bg-white/30 border border-white/20'
-                            : 'bg-gray-200/20 text-gray-400 cursor-not-allowed border border-gray-200/20'
+                            ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -230,7 +229,7 @@ const BookAppointmentModal = () => {
                           <span className="font-bold">{day.date}</span>
                         </div>
                         {day.slots > 0 && (
-                          <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
+                          <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
                             {day.slots} Slots
                           </span>
                         )}
@@ -239,15 +238,15 @@ const BookAppointmentModal = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 backdrop-blur-sm">
+                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                   <div className="flex items-center gap-2 mb-3">
-                    <Clock className="w-5 h-5 text-white" />
-                    <h4 className="text-sm font-bold text-white">Select Time</h4>
+                    <Clock className="w-4 h-4 text-gray-600" />
+                    <h4 className="text-sm font-bold text-gray-700">Select Time</h4>
                   </div>
                   <div className="space-y-3">
                     {Object.entries(timeSlots).map(([period, slots]) => (
                       <div key={period}>
-                        <button className="w-full py-2 px-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-xl text-sm font-medium mb-2 capitalize shadow-md backdrop-blur-sm">
+                        <button className="w-full py-2 px-4 bg-green-500 text-white rounded-xl text-xs font-medium mb-2 capitalize shadow-md">
                           {period} Slots
                         </button>
                         <div className="grid grid-cols-4 gap-2">
@@ -255,10 +254,10 @@ const BookAppointmentModal = () => {
                             <button
                               key={time}
                               onClick={() => setSelectedTime(time)}
-                              className={`p-2 rounded-xl text-sm font-medium transition-all duration-300 backdrop-blur-sm border border-white/20 ${
+                              className={`p-2 rounded-xl text-xs font-medium transition-all ${
                                 selectedTime === time
-                                  ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-md'
-                                  : 'bg-white/20 text-white hover:bg-white/30'
+                                  ? 'bg-green-500 text-white shadow-md'
+                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                               }`}
                             >
                               {time}
@@ -270,29 +269,29 @@ const BookAppointmentModal = () => {
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Buttons */}
-              <div className="flex gap-3">
-                <button 
-                  onClick={closeModal}
-                  className="flex-1 bg-white/20 hover:bg-white/30 text-white py-3 rounded-xl font-medium text-sm transition-all duration-300 backdrop-blur-sm border border-white/20"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handlePayment}
-                  className="flex-1 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white py-3 rounded-xl font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm"
-                >
-                  Make Payment
-                </button>
-              </div>
+            {/* Buttons */}
+            <div className="mt-4 flex gap-2">
+              <button 
+                onClick={closeModal}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-medium text-xs transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePayment}
+                className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
+              >
+                Make Payment
+              </button>
+            </div>
 
-              {/* Note */}
-              <div className="bg-white/10 border border-white/20 rounded-xl p-2 backdrop-blur-sm">
-                <p className="text-white/80 text-sm font-light text-center">
-                  *Physical Appointment Can Only Be Booked For Private Doctors*
-                </p>
-              </div>
+            {/* Note */}
+            <div className="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-2">
+              <p className="text-gray-600 text-xs font-light text-center">
+                *Physical Appointment Can Only Be Booked For Private Doctors*
+              </p>
             </div>
           </div>
 
@@ -300,24 +299,21 @@ const BookAppointmentModal = () => {
             /* Enhanced scrollbar styling - only for small devices */
             .h-[98vh] {
               scrollbar-width: thin;
-              scrollbar-color: #10b981 rgba(255, 255, 255, 0.2);
+              scrollbar-color: #10b981 #e5e7eb;
             }
             .h-[98vh]::-webkit-scrollbar {
               width: 8px;
             }
             .h-[98vh]::-webkit-scrollbar-track {
-              background: rgba(255, 255, 255, 0.1);
-              backdrop-filter: blur(12px);
+              background: #e5e7eb;
               border-radius: 4px;
-              border: 1px solid rgba(255, 255, 255, 0.2);
             }
             .h-[98vh]::-webkit-scrollbar-thumb {
-              background: linear-gradient(to bottom, #10b981, #059669);
+              background: #10b981;
               border-radius: 4px;
-              border: 1px solid rgba(255, 255, 255, 0.2);
             }
             .h-[98vh]::-webkit-scrollbar-thumb:hover {
-              background: linear-gradient(to bottom, #059669, #047857);
+              background: #059669;
             }
             
             /* Hide scrollbar on larger screens */
@@ -327,6 +323,13 @@ const BookAppointmentModal = () => {
               }
               .h-[98vh]::-webkit-scrollbar {
                 display: none;
+              }
+            }
+
+            /* Ensure pixel-perfect layout */
+            @media (min-width: 1024px) {
+              .lg\\:grid-cols-2 {
+                grid-template-columns: 1fr 1fr;
               }
             }
           `}</style>

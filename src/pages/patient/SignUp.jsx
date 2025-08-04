@@ -1,816 +1,78 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Eye, EyeOff, User, Mail, Phone, Calendar, CreditCard, Camera, Heart, Check, Shield, Edit2, ChevronDown, ChevronUp, X, AlertCircle } from 'lucide-react';
-import logo from '../../assets/Group.png';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
+
+import React, { useState } from 'react';
+import { User, Phone, MapPin, Upload, AlertCircle, Hand } from 'lucide-react';
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import MaskedInput from 'react-maskedinput';
 
-const PatientSignup = () => {
-  const navigate = useNavigate();
-  const { formData, setFormData, currentStep, setCurrentStep, setOTPContext, isVerified } = useContext(AuthContext);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [bloodSectionExpanded, setBloodSectionExpanded] = useState(false);
-  const [showAgeErrorModal, setShowAgeErrorModal] = useState(false);
-  const [calendarAgeError, setCalendarAgeError] = useState('');
-  const [dateInput, setDateInput] = useState('');
-  const [tempDate, setTempDate] = useState('');
-  const [isCalendarInput, setIsCalendarInput] = useState(false);
+const OtpModal = ({ isOpen, onClose, onVerify, phoneNumber, error }) => {
+  const [otp, setOtp] = useState('');
+  const [localError, setLocalError] = useState('');
 
-  const steps = [
-    { id: 1, title: 'Account Setup', description: 'Basic credentials', icon: User },
-    { id: 2, title: 'Personal Info', description: 'Identity details', icon: CreditCard },
-    { id: 3, title: 'Welcome', description: 'All set!', icon: Check }
-  ];
-
-  const getTodayDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  };
-
-  const calculateAge = (birthDate) => {
-    const today = new Date();
-    const dob = new Date(birthDate);
-    let age = today.getFullYear() - dob.getFullYear();
-    const monthDiff = today.getMonth() - dob.getMonth();
-    const dayDiff = today.getDate() - dob.getDate();
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-      age--;
-    }
-    return age;
-  };
-
-  useEffect(() => {
-    if (formData.dateOfBirth && !isCalendarInput) {
-      const age = calculateAge(formData.dateOfBirth);
-      setShowAgeErrorModal(age < 18);
-    } else {
-      setShowAgeErrorModal(false);
-    }
-  }, [formData.dateOfBirth, isCalendarInput]);
-
-  const handleDateInputChange = (e) => {
-    const value = e.target.value;
-    setDateInput(value);
-    setCalendarAgeError('');
-    setIsCalendarInput(false);
-
-    if (value.length === 10) {
-      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-        setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date format (DD/MM/YYYY)' }));
-        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
-        return;
-      }
-
-      const [day, month, year] = value.split('/').map(Number);
-      if (day < 1 || day > 31) {
-        setErrors(prev => ({ ...prev, dateOfBirth: 'Day must be between 01 and 31' }));
-        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
-        return;
-      }
-      if (month < 1 || month > 12) {
-        setErrors(prev => ({ ...prev, dateOfBirth: 'Month must be between 01 and 12' }));
-        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
-        return;
-      }
-      const date = new Date(year, month - 1, day);
-      if (
-        date.getFullYear() === year &&
-        date.getMonth() === month - 1 &&
-        date.getDate() === day &&
-        date <= new Date()
-      ) {
-        setFormData(prev => ({
-          ...prev,
-          dateOfBirth: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
-        }));
-        setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+  const handleVerify = async () => {
+    try {
+      // Simulate OTP verification API call (replace with actual API)
+      const isValid = await simulateOtpVerification(otp);
+      if (isValid) {
+        onVerify();
       } else {
-        setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date' }));
-        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+        setLocalError('Invalid OTP. Please try again.');
       }
-    } else {
-      setErrors(prev => ({ ...prev, dateOfBirth: '' }));
-      setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+    } catch (err) {
+      setLocalError('Failed to verify OTP. Please try again.');
     }
   };
 
-  const handleDatePickerChange = (e) => {
-    const value = e.target.value;
-    setTempDate(value);
-    setIsCalendarInput(true);
-    if (value) {
-      setFormData(prev => ({
-        ...prev,
-        dateOfBirth: value
-      }));
-      const [year, month, day] = value.split('-').map(Number);
-      setDateInput(`${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`);
-      setErrors(prev => ({ ...prev, dateOfBirth: '' }));
-      const age = calculateAge(value);
-      if (age < 18) {
-        setCalendarAgeError('You must be 18 or older to register');
-      } else {
-        setCalendarAgeError('');
-      }
-    } else {
-      setDateInput('');
-      setErrors(prev => ({ ...prev, dateOfBirth: 'Date of birth is required' }));
-      setCalendarAgeError('');
-    }
+  const simulateOtpVerification = async (enteredOtp) => {
+    // Simulate API call (replace with actual endpoint)
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(enteredOtp === '123456'), 1000); // Mock OTP is '123456'
+    });
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (name === 'phone') {
-      const cleanedValue = value.replace(/\D/g, '').slice(0, 11);
-      setFormData(prev => ({
-        ...prev,
-        [name]: cleanedValue
-      }));
-    } else if (name === 'cNIC') {
-      let cleanedValue = value.replace(/[^0-9-]/g, '');
-      if (cleanedValue.length > 5 && cleanedValue[5] !== '-') {
-        cleanedValue = cleanedValue.slice(0, 5) + '-' + cleanedValue.slice(5);
-      }
-      if (cleanedValue.length > 13 && cleanedValue[13] !== '-') {
-        cleanedValue = cleanedValue.slice(0, 13) + '-' + cleanedValue.slice(13);
-      }
-      cleanedValue = cleanedValue.slice(0, 15);
-      setFormData(prev => ({
-        ...prev,
-        [name]: cleanedValue
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: type === 'checkbox' ? checked : value
-      }));
-    }
-    setErrors(prev => ({ ...prev, [name]: '' }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        photo: file
-      }));
-      setErrors(prev => ({ ...prev, photo: '' }));
-    }
-  };
-
-  const validateStep = (step) => {
-    const newErrors = {};
-    if (step === 1) {
-      if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-      if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-      if (!formData.username.trim()) newErrors.username = 'Username is required';
-      else if (formData.username.length < 3) newErrors.username = 'Username must be at least 3 characters';
-      if (!formData.email.trim()) {
-        newErrors.email = 'Email is required';
-      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        newErrors.email = 'Invalid email format';
-      }
-      if (!formData.password) {
-        newErrors.password = 'Password is required';
-      } else if (formData.password.length < 6) {
-        newErrors.password = 'Password must be at least 6 characters';
-      }
-      if (!formData.confirmPassword) {
-        newErrors.confirmPassword = 'Confirm password is required';
-      } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Passwords do not match';
-      }
-    } else if (step === 2) {
-      if (!formData.dateOfBirth) {
-        newErrors.dateOfBirth = 'Date of birth is required';
-      }
-      if (!formData.cNIC) {
-        newErrors.cNIC = 'CNIC is required';
-      } else if (!/^\d{5}-\d{7}-\d{1}$/.test(formData.cNIC)) {
-        newErrors.cNIC = 'CNIC must be in the format 12345-1234567-1';
-      }
-      if (!formData.phone) {
-        newErrors.phone = 'Phone number is required';
-      } else if (!/^\d{11}$/.test(formData.phone)) {
-        newErrors.phone = 'Phone number must be exactly 11 digits';
-      }
-      if (!formData.gender) newErrors.gender = 'Gender is required';
-      if (formData.bloodVolunteer && !formData.bloodGroup) {
-        newErrors.bloodGroup = 'Blood group is required for volunteers';
-      }
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0 && !calendarAgeError;
-  };
-
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    setCurrentStep(currentStep - 1);
-    setErrors({});
-    setCalendarAgeError('');
-  };
-
-  const handleSubmit = () => {
-    if (validateStep(2) && !showAgeErrorModal && !calendarAgeError) {
-      setCurrentStep(3);
-      console.log('Form submitted:', formData);
-    }
-  };
-
-  const closeAgeErrorModal = () => {
-    setShowAgeErrorModal(false);
-    setFormData(prev => ({ ...prev, dateOfBirth: '' }));
-    setDateInput('');
-    setTempDate('');
-  };
+  if (!isOpen) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br font-poppins from-emerald-50 via-green-50 to-teal-50 flex">
-      <div className="hidden md:block w-full md:w-1/6 bg-gradient-to-br from-emerald-600 to-green-600 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-10"></div>
-        <div className="relative z-10 flex flex-col h-full p-6">
-          <div className="flex flex-col items-center mb-6">
-            <div className="w-13 h-13 flex items-center justify-center rounded-full p-2">
-              <img src={logo} alt="ANGILL Logo" />
-            </div>
-            <div className="mt-2 text-center">
-              <h1 className="text-xl font-bold text-white">ANGILL</h1>
-            </div>
-            <p className="text-white italic font-light text-xs" style={{ color: '#FFFFFF' }}>
-              Every illness deserves an angel.
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+        <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full mb-4">
+          Verify OTP
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          An OTP has been sent to {phoneNumber}. Please enter it below.
+        </p>
+        <div className="space-y-4">
+          <input
+            type="text"
+            value={otp}
+            onChange={(e) => {
+              setOtp(e.target.value);
+              setLocalError('');
+            }}
+            placeholder="Enter 6-digit OTP"
+            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200"
+            maxLength={6}
+            autoComplete="off"
+            aria-label="OTP input"
+          />
+          {(localError || error) && (
+            <p className="text-sm text-red-600 flex items-center">
+              <AlertCircle size={16} className="mr-1" />
+              {localError || error}
             </p>
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-4 leading-tight">
-            Your Health,<br />
-            <span className="text-emerald-200">Our Priority</span>
-          </h2>
-          <p className="text-emerald-100 text-sm leading-relaxed">
-            Expert care right to your side, when and where you need it most. From everyday checkups to urgent help, ANGILL is here to heal, support and guide you as an angel would.
-          </p>
-        </div>
-      </div>
-
-      <div className="w-full md:w-5/6 flex items-start justify-center py-6 px-4 mt-[-10px] relative">
-        <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-8 relative">
-          <div className="text-center mb-6">
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h3>
-            <p className="text-gray-600 text-base">Join our healthcare in just a few steps</p>
-          </div>
-
-          <div className="flex justify-center mb-8">
-            <div className="flex items-center space-x-3 bg-gray-50 rounded-full p-2 shadow-md border border-gray-100">
-              {steps.map((step, index) => {
-                const IconComponent = step.icon;
-                return (
-                  <React.Fragment key={step.id}>
-                    <div className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
-                      currentStep >= step.id
-                        ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-sm'
-                        : 'text-gray-500'
-                    }`}>
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                        currentStep > step.id
-                          ? 'bg-white text-emerald-600'
-                          : currentStep === step.id
-                          ? 'bg-white text-emerald-600'
-                          : 'bg-gray-200 text-gray-400'
-                      }`}>
-                        {currentStep > step.id ? (
-                          <Check className="w-4 h-4" />
-                        ) : (
-                          <IconComponent className="w-4 h-4" />
-                        )}
-                      </div>
-                      <div className="hidden md:block">
-                        <p className="font-semibold text-sm">{step.title}</p>
-                        <p className="text-xs opacity-75">{step.description}</p>
-                      </div>
-                    </div>
-                    {index < steps.length - 1 && (
-                      <div className={`w-6 h-0.5 ${
-                        currentStep > step.id ? 'bg-emerald-600' : 'bg-gray-300'
-                      } transition-all duration-300`} />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </div>
-          </div>
-
-          {showAgeErrorModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-              <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl transform transition-all">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-bold text-red-600">Age Restriction</h3>
-                  <button onClick={closeAgeErrorModal} className="text-gray-400 hover:text-gray-600">
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-                <p className="text-gray-600 mb-6">
-                  If you are under 18 years of age, please have your parent or legal guardian register you as a dependent.
-                </p>
-                <button
-                  onClick={closeAgeErrorModal}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
           )}
-
-          {currentStep === 1 && (
-            <div>
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">First Name</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.firstName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                        placeholder="Enter your first name"
-                      />
-                    </div>
-                    {errors.firstName && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.firstName}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.lastName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                        placeholder="Enter your last name"
-                      />
-                    </div>
-                    {errors.lastName && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.lastName}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Username</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="username"
-                      value={formData.username}
-                      onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                        errors.username ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                      }`}
-                      placeholder="Enter your username"
-                    />
-                    <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                  </div>
-                  {errors.username && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <AlertCircle size={16} className="mr-1" />
-                      {errors.username}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                        errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                      }`}
-                      placeholder="Enter your email address"
-                    />
-                    <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                  </div>
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <AlertCircle size={16} className="mr-1" />
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Password</label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                        placeholder="Create a strong password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                      </button>
-                    </div>
-                    {errors.password && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.password}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Confirm Password</label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                        placeholder="Confirm your password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                      </button>
-                    </div>
-                    {errors.confirmPassword && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.confirmPassword}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    if (isVerified) {
-                      setCurrentStep(2);
-                    } else {
-                      setOTPContext("Sign Up");
-                      navigate("/verify-otp");
-                    }
-                  }}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center"
-                >
-                  {isVerified ? "Continue To Personal Details" : "Verify Email"}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {currentStep === 2 && (
-            <div>
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <CreditCard className="w-8 h-8 text-green-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Personal Information</h2>
-                <p className="text-gray-600 text-sm">Complete your profile to get personalized care</p>
-              </div>
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Date of Birth</label>
-                    <div className="relative">
-                      <MaskedInput
-                        mask="11/11/1111"
-                        name="dateInput"
-                        value={dateInput}
-                        onChange={handleDateInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.dateOfBirth || calendarAgeError ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                        placeholder="DD/MM/YYYY"
-                      />
-                      <input
-                        type="date"
-                        name="dateOfBirth"
-                        value={tempDate}
-                        onChange={handleDatePickerChange}
-                        max={getTodayDate()}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 w-8 cursor-pointer"
-                      />
-                      <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
-                    </div>
-                    {errors.dateOfBirth && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.dateOfBirth}
-                      </p>
-                    )}
-                    {calendarAgeError && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {calendarAgeError}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">CNIC Number</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="cNIC"
-                        value={formData.cNIC}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.cNIC ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                        placeholder="34604-0515319-5"
-                      />
-                      <CreditCard className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                    </div>
-                    {errors.cNIC && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.cNIC}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                    <div className="relative">
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                        placeholder="03001234567"
-                      />
-                      <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                    </div>
-                    {errors.phone && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.phone}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Gender</label>
-                    <div className="relative">
-                      <select
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                          errors.gender ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                        }`}
-                      >
-                        <option value="" disabled hidden>Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                    {errors.gender && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <AlertCircle size={16} className="mr-1" />
-                        {errors.gender}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Profile Photo</label>
-                  <div className="border-2 border-dashed border-gray-200 rounded-3xl p-6 text-center hover:border-emerald-500 transition-all duration-300 bg-gray-50 hover:bg-emerald-50 shadow-sm hover:shadow-md">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      id="photo-upload"
-                    />
-                    {formData.photo ? (
-                      <div className="relative flex flex-col items-center">
-                        <img
-                          src={URL.createObjectURL(formData.photo)}
-                          alt="Profile Preview"
-                          className="w-28 h-28 rounded-full object-cover mb-2 border-none"
-                        />
-                        <label htmlFor="photo-upload" className="cursor-pointer inline-flex items-center space-x-1 bg-green-500 text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-600 transition duration-200">
-                          <Edit2 className="w-4 h-4" />
-                          <span>Edit Photo</span>
-                        </label>
-                        <p className="text-green-600 text-sm mt-2 font-semibold">✓ {formData.photo.name}</p>
-                      </div>
-                    ) : (
-                      <label htmlFor="photo-upload" className="cursor-pointer">
-                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <Camera className="w-6 h-6 text-green-600" />
-                        </div>
-                        <p className="text-gray-700 font-semibold text-base">Upload your photo</p>
-                        <p className="text-gray-500 text-sm mt-1">PNG, JPG up to 5MB</p>
-                      </label>
-                    )}
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 border-2 border-red-200 rounded-3xl overflow-hidden hover:shadow-lg transition-all duration-300">
-                  <div className="p-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-14 h-14 bg-gradient-to-br from-red-500 via-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
-                          <Heart className="w-7 h-7 text-white" fill="currentColor" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-xl text-gray-900">Blood Donation Volunteer</h3>
-                          <p className="text-gray-600 text-sm mt-1">Help save lives by becoming a blood donor</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <button
-                          type="button"
-                          onClick={() => setBloodSectionExpanded(!bloodSectionExpanded)}
-                          className="p-2 text-gray-500 hover:text-red-600 transition-colors duration-200 rounded-full hover:bg-red-100"
-                        >
-                          {bloodSectionExpanded ? (
-                            <ChevronUp className="w-5 h-5" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5" />
-                          )}
-                        </button>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            name="bloodVolunteer"
-                            checked={formData.bloodVolunteer}
-                            onChange={handleInputChange}
-                            className="sr-only peer"
-                          />
-                          <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-[24px] peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-pink-500 shadow-sm"></div>
-                        </label>
-                      </div>
-                    </div>
-                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                      bloodSectionExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 opacity-0'
-                    }`}>
-                      <div className="bg-white bg-opacity-60 rounded-2xl p-4 space-y-3 backdrop-blur-sm">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-                          <div className="space-y-2">
-                            <p className="flex items-start">
-                              <span className="text-red-500 mr-2">•</span>
-                              Saving a life can be as simple as donating blood. It's an easy, selfless way to help your community.
-                            </p>
-                            <p className="flex items-start">
-                              <span className="text-red-500 mr-2">•</span>
-                              Blood donation can benefit both your physical and emotional health according to The Mental Health Foundation.
-                            </p>
-                            <p className="flex items-start">
-                              <span className="text-red-500 mr-2">•</span>
-                              Most people can donate whole blood every 56 days according to the American Red Cross.
-                            </p>
-                            <p className="flex items-start">
-                              <span className="text-red-500 mr-2">•</span>
-                              Your temperature, blood pressure, pulse, and hemoglobin levels will be checked if you're eligible.
-                            </p>
-                          </div>
-                          <div className="space-y-2">
-                            <p className="flex items-start">
-                              <span className="text-red-500 mr-2">•</span>
-                              The donation area will be cleaned and sterilized before a new sterile needle is inserted.
-                            </p>
-                            <p className="flex items-start">
-                              <span className="text-red-500 mr-2">•</span>
-                              While your blood is being drawn, you can relax. Some blood centers show movies or have a television playing to keep you distracted.
-                            </p>
-                            <p className="flex items-start">
-                              <span className="text-red-500 mr-2">•</span>
-                              Once your blood has been drawn, a small bandage and dressing will be placed on your arm. You'll rest for about 15 minutes and be given a light snack or something to drink, and you'll then be free to go.
-                            </p>
-                          </div>
-                        </div>
-                        <p className="text-red-500 text-sm mt-2">*Minimum Age For Blood Volunteer Male: 18 - Female: 19</p>
-                      </div>
-                      {formData.bloodVolunteer && (
-                        <div className="space-y-1 mt-4">
-                          <label className="block text-sm font-bold text-gray-700 mb-2">Blood Group</label>
-                          <div className="relative">
-                            <select
-                              name="bloodGroup"
-                              value={formData.bloodGroup}
-                              onChange={handleInputChange}
-                              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 pr-12 ${
-                                errors.bloodGroup ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
-                              }`}
-                            >
-                              <option value="" disabled hidden>Select Blood Group</option>
-                              <option value="A+">A+</option>
-                              <option value="A-">A-</option>
-                              <option value="B+">B+</option>
-                              <option value="B-">B-</option>
-                              <option value="AB+">AB+</option>
-                              <option value="AB-">AB-</option>
-                              <option value="O+">O+</option>
-                              <option value="O-">O-</option>
-                            </select>
-                          </div>
-                          {errors.bloodGroup && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center">
-                              <AlertCircle size={16} className="mr-1" />
-                              {errors.bloodGroup}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex space-x-4">
-                  <button
-                    onClick={handlePrevious}
-                    className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold transition duration-200"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={handleSubmit}
-                    className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center"
-                    disabled={showAgeErrorModal || calendarAgeError}
-                  >
-                    Create Account
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {currentStep === 3 && (
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Check className="w-8 h-8 text-green-600" />
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to ANGILL Clinic!</h2>
-              <p className="text-lg text-gray-600 mb-6">Your account has been successfully created</p>
-              <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-3xl p-5 mb-6 shadow-sm">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <Shield className="w-6 h-6 text-emerald-600" />
-                  <h3 className="text-xl font-bold text-emerald-800">Account Activated</h3>
-                </div>
-                <p className="text-emerald-700 text-base">
-                  You now have access to all our healthcare services including consultations,
-                  medical records, and emergency care.
-                </p>
-              </div>
-              <button
-                onClick={() => window.location.href = '/patient'}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200"
-              >
-                Access Your Dashboard
-              </button>
-            </div>
-          )}
-
-          <div className="text-center mt-6">
-            <p className="text-gray-600 text-base">
-              Already have an account?{' '}
-              <a
-                onClick={() => navigate('/patient/login')}
-                className="text-emerald-600 font-bold hover:text-emerald-700 transition-colors duration-200"
-              >
-                Log in here
-              </a>
-            </p>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-semibold transition duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleVerify}
+              className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-semibold transition duration-200"
+            >
+              Verify OTP
+            </button>
           </div>
         </div>
       </div>
@@ -818,4 +80,534 @@ const PatientSignup = () => {
   );
 };
 
-export default PatientSignup;
+const AddDependent = () => {
+  const { handleAddDependentSubmit } = useConsultationFlow();
+
+  // Separate state variables for each field
+  const [guardianName, setGuardianName] = useState('');
+  const [cnicNumber, setCnicNumber] = useState('');
+  const [gender, setGender] = useState('');
+  const [dependentFirstName, setDependentFirstName] = useState('');
+  const [dependentLastName, setDependentLastName] = useState('');
+  const [dependentUsername, setDependentUsername] = useState('');
+  const [dependentRelation, setDependentRelation] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('92');
+  const [address, setAddress] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [otpError, setOtpError] = useState('');
+
+  const handleCnicChange = (e) => {
+    let value = e.target.value.replace(/[^0-9-]/g, '');
+    if (value.length > 5 && value[5] !== '-') {
+      value = value.slice(0, 5) + '-' + value.slice(5);
+    }
+    if (value.length > 13 && value[13] !== '-') {
+      value = value.slice(0, 13) + '-' + value.slice(13);
+    }
+    value = value.slice(0, 15);
+    setCnicNumber(value);
+    setErrors((prev) => ({ ...prev, cnicNumber: '' }));
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 11);
+    setPhoneNumber(value);
+    setErrors((prev) => ({ ...prev, phoneNumber: '' }));
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImage(file);
+      setErrors((prev) => ({ ...prev, profileImage: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!guardianName.trim()) newErrors.guardianName = 'Guardian name is required';
+    if (!cnicNumber) {
+      newErrors.cnicNumber = 'CNIC number is required';
+    } else if (!/^\d{5}-\d{7}-\d{1}$/.test(cnicNumber)) {
+      newErrors.cnicNumber = 'CNIC must be in the format 12345-1234567-1';
+    }
+    if (!gender) newErrors.gender = 'Gender is required';
+    if (!dependentFirstName.trim()) newErrors.dependentFirstName = 'First name is required';
+    if (!dependentLastName.trim()) newErrors.dependentLastName = 'Last name is required';
+    if (!dependentUsername.trim()) newErrors.dependentUsername = 'Username is required';
+    if (!dependentRelation) newErrors.dependentRelation = 'Relation is required';
+    if (!phoneNumber) {
+      newErrors.phoneNumber = 'Phone number is required';
+    } else if (!/^\d{11}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = 'Phone number must be exactly 11 digits';
+    }
+    if (!countryCode) newErrors.countryCode = 'Country code is required';
+    if (!address.trim()) newErrors.address = 'Address is required';
+    if (!dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
+    if (!profileImage) newErrors.profileImage = 'Profile image is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (validateForm()) {
+      try {
+        // Simulate sending OTP (replace with actual API call)
+        await simulateSendOtp(`+${countryCode}${phoneNumber}`);
+        setIsOtpModalOpen(true);
+      } catch (err) {
+        setErrors((prev) => ({ ...prev, phoneNumber: 'Failed to send OTP. Please try again.' }));
+      }
+    }
+  };
+
+  const simulateSendOtp = async (phoneNumber) => {
+    // Simulate OTP sending API call (replace with actual endpoint)
+    return new Promise((resolve) => setTimeout(resolve, 1000));
+  };
+
+  const handleOtpVerify = async () => {
+    try {
+      // Create formData object for API call
+      const formData = {
+        guardianName,
+        cnicNumber,
+        gender,
+        dependentFirstName,
+        dependentLastName,
+        dependentUsername,
+        dependentRelation,
+        phoneNumber,
+        countryCode,
+        address,
+        dateOfBirth,
+        profileImage,
+      };
+      await handleAddDependentSubmit(formData);
+      setIsOtpModalOpen(false);
+      // Optionally, show a success message or redirect
+    } catch (err) {
+      setOtpError('Failed to add dependent. Please try again.');
+    }
+  };
+
+  return (
+    <div className="min-h-screen font-poppins">
+      <div className="max-w-4xl mx-auto p-4">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+          <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-6">
+            <Hand className="w-8 h-8 text-green-600" title="Volunteer Willingness" />
+          </div>
+          <div className="space-y-8">
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">
+                Guardian Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Guardian Name</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="guardianName"
+                      value={guardianName}
+                      onChange={(e) => {
+                        setGuardianName(e.target.value);
+                        setErrors((prev) => ({ ...prev, guardianName: '' }));
+                      }}
+                      placeholder="Enter guardian's full name"
+                      autoComplete="off"
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+                        errors.guardianName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.guardianName && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.guardianName}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">CNIC Number</label>
+                  <div className="relative">
+                    <MaskedInput
+                      mask="11111-1111111-1"
+                      name="cnicNumber"
+                      value={cnicNumber}
+                      onChange={handleCnicChange}
+                      placeholder="12345-1234567-1"
+                      autoComplete="off"
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+                        errors.cnicNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.cnicNumber && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.cnicNumber}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Gender</label>
+                  <div className="relative">
+                    <select
+                      name="gender"
+                      value={gender}
+                      onChange={(e) => {
+                        setGender(e.target.value);
+                        setErrors((prev) => ({ ...prev, gender: '' }));
+                      }}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 ${
+                        errors.gender ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    >
+                      <option value="">Select an option</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.gender && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.gender}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">
+                Dependent Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Dependent First Name</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="dependentFirstName"
+                      value={dependentFirstName}
+                      onChange={(e) => {
+                        setDependentFirstName(e.target.value);
+                        setErrors((prev) => ({ ...prev, dependentFirstName: '' }));
+                      }}
+                      placeholder="Enter first name"
+                      autoComplete="off"
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+                        errors.dependentFirstName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.dependentFirstName && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.dependentFirstName}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Dependent Last Name</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="dependentLastName"
+                      value={dependentLastName}
+                      onChange={(e) => {
+                        setDependentLastName(e.target.value);
+                        setErrors((prev) => ({ ...prev, dependentLastName: '' }));
+                      }}
+                      placeholder="Enter last name"
+                      autoComplete="off"
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+                        errors.dependentLastName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.dependentLastName && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.dependentLastName}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Dependent Username</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="dependentUsername"
+                      value={dependentUsername}
+                      onChange={(e) => {
+                        setDependentUsername(e.target.value);
+                        setErrors((prev) => ({ ...prev, dependentUsername: '' }));
+                      }}
+                      placeholder="Enter username"
+                      autoComplete="off"
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+                        errors.dependentUsername ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.dependentUsername && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.dependentUsername}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Dependent Relation</label>
+                  <div className="relative">
+                    <select
+                      name="dependentRelation"
+                      value={dependentRelation}
+                      onChange={(e) => {
+                        setDependentRelation(e.target.value);
+                        setErrors((prev) => ({ ...prev, dependentRelation: '' }));
+                      }}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 ${
+                        errors.dependentRelation ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    >
+                      <option value="">Select an option</option>
+                      <option value="Child">Child</option>
+                      <option value="Spouse">Spouse</option>
+                      <option value="Parent">Parent</option>
+                      <option value="Sibling">Sibling</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.dependentRelation && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.dependentRelation}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Date of Birth</label>
+                  <div className="relative">
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      value={dateOfBirth}
+                      onChange={(e) => {
+                        setDateOfBirth(e.target.value);
+                        setErrors((prev) => ({ ...prev, dateOfBirth: '' }));
+                      }}
+                      placeholder="Select date"
+                      autoComplete="off"
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+                        errors.dateOfBirth ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.dateOfBirth && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.dateOfBirth}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">
+                Contact Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                  <div className="flex gap-3 items-center md:items-start">
+                    <div className="w-28">
+                      <div className="relative">
+                        <select
+                          name="countryCode"
+                          value={countryCode}
+                          onChange={(e) => {
+                            setCountryCode(e.target.value);
+                            setErrors((prev) => ({ ...prev, countryCode: '' }));
+                          }}
+                          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 ${
+                            errors.countryCode ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                          }`}
+                        >
+                          <option value="">Select</option>
+                          <option value="92">+92</option>
+                          <option value="1">+1</option>
+                          <option value="44">+44</option>
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <Phone className="w-5 h-5 text-gray-400" />
+                        </div>
+                      </div>
+                      {errors.countryCode && (
+                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                          <AlertCircle size={16} className="mr-1" />
+                          {errors.countryCode}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="relative">
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          value={phoneNumber}
+                          onChange={handlePhoneChange}
+                          placeholder="03001234567"
+                          autoComplete="off"
+                          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center ${
+                            errors.phoneNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                          }`}
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <Phone className="w-5 h-5 text-gray-400" />
+                        </div>
+                      </div>
+                      {errors.phoneNumber && (
+                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                          <AlertCircle size={16} className="mr-1" />
+                          {errors.phoneNumber}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Address</label>
+                  <div className="relative">
+                    <textarea
+                      name="address"
+                      value={address}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                        setErrors((prev) => ({ ...prev, address: '' }));
+                      }}
+                      placeholder="123, Street ABC, NY, USA"
+                      rows={3}
+                      autoComplete="off"
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 ${
+                        errors.address ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                      }`}
+                    />
+                    <div className="absolute right-3 top-3">
+                      <MapPin className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                  {errors.address && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.address}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-3">
+                Profile Image
+              </h2>
+              <div className="flex items-center gap-6">
+                <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center overflow-hidden">
+                  {profileImage ? (
+                    <img
+                      src={URL.createObjectURL(profileImage)}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-12 h-12 text-green-600" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="profile-image-upload"
+                    />
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-semibold hover:bg-green-600 transition duration-200">
+                      <Upload className="w-5 h-5" />
+                      Change Profile Image
+                    </div>
+                  </label>
+                  <p className="text-sm text-gray-500 mt-2">Upload a JPG, PNG, or GIF file (max 5MB)</p>
+                  {profileImage && (
+                    <p className="text-green-600 text-sm mt-2 font-semibold">✓ {profileImage.name}</p>
+                  )}
+                  {errors.profileImage && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <AlertCircle size={16} className="mr-1" />
+                      {errors.profileImage}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg text-sm font-semibold transition duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-lg transition duration-200 flex items-center justify-center"
+              >
+                Add Dependent
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <OtpModal
+        isOpen={isOtpModalOpen}
+        onClose={() => setIsOtpModalOpen(false)}
+        onVerify={handleOtpVerify}
+        phoneNumber={`+${countryCode}${phoneNumber}`}
+        error={otpError}
+      />
+    </div>
+  );
+};
+
+export default AddDependent;

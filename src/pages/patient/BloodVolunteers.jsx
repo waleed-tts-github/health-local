@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Phone, Mail, X, User, Calendar, Check } from 'lucide-react';
 
 const BloodVolunteers = () => {
@@ -19,7 +20,7 @@ const BloodVolunteers = () => {
       age: 25,
       bloodType: 'AB+',
       address: 'Street ABC, House 123, NY, Karachi',
-      isSelected: false
+      isSelected: false,
     },
     {
       id: 2,
@@ -27,7 +28,7 @@ const BloodVolunteers = () => {
       age: 25,
       bloodType: 'AB+',
       address: 'Street ABC, House 123, NY, Karachi',
-      isSelected: true
+      isSelected: true,
     },
     {
       id: 3,
@@ -35,21 +36,34 @@ const BloodVolunteers = () => {
       age: 25,
       bloodType: 'AB+',
       address: 'Street ABC, House 123, NY, Karachi',
-      isSelected: false
-    }
+      isSelected: false,
+    },
   ]);
 
-  const selectedCount = volunteers.filter(v => v.isSelected).length;
+  const selectedCount = volunteers.filter((v) => v.isSelected).length;
+
+  // Disable background scrolling when modals are open
+  useEffect(() => {
+    if (showRequestModal || showSuccessModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    // Cleanup on component unmount
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showRequestModal, showSuccessModal]);
 
   const handleToggleVolunteer = (id) => {
-    setVolunteers(volunteers.map(v =>
+    setVolunteers(volunteers.map((v) =>
       v.id === id ? { ...v, isSelected: !v.isSelected } : v
     ));
   };
 
   const handleSelectAll = () => {
-    const allSelected = volunteers.every(v => v.isSelected);
-    setVolunteers(volunteers.map(v => ({ ...v, isSelected: !allSelected })));
+    const allSelected = volunteers.every((v) => v.isSelected);
+    setVolunteers(volunteers.map((v) => ({ ...v, isSelected: !allSelected })));
   };
 
   const handleRequestDonation = (volunteer) => {
@@ -71,7 +85,7 @@ const BloodVolunteers = () => {
   };
 
   const handleNextClick = () => {
-    const selectedVolunteer = volunteers.find(v => v.isSelected);
+    const selectedVolunteer = volunteers.find((v) => v.isSelected);
     if (selectedVolunteer) {
       handleRequestDonation(selectedVolunteer);
     }
@@ -145,7 +159,7 @@ const BloodVolunteers = () => {
               <label className="text-sm text-gray-600">Select All</label>
               <input
                 type="checkbox"
-                checked={volunteers.every(v => v.isSelected)}
+                checked={volunteers.every((v) => v.isSelected)}
                 onChange={handleSelectAll}
                 className="h-4 w-4 text-green-600 rounded"
               />
@@ -183,7 +197,6 @@ const BloodVolunteers = () => {
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                     {volunteer.bloodType}
                   </span>
-                
                 </div>
               </div>
             ))}
@@ -212,243 +225,158 @@ const BloodVolunteers = () => {
       </div>
 
       {/* Request Modal */}
-{showRequestModal && (
-  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
-      <div className="relative z-10 flex flex-col h-full">
-        {/* Header with close button */}
-        <div className="flex items-center justify-between p-4 pb-3">
-          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
-            Blood Donation Volunteer
-          </h3>
-          <button
-            onClick={() => setShowRequestModal(false)}
-            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Main content */}
-        <div className="flex-1 flex flex-col px-4 pb-4 space-y-4">
-          <h6 className="text-sm font-medium text-gray-700 text-center">
-            Requesting Urgent Blood Donation Assistance (JazakAllah Khair)
-          </h6>
-
-          <div className="space-y-3">
-            {/* Contact Person */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Contact Person
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  value={contactPerson}
-                  onChange={(e) => setContactPerson(e.target.value)}
-                  placeholder="Ali Hassan"
-                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
-                />
+      {showRequestModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4 min-h-screen">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+            <div className="relative z-10 flex flex-col">
+              {/* Header with close button */}
+              <div className="flex items-center justify-between p-4 pb-3">
+                <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+                  Blood Donation Volunteer
+                </h3>
+                <button
+                  onClick={() => setShowRequestModal(false)}
+                  className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-            </div>
 
-            {/* Phone Number */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Phone Number
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <input
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="0300 1234578"
-                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
-                />
+              {/* Main content */}
+              <div className="flex-1 flex flex-col px-4 pb-4 space-y-4 overflow-y-auto">
+                <h6 className="text-sm font-medium text-gray-700 text-center">
+                  Requesting Urgent Blood Donation Assistance (JazakAllah Khair)
+                </h6>
+
+                <div className="space-y-3">
+                  {/* Contact Person */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Contact Person
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <input
+                        type="text"
+                        value={contactPerson}
+                        onChange={(e) => setContactPerson(e.target.value)}
+                        placeholder="Ali Hassan"
+                        className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone Number */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <input
+                        type="tel"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        placeholder="0300 1234578"
+                        className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Place of Contact */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Place Of Contact
+                    </label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <input
+                        type="text"
+                        value={contactPlace}
+                        onChange={(e) => setContactPlace(e.target.value)}
+                        placeholder="Agha Khan Hospital Karachi Pakistan"
+                        className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Message
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Enter Message Here"
+                      rows={3}
+                      className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700 resize-none"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {/* Place of Contact */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Place Of Contact
-              </label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  value={contactPlace}
-                  onChange={(e) => setContactPlace(e.target.value)}
-                  placeholder="Agha Khan Hospital Karachi Pakistan"
-                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700"
-                />
+              {/* Button */}
+              <div className="px-4 pb-4">
+                <button
+                  onClick={handleSendRequest}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
+                >
+                  Send Request
+                </button>
               </div>
-            </div>
-
-            {/* Message */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Message
-              </label>
-              <textarea      
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Enter Message Here"
-                rows={3}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 text-xs text-gray-700 resize-none"
-              />
             </div>
           </div>
         </div>
-
-        {/* Button */}
-        <div className="px-4 pb-4">
-          <button
-            onClick={handleSendRequest}
-            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
-          >
-            Send Request
-          </button>
-        </div>
-
-        <style jsx>{`
-          /* Enhanced scrollbar styling - only for small devices */
-          .h-[98vh] {
-            scrollbar-width: thin;
-            scrollbar-color: #10b981 #e5e7eb;
-          }
-          .h-[98vh]::-webkit-scrollbar {
-            width: 8px;
-          }
-          .h-[98vh]::-webkit-scrollbar-track {
-            background: #e5e7eb;
-            border-radius: 4px;
-          }
-          .h-[98vh]::-webkit-scrollbar-thumb {
-            background: #10b981;
-            border-radius: 4px;
-          }
-          .h-[98vh]::-webkit-scrollbar-thumb:hover {
-            background: #059669;
-          }
-          
-          /* Hide scrollbar on larger screens */
-          @media (min-width: 640px) {
-            .h-[98vh] {
-              scrollbar-width: none;
-            }
-            .h-[98vh]::-webkit-scrollbar {
-              display: none;
-            }
-          }
-        `}</style>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
       {/* Success Modal */}
-{showSuccessModal && (
-  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-    <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible">
-      <div className="relative z-10 flex flex-col h-full">
-        {/* Header with close button */}
-        <div className="flex items-center justify-between p-4 pb-3">
-          <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
-            Message Sent
-          </h3>
-          <button 
-            onClick={handleCloseSuccess} 
-            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
-            aria-label="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4 min-h-screen">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+            <div className="relative z-10 flex flex-col">
+              {/* Header with close button */}
+              <div className="flex items-center justify-between p-4 pb-3">
+                <h3 className="text-lg font-bold text-green-600 bg-white/20 px-3 py-1.5 rounded-full">
+                  Message Sent
+                </h3>
+                <button
+                  onClick={handleCloseSuccess}
+                  className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+                  aria-label="Close modal"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
-        {/* Main content - centered */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
-          {/* Check icon */}
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-            <Check className="w-8 h-8 text-white" />
+              {/* Main content - centered */}
+              <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 space-y-4">
+                {/* Check icon */}
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                  <Check className="w-8 h-8 text-white" />
+                </div>
+
+                {/* Status message */}
+                <div className="text-center w-full border border-gray-200 rounded-xl p-2">
+                  <p className="text-gray-600 mt-2 text-xs">
+                    A volunteer will reach out if they are available and able to assist
+                  </p>
+                </div>
+              </div>
+
+              {/* Button */}
+              <div className="px-4 pb-4">
+                <button
+                  onClick={handleCloseSuccess}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
+                >
+                  OK
+                </button>
+              </div>
+            </div>
           </div>
-          
-          {/* Status message */}
-          <div className="text-center w-full border border-gray-200 rounded-xl p-2">
-            <p className="text-gray-600 mt-2 text-xs">
-              A volunteer will reach out if they are available and able to assist
-            </p>
-          </div>
-
-         
         </div>
-
-        {/* Button */}
-        <div className="px-4 pb-4">
-          <button
-            onClick={handleCloseSuccess}
-            className="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
-          >
-            OK
-          </button>
-        </div>
-
-        <style jsx>{`
-          /* Enhanced scrollbar styling - only for small devices */
-          .h-[98vh] {
-            scrollbar-width: thin;
-            scrollbar-color: #10b981 #e5e7eb;
-          }
-          .h-[98vh]::-webkit-scrollbar {
-            width: 8px;
-          }
-          .h-[98vh]::-webkit-scrollbar-track {
-            background: #e5e7eb;
-            border-radius: 4px;
-          }
-          .h-[98vh]::-webkit-scrollbar-thumb {
-            background: #10b981;
-            border-radius: 4px;
-          }
-          .h-[98vh]::-webkit-scrollbar-thumb:hover {
-            background: #059669;
-          }
-          
-          /* Hide scrollbar on larger screens */
-          @media (min-width: 640px) {
-            .h-[98vh] {
-              scrollbar-width: none;
-            }
-            .h-[98vh]::-webkit-scrollbar {
-              display: none;
-            }
-          }
-          
-          /* Pulse Animation for Loading Dots */
-          .animate-pulse {
-            animation: pulse 1.5s infinite;
-          }
-          .delay-100 {
-            animation-delay: 0.1s;
-          }
-          .delay-200 {
-            animation-delay: 0.2s;
-          }
-          @keyframes pulse {
-            0%, 100% {
-              opacity: 1;
-            }
-            50% {
-              opacity: 0.5;
-            }
-          }
-        `}</style>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };
