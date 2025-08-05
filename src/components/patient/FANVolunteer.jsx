@@ -1,6 +1,7 @@
 import React from 'react';
 import { Droplet, Wallet, HandHeart, Hand } from 'lucide-react';
-import help from '../../assets/help.png'
+import help from '../../assets/help.png';
+
 const FANVolunteer = ({ isBloodVolunteer, setIsBloodVolunteer, bloodGroup, setBloodGroup }) => {
   const handleBloodVolunteerChange = (e) => {
     setIsBloodVolunteer(e.target.checked);
@@ -12,7 +13,6 @@ const FANVolunteer = ({ isBloodVolunteer, setIsBloodVolunteer, bloodGroup, setBl
   return (
     <div className="mb-12">
       <div className="text-center mb-12">
-       
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center justify-center">
           <img src={help} className="w-10 h-10 text-blue-600 mr-3" />
           FAN Volunteer
@@ -28,7 +28,7 @@ const FANVolunteer = ({ isBloodVolunteer, setIsBloodVolunteer, bloodGroup, setBl
           <Wallet className="w-6 h-6 text-blue-600 mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Feed A Need — Give the Gift of Health</h3>
           <p className="text-sm text-gray-600">
-            Many people around us — domestic workers, staff, or community members — lack health insurance or financial means to consult a doctor. With Social Pay, you can donate consultation fees directly from your virtual wallet, allowing someone in need to access verified, quality medical care. A small gesture from you can make a life-changing impact for someone else.
+            Many individuals around us — domestic workers, support staff, or members of our communities — often lack health insurance or the financial means to consult a doctor. Social Pay makes it simple to extend a helping hand. With just a few taps, you can transfer a consultation fee from your virtual wallet directly to someone in need — with full confidence that your contribution can only be used for medical support, and not misused elsewhere. This ensures access to verified, quality healthcare for those who need it most. A small act of kindness from you can make a life-changing difference for someone else.
           </p>
         </div>
         <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300">
