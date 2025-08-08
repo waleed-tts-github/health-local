@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, User, Video, MapPin, Check, X, Search, Filter, Bell } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Calendar, 
+  Clock, 
+  Video, 
+  MapPin, 
+  Check, 
+  ChevronDown, 
+  ChevronUp,
+  DollarSign,
+  Activity,
+  Star
+} from 'lucide-react';
 
 const DoctorHome = () => {
-  const [activeTab, setActiveTab] = useState('appointments');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
+  const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Mock data for appointments
   const [appointments] = useState([
@@ -12,52 +22,54 @@ const DoctorHome = () => {
       id: 1,
       patientName: 'Sarah Johnson',
       type: 'online',
-      date: '2025-08-05',
+      date: '2025-08-08',
       time: '10:00 AM',
+      endTime: '10:30 AM',
       status: 'scheduled',
       reason: 'Regular Checkup',
       avatar: 'SJ',
+      provider: 'Private',
+      fee: 150
     },
     {
       id: 2,
       patientName: 'Ahmed Ali',
       type: 'physical',
-      date: '2025-08-05',
+      date: '2025-08-08',
       time: '11:30 AM',
-      status: 'scheduled',
+      endTime: '12:00 PM',
+      status: 'in-progress',
       reason: 'Consultation',
       avatar: 'AA',
+      provider: 'Angill',
+      fee: 200
     },
     {
       id: 3,
       patientName: 'Maria Garcia',
       type: 'online',
-      date: '2025-08-05',
+      date: '2025-08-08',
       time: '02:00 PM',
-      status: 'in-progress',
+      endTime: '02:30 PM',
+      status: 'scheduled',
       reason: 'Follow-up',
       avatar: 'MG',
+      provider: 'Private',
+      fee: 120
     },
     {
       id: 4,
       patientName: 'John Smith',
       type: 'physical',
-      date: '2025-08-06',
-      time: '09:00 AM',
+      date: '2025-08-08',
+      time: '03:30 PM',
+      endTime: '04:00 PM',
       status: 'scheduled',
       reason: 'Emergency Consultation',
       avatar: 'JS',
-    },
-    {
-      id: 5,
-      patientName: 'Fatima Khan',
-      type: 'online',
-      date: '2025-08-06',
-      time: '03:30 PM',
-      status: 'scheduled',
-      reason: 'Prescription Review',
-      avatar: 'FK',
-    },
+      provider: 'Angill',
+      fee: 300
+    }
   ]);
 
   // Mock data for invitations
@@ -65,12 +77,14 @@ const DoctorHome = () => {
     {
       id: 1,
       patientName: 'David Wilson',
-      requestedDate: '2025-08-08',
+      requestedDate: '2025-08-09',
       requestedTime: '10:00 AM',
       type: 'online',
       reason: 'Skin consultation',
       timestamp: '2 hours ago',
       avatar: 'DW',
+      provider: 'Private',
+      estimatedFee: 180
     },
     {
       id: 2,
@@ -81,308 +95,332 @@ const DoctorHome = () => {
       reason: 'Routine checkup',
       timestamp: '5 hours ago',
       avatar: 'LC',
-    },
-    {
-      id: 3,
-      patientName: 'Hassan Ahmed',
-      requestedDate: '2025-08-07',
-      requestedTime: '11:00 AM',
-      type: 'online',
-      reason: 'Diabetes follow-up',
-      timestamp: '1 day ago',
-      avatar: 'HA',
-    },
+      provider: 'Angill',
+      estimatedFee: 250
+    }
   ]);
 
-  const handleJoinCall = (appointmentId) => {
-    console.log('Joining call for appointment:', appointmentId);
+  // Update current time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const calculateTimeUntilAppointment = (date, time) => {
+    const appointmentDateTime = new Date(`${date} ${time}`);
+    const now = currentTime;
+    const diff = appointmentDateTime - now;
+    
+    if (diff <= 0) return 'Now';
+    
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) return `${days}d ${hours % 24}h`;
+    if (hours > 0) return `${hours}h ${minutes % 60}m`;
+    return `${minutes}m`;
   };
 
-  const handleMarkArrived = (appointmentId) => {
-    console.log('Patient arrived for appointment:', appointmentId);
-  };
-
-  const handleAcceptInvitation = (invitationId) => {
-    console.log('Accepting invitation:', invitationId);
-  };
-
-  const handleDeclineInvitation = (invitationId) => {
-    console.log('Declining invitation:', invitationId);
-  };
-
-  const filteredAppointments = appointments.filter((appointment) => {
-    const matchesSearch =
-      appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      appointment.reason.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterType === 'all' || appointment.type === filterType;
-    return matchesSearch && matchesFilter;
-  });
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === tomorrow.toDateString()) {
-      return 'Tomorrow';
-    } else {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-  };
+  const todayAppointments = appointments.filter(apt => apt.date === '2025-08-08');
+  const completedToday = 3;
+  const todayEarnings = 450;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Doctor Dashboard</h1>
-          <p className="text-gray-600">Manage your appointments and patient requests</p>
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 mb-8 overflow-hidden">
-          <div className="flex">
-            <button
-              onClick={() => setActiveTab('appointments')}
-              className={`relative flex-1 px-8 py-6 text-sm font-semibold transition-all duration-300 ${
-                activeTab === 'appointments'
-                  ? 'text-white bg-gradient-to-r from-green-500 to-green-600 shadow-lg'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }`}
-            >
-              <div className="flex items-center justify-center space-x-3">
-                <Calendar className="w-5 h-5" />
-                <span>Appointments</span>
-                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                  activeTab === 'appointments' 
-                    ? 'bg-white/20 text-white' 
-                    : 'bg-green-100 text-green-700'
-                }`}>
-                  {appointments.length}
-                </span>
-              </div>
-            </button>
-            <button
-              onClick={() => setActiveTab('invitations')}
-              className={`relative flex-1 px-8 py-6 text-sm font-semibold transition-all duration-300 ${
-                activeTab === 'invitations'
-                  ? 'text-white bg-gradient-to-r from-green-500 to-green-600 shadow-lg'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }`}
-            >
-              <div className="flex items-center justify-center space-x-3">
-                <Bell className="w-5 h-5" />
-                <span>Invitations</span>
-                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                  activeTab === 'invitations' 
-                    ? 'bg-white/20 text-white' 
-                    : 'bg-green-100 text-green-700'
-                }`}>
-                  {invitations.length}
-                </span>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* Appointments Tab */}
-        {activeTab === 'appointments' && (
-          <div className="space-y-6">
-            {/* Search and Filter */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
-              <div className="flex flex-col lg:flex-row gap-4">
-                <div className="flex-1 relative group">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-green-500 transition-colors" />
-                  <input
-                    type="text"
-                    placeholder="Search appointments..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-200 text-gray-900 placeholder-gray-500"
-                  />
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <div className="border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-gray-600 mt-1">
+                {currentTime.toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            </div>
+            <div className="flex items-center space-x-6">
+              {/* Doctor Status Toggle */}
+              <div className="flex items-center space-x-3">
+                <span className="text-sm font-medium text-gray-700">Status:</span>
+                <div className="flex items-center">
+                  <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-green-500 transition-colors focus:outline-none">
+                    <span className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
+                  </button>
+                  <span className="ml-2 text-sm font-medium text-green-600">Online</span>
                 </div>
-                <div className="relative group">
-                  <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-green-500 transition-colors" />
-                  <select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    className="pl-12 pr-10 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white appearance-none transition-all duration-200 text-gray-900 font-medium min-w-48"
-                  >
-                    <option value="all">All Types</option>
-                    <option value="online">Online</option>
-                    <option value="physical">Physical</option>
-                  </select>
+              </div>
+              
+              {/* Current Time */}
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">
+                  {currentTime.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                  })}
                 </div>
+                <p className="text-sm text-gray-600">Current Time</p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Appointments List */}
-            <div className="space-y-4">
-              {filteredAppointments.map((appointment, index) => (
-                <div 
-                  key={appointment.id} 
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="flex flex-col xl:flex-row xl:items-center justify-between space-y-6 xl:space-y-0">
-                    <div className="flex items-center space-x-6">
-                      <div className="relative">
-                        <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                          {appointment.avatar}
-                        </div>
-                        {appointment.status === 'in-progress' && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full animate-pulse"></div>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{appointment.patientName}</h3>
-                        <p className="text-gray-600 mb-3 font-medium">{appointment.reason}</p>
-                        <div className="flex flex-wrap items-center gap-4">
-                          <div className="flex items-center text-sm text-gray-500 bg-gray-100 rounded-lg px-3 py-2">
-                            <Calendar className="w-4 h-4 mr-2" />
-                            <span className="font-medium">{formatDate(appointment.date)}</span>
-                          </div>
-                          <div className="flex items-center text-sm text-gray-500 bg-gray-100 rounded-lg px-3 py-2">
-                            <Clock className="w-4 h-4 mr-2" />
-                            <span className="font-medium">{appointment.time}</span>
-                          </div>
-                          <div className="flex items-center">
-                            {appointment.type === 'online' ? (
-                              <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg">
-                                <Video className="w-4 h-4 mr-2" />
-                                Online
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
-                                <MapPin className="w-4 h-4 mr-2" />
-                                Physical
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      {appointment.type === 'online' ? (
-                        <button
-                          onClick={() => handleJoinCall(appointment.id)}
-                          className={`px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl ${
-                            appointment.status === 'in-progress'
-                              ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 animate-pulse'
-                              : 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700'
-                          }`}
-                        >
-                          <Video className="w-5 h-5 inline mr-2" />
-                          {appointment.status === 'in-progress' ? 'Join Now' : 'Start Call'}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleMarkArrived(appointment.id)}
-                          className="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                        >
-                          <MapPin className="w-5 h-5 inline mr-2" />
-                          Mark Arrived
-                        </button>
-                      )}
-                    </div>
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-600 text-sm font-medium">Today's Appointments</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">{todayAppointments.length}</p>
+                    <p className="text-green-500 text-sm mt-1 font-medium">Completed: {completedToday}</p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-green-500" />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
 
-        {/* Invitations Tab */}
-        {activeTab === 'invitations' && (
-          <div className="space-y-4">
-            {invitations.map((invitation, index) => (
+              <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-600 text-sm font-medium">Today's Earnings</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">${todayEarnings}</p>
+                    <p className="text-green-500 text-sm mt-1 font-medium">+12% from yesterday</p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                    <DollarSign className="w-6 h-6 text-green-500" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-600 text-sm font-medium">Patient Rating</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">4.9</p>
+                    <p className="text-green-500 text-sm mt-1 font-medium">127 reviews</p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                    <Star className="w-6 h-6 text-green-500" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Appointments Section */}
+            <div className="bg-white border border-gray-200 rounded-xl">
               <div 
-                key={invitation.id} 
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => setAppointmentsExpanded(!appointmentsExpanded)}
               >
-                <div className="flex flex-col xl:flex-row xl:items-center justify-between space-y-6 xl:space-y-0">
-                  <div className="flex items-center space-x-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg relative">
-                      {invitation.avatar}
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                        <Bell className="w-3 h-3 text-white" />
-                      </div>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-1">{invitation.patientName}</h3>
-                      <p className="text-gray-600 mb-3 font-medium">{invitation.reason}</p>
-                      <div className="flex flex-wrap items-center gap-4 mb-2">
-                        <div className="flex items-center text-sm text-gray-500 bg-gray-100 rounded-lg px-3 py-2">
-                          <Calendar className="w-4 h-4 mr-2" />
-                          <span className="font-medium">{formatDate(invitation.requestedDate)}</span>
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Today's Appointments</h2>
+                    <p className="text-gray-600 text-sm">{todayAppointments.length} scheduled appointments</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-sm font-semibold">
+                    {todayAppointments.length}
+                  </span>
+                  {appointmentsExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                  )}
+                </div>
+              </div>
+
+              {appointmentsExpanded && (
+                <div className="border-t border-gray-100">
+                  {todayAppointments.map((appointment, index) => (
+                    <div key={appointment.id} className="p-6 border-b border-gray-50 last:border-b-0">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center space-x-4">
+                          <div className="relative">
+                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <span className="text-gray-700 font-semibold">{appointment.avatar}</span>
+                            </div>
+                            {appointment.status === 'in-progress' && (
+                              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                            )}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-2">
+                              <h3 className="text-lg font-semibold text-gray-900">{appointment.patientName}</h3>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                appointment.provider === 'Private' 
+                                  ? 'bg-gray-100 text-gray-700' 
+                                  : 'bg-green-50 text-green-600'
+                              }`}>
+                                {appointment.provider}
+                              </span>
+                            </div>
+                            
+                            <p className="text-gray-600 mb-3">{appointment.reason}</p>
+                            
+                            <div className="flex flex-wrap items-center gap-4">
+                              <div className="flex items-center text-sm text-gray-600">
+                                <Clock className="w-4 h-4 mr-2" />
+                                {appointment.time} - {appointment.endTime}
+                              </div>
+                              
+                              <div className="flex items-center text-sm font-medium text-green-600">
+                                <Activity className="w-4 h-4 mr-2" />
+                                In {calculateTimeUntilAppointment(appointment.date, appointment.time)}
+                              </div>
+                              
+                              <div className="flex items-center text-sm text-gray-600">
+                                {appointment.type === 'online' ? (
+                                  <>
+                                    <Video className="w-4 h-4 mr-2" />
+                                    Video Call
+                                  </>
+                                ) : (
+                                  <>
+                                    <MapPin className="w-4 h-4 mr-2" />
+                                    In-Person
+                                  </>
+                                )}
+                              </div>
+                              
+                              <div className="text-sm font-semibold text-gray-900">
+                                ${appointment.fee}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center text-sm text-gray-500 bg-gray-100 rounded-lg px-3 py-2">
-                          <Clock className="w-4 h-4 mr-2" />
-                          <span className="font-medium">{invitation.requestedTime}</span>
-                        </div>
-                        <div className="flex items-center">
-                          {invitation.type === 'online' ? (
-                            <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg">
-                              <Video className="w-4 h-4 mr-2" />
-                              Online
-                            </span>
+                        
+                        <div>
+                          {appointment.type === 'online' ? (
+                            <button
+                              className={`w-40 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                appointment.status === 'in-progress'
+                                  ? 'bg-green-500 text-white hover:bg-green-600'
+                                  : 'bg-green-500 text-white hover:bg-green-600'
+                              }`}
+                            >
+                              <Video className="w-4 h-4 inline mr-2" />
+                              {appointment.status === 'in-progress' ? 'Join Now' : 'Start Call'}
+                            </button>
                           ) : (
-                            <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
-                              <MapPin className="w-4 h-4 mr-2" />
-                              Physical
-                            </span>
+                            <button className="w-40 px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors">
+                              <Check className="w-4 h-4 inline mr-2" />
+                              Mark Present
+                            </button>
                           )}
                         </div>
                       </div>
-                      <p className="text-xs text-gray-400 font-medium">Requested {invitation.timestamp}</p>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={() => handleDeclineInvitation(invitation.id)}
-                      className="px-8 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                      <X className="w-5 h-5 inline mr-2" />
-                      Decline
-                    </button>
-                    <button
-                      onClick={() => handleAcceptInvitation(invitation.id)}
-                      className="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                      <Check className="w-5 h-5 inline mr-2" />
-                      Accept
-                    </button>
-                  </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Empty State */}
-        {((activeTab === 'appointments' && filteredAppointments.length === 0) ||
-          (activeTab === 'invitations' && invitations.length === 0)) && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-16 text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-              {activeTab === 'appointments' ? (
-                <Calendar className="w-12 h-12 text-gray-400" />
-              ) : (
-                <Bell className="w-12 h-12 text-gray-400" />
               )}
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              No {activeTab === 'appointments' ? 'appointments' : 'invitations'} found
-            </h3>
-            <p className="text-gray-500 text-lg max-w-md mx-auto">
-              {activeTab === 'appointments'
-                ? 'Your scheduled appointments will appear here.'
-                : 'Patient appointment requests will appear here.'}
-            </p>
           </div>
-        )}
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            
+            {/* Invitations */}
+            <div className="bg-white border border-gray-200 rounded-xl">
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-gray-900">Invitations</h3>
+                  <span className="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm font-semibold">
+                    {invitations.length}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4 space-y-4">
+                {invitations.map((invitation) => (
+                  <div key={invitation.id} className="p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center relative">
+                        <span className="text-gray-700 font-medium text-sm">{invitation.avatar}</span>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></div>
+                      </div>
+                      
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 text-sm">{invitation.patientName}</h4>
+                        <p className="text-xs text-gray-600 mb-2">{invitation.reason}</p>
+                        
+                        <div className="space-y-1 mb-3">
+                          <div className="flex items-center text-xs text-gray-600">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            Aug 09, 2025
+                          </div>
+                          <div className="flex items-center text-xs text-gray-600">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {invitation.requestedTime}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mb-3">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            invitation.provider === 'Private' 
+                              ? 'bg-gray-100 text-gray-700' 
+                              : 'bg-green-50 text-green-600'
+                          }`}>
+                            {invitation.provider}
+                          </span>
+                          <span className="text-xs font-semibold text-gray-900">
+                            ${invitation.estimatedFee}
+                          </span>
+                        </div>
+                        
+                        <div className="flex space-x-2">
+                          <button className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-300 transition-colors">
+                            Decline
+                          </button>
+                          <button className="flex-1 px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
+                            Accept
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Weekly Overview */}
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">This Week</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Appointments</span>
+                  <span className="text-sm font-semibold text-gray-900">24</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Earnings</span>
+                  <span className="text-sm font-semibold text-gray-900">$3,200</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">New Patients</span>
+                  <span className="text-sm font-semibold text-green-600">+8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

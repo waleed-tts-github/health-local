@@ -38,6 +38,7 @@ const Layout = ({ children }) => {
   const profileDropdownRef = useRef(null);
   const navigate = useNavigate();
 
+
   const menuItems = [
     { name: 'Home', icon: Home, path: '/patient' },
     {
