@@ -11,7 +11,8 @@ import {
   X,
   Settings,
   ChevronDown,
-  ChevronRight
+  Star,
+  Users
 } from 'lucide-react';
 import logo from '../../assets/Group.png'; // Verify this path is correct relative to your project structure
 
@@ -28,6 +29,8 @@ const DoctorLayout = ({ children }) => {
     { name: 'Appointment Slots', icon: Calendar, path: '/doctor/create-appointment-slots' },
     { name: 'Financial Account', icon: Wallet, path: '/doctor/financial-account' },
     { name: 'Patient Record', icon: FileText, path: '/doctor/patient-record' },
+    { name: 'Work With Angill', icon: Users, path: '/doctor/work-with-angill' },
+    { name: 'Reviews', icon: Star, path: '/doctor/reviews' },
     { name: 'Logout', icon: LogOut, path: '/logout' },
   ];
 

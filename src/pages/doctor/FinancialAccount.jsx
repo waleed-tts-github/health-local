@@ -2,33 +2,30 @@ import React, { useState } from 'react';
 import { 
   DollarSign, 
   TrendingUp, 
-  TrendingDown, 
   Calendar, 
-  Filter, 
-  Download, 
-  Eye,
   Search,
-  CreditCard,
-  Wallet,
   ArrowUpRight,
   ArrowDownLeft,
-  Clock,
-  CheckCircle,
-  XCircle,
   MoreVertical
 } from 'lucide-react';
 
 const DoctorFinancialAccount = () => {
-  const [filterType, setFilterType] = useState('all');
+  const [activeTab, setActiveTab] = useState('all');
+  const [privateSubTab, setPrivateSubTab] = useState('online');
   const [dateRange, setDateRange] = useState('30');
+  const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
   const [searchQuery, setSearchQuery] = useState('');
 
   // Mock data
   const financialSummary = {
     totalEarnings: 45680,
     thisMonthEarnings: 12450,
-    pendingPayouts: 2380,
-    completedConsultations: 186
+    todayEarnings: {
+      all: 650,
+      angill: 200,
+      privateOnline: 300,
+      privatePhysical: 150
+    }
   };
 
   const transactions = [
@@ -115,10 +112,27 @@ const DoctorFinancialAccount = () => {
   ];
 
   const filteredTransactions = transactions.filter(transaction => {
-    const matchesType = filterType === 'all' || transaction.type === filterType;
+    let matchesType = true;
+    if (activeTab === 'angill') {
+      matchesType = transaction.consultationType.includes('Angill');
+    } else if (activeTab === 'private') {
+      matchesType = transaction.consultationType.includes('Private') && 
+                   (privateSubTab === 'online' ? 
+                    transaction.consultationType.includes('Online') : 
+                    transaction.consultationType.includes('Physical'));
+    }
     const matchesSearch = transaction.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          transaction.consultationType.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesType && matchesSearch;
+    
+    let matchesDate = true;
+    if (customDateRange.start && customDateRange.end) {
+      const transactionDate = new Date(transaction.date);
+      const startDate = new Date(customDateRange.start);
+      const endDate = new Date(customDateRange.end);
+      matchesDate = transactionDate >= startDate && transactionDate <= endDate;
+    }
+    
+    return matchesType && matchesSearch && matchesDate;
   });
 
   const getStatusColor = (status) => {
@@ -149,6 +163,17 @@ const DoctorFinancialAccount = () => {
     });
   };
 
+  const getTodayEarnings = () => {
+    if (activeTab === 'all') return financialSummary.todayEarnings.all;
+    if (activeTab === 'angill') return financialSummary.todayEarnings.angill;
+    if (activeTab === 'private') {
+      return privateSubTab === 'online' 
+        ? financialSummary.todayEarnings.privateOnline 
+        : financialSummary.todayEarnings.privatePhysical;
+    }
+    return 0;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -158,20 +183,54 @@ const DoctorFinancialAccount = () => {
             <h1 className="text-3xl font-bold text-gray-900">Financial Account</h1>
             <p className="text-gray-600 mt-1">Track your earnings and manage payouts</p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex gap-3">
             <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-              <Download className="w-4 h-4" />
               Export Report
             </button>
             <button className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-              <Wallet className="w-4 h-4" />
               Request Payout
             </button>
           </div>
         </div>
 
+        {/* Tabs */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+          <div className="flex border-b border-gray-200">
+            {['all', 'angill', 'private'].map(tab => (
+              <button
+                key={tab}
+                className={`px-4 py-2 font-medium capitalize ${
+                  activeTab === tab 
+                    ? 'border-b-2 border-green-500 text-green-500' 
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+          {activeTab === 'private' && (
+            <div className="flex mt-2">
+              {['online', 'physical'].map(subTab => (
+                <button
+                  key={subTab}
+                  className={`px-4 py-2 font-medium capitalize ${
+                    privateSubTab === subTab 
+                      ? 'border-b-2 border-green-500 text-green-500' 
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setPrivateSubTab(subTab)}
+                >
+                  {subTab}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Financial Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
@@ -213,34 +272,17 @@ const DoctorFinancialAccount = () => {
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Pending Payouts</p>
+                <p className="text-gray-600 text-sm font-medium">Today</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  ${financialSummary.pendingPayouts.toLocaleString()}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-yellow-500" />
-              </div>
-            </div>
-            <div className="flex items-center mt-4 text-sm">
-              <span className="text-gray-500">Processing 2-3 days</span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Consultations</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {financialSummary.completedConsultations}
+                  ${getTodayEarnings().toLocaleString()}
                 </p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-500" />
+                <DollarSign className="w-6 h-6 text-green-500" />
               </div>
             </div>
             <div className="flex items-center mt-4 text-sm">
-              <span className="text-gray-500">This month</span>
+              <span className="text-gray-500">Today's earnings</span>
             </div>
           </div>
         </div>
@@ -263,26 +305,38 @@ const DoctorFinancialAccount = () => {
             
             <div className="flex flex-col sm:flex-row gap-3">
               <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              >
-                <option value="all">All Transactions</option>
-                <option value="consultation">Consultations</option>
-                <option value="withdrawal">Withdrawals</option>
-                <option value="bonus">Bonuses</option>
-              </select>
-              
-              <select
                 value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
+                onChange={(e) => {
+                  setDateRange(e.target.value);
+                  if (e.target.value !== 'custom') {
+                    setCustomDateRange({ start: '', end: '' });
+                  }
+                }}
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               >
                 <option value="7">Last 7 days</option>
                 <option value="30">Last 30 days</option>
                 <option value="90">Last 3 months</option>
                 <option value="365">Last year</option>
+                <option value="custom">Custom Range</option>
               </select>
+              
+              {dateRange === 'custom' && (
+                <div className="flex gap-2">
+                  <input
+                    type="date"
+                    value={customDateRange.start}
+                    onChange={(e) => setCustomDateRange(prev => ({ ...prev, start: e.target.value }))}
+                    className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  />
+                  <input
+                    type="date"
+                    value={customDateRange.end}
+                    onChange={(e) => setCustomDateRange(prev => ({ ...prev, end: e.target.value }))}
+                    className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -332,9 +386,6 @@ const DoctorFinancialAccount = () => {
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(transaction.status)}`}>
-                        {transaction.status === 'completed' && <CheckCircle className="w-3 h-3" />}
-                        {transaction.status === 'pending' && <Clock className="w-3 h-3" />}
-                        {transaction.status === 'failed' && <XCircle className="w-3 h-3" />}
                         {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                       </span>
                     </td>
@@ -343,9 +394,6 @@ const DoctorFinancialAccount = () => {
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                          <Eye className="w-4 h-4 text-gray-500" />
-                        </button>
                         <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4 text-gray-500" />
                         </button>

@@ -25,6 +25,10 @@ import Doctors from './pages/patient/Doctors';
 import Landing from './pages/Landing';
 import DoctorFinancialAccount from './pages/doctor/FinancialAccount';
 import DoctorPatientRecord from './pages/doctor/PatientRecord';
+import WorkWithAngill from './pages/doctor/WorkWithAngill';
+
+import PatientHealthComplaint from './components/doctor/HealthComplaintAndProfileModel';
+import DoctorReviews from './pages/doctor/Reviews';
 
 const App = () => {
   return (
@@ -79,8 +83,10 @@ const App = () => {
                       <Route path='/' element={<DoctorHome/>}></Route>
                       <Route path='financial-account' element={<DoctorFinancialAccount/>}></Route>
                       <Route path='patient-record' element={<DoctorPatientRecord/>}></Route>
-
-
+                      <Route path='work-with-angill' element={<WorkWithAngill/>}></Route>
+                      <Route path='reviews' element={<DoctorReviews/>}></Route>
+                      
+                      <Route path='patient/health-complaint' element={<PatientHealthComplaint/>}></Route>
                     </Routes>
                   </DoctorLayout>
                 }

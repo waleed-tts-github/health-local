@@ -13,16 +13,14 @@ import {
 
 const CreateAppointmentSlots = () => {
   const [selectedDate, setSelectedDate] = useState('2025-08-08');
-  const [showPreview, setShowPreview] = useState(false);
   const [slots, setSlots] = useState([]);
   const [currentSlot, setCurrentSlot] = useState({
-    startTime: '09:00',
-    duration: '30',
+    startTime: '',
+    endTime: '',
     type: 'online',
     serviceType: 'private',
     location: ''
   });
-  const [timeRange, setTimeRange] = useState(''); // For bulk slot creation
 
   // Mock doctor profile data
   const doctorProfile = {
@@ -39,62 +37,29 @@ const CreateAppointmentSlots = () => {
     return `${hours}:${minutes}`;
   });
 
-  // Validate and add a single slot
-  const addSingleSlot = () => {
-    if (!currentSlot.startTime || !currentSlot.duration) return;
+  // Validate and add slots between start and end time
+  const addSlots = () => {
+    if (!currentSlot.startTime || !currentSlot.endTime) return;
 
-    const startTime = new Date(`1970-01-01T${currentSlot.startTime}:00`);
-    const duration = parseInt(currentSlot.duration);
-    const endTime = new Date(startTime.getTime() + duration * 60000);
-    const endTimeStr = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
-
-    // Check for overlapping slots
-    const hasOverlap = slots.some(slot => 
-      slot.date === selectedDate &&
-      slot.serviceType !== currentSlot.serviceType &&
-      (
-        (slot.startTime <= currentSlot.startTime && currentSlot.startTime < slot.endTime) ||
-        (currentSlot.startTime <= slot.startTime && slot.startTime < endTimeStr)
-      )
-    );
-
-    if (hasOverlap) {
-      alert('This slot overlaps with an existing slot of a different service type.');
+    const start = new Date(`1970-01-01T${currentSlot.startTime}:00`);
+    const end = new Date(`1970-01-01T${currentSlot.endTime}:00`);
+    
+    if (start >= end) {
+      alert('End time must be after start time');
       return;
     }
 
-    const newSlot = {
-      id: Date.now(),
-      date: selectedDate,
-      startTime: currentSlot.startTime,
-      endTime: endTimeStr,
-      type: currentSlot.type,
-      serviceType: currentSlot.serviceType,
-      location: currentSlot.type === 'physical' ? (currentSlot.location || doctorProfile.clinicAddress) : ''
-    };
-
-    setSlots([...slots, newSlot]);
-    setCurrentSlot({
-      startTime: '',
-      duration: '30',
-      type: 'online',
-      serviceType: 'private',
-      location: ''
-    });
-  };
-
-  // Add multiple slots for a time range
-  const addTimeRangeSlots = () => {
-    if (!timeRange || !currentSlot.startTime || !currentSlot.serviceType || !currentSlot.type) return;
-
-    const rangeHours = parseInt(timeRange);
-    const startTime = new Date(`1970-01-01T${currentSlot.startTime}:00`);
+    const duration = 30; // 30-minute slots
     const newSlots = [];
-    const slotDuration = 30; // Fixed 30-minute slots
+    let currentTime = start;
 
-    for (let i = 0; i < rangeHours * 2; i++) { // 2 slots per hour
-      const slotStart = new Date(startTime.getTime() + i * slotDuration * 60000);
-      const slotEnd = new Date(slotStart.getTime() + slotDuration * 60000);
+    while (currentTime < end) {
+      const slotStart = new Date(currentTime);
+      const slotEnd = new Date(slotStart.getTime() + duration * 60000);
+      
+      // Don't create slots that would go beyond the selected end time
+      if (slotEnd > end) break;
+
       const startTimeStr = `${slotStart.getHours().toString().padStart(2, '0')}:${slotStart.getMinutes().toString().padStart(2, '0')}`;
       const endTimeStr = `${slotEnd.getHours().toString().padStart(2, '0')}:${slotEnd.getMinutes().toString().padStart(2, '0')}`;
 
@@ -110,7 +75,7 @@ const CreateAppointmentSlots = () => {
 
       if (!hasOverlap) {
         newSlots.push({
-          id: Date.now() + i,
+          id: Date.now() + newSlots.length,
           date: selectedDate,
           startTime: startTimeStr,
           endTime: endTimeStr,
@@ -119,6 +84,8 @@ const CreateAppointmentSlots = () => {
           location: currentSlot.type === 'physical' ? (currentSlot.location || doctorProfile.clinicAddress) : ''
         });
       }
+
+      currentTime = slotEnd;
     }
 
     if (newSlots.length === 0) {
@@ -129,12 +96,11 @@ const CreateAppointmentSlots = () => {
     setSlots([...slots, ...newSlots]);
     setCurrentSlot({
       startTime: '',
-      duration: '30',
+      endTime: '',
       type: 'online',
       serviceType: 'private',
       location: ''
     });
-    setTimeRange('');
   };
 
   // Remove a slot
@@ -177,13 +143,6 @@ const CreateAppointmentSlots = () => {
             <h1 className="text-2xl font-semibold text-gray-900">Create Appointment Slots</h1>
             <p className="text-sm text-gray-600">Set your availability for patient consultations</p>
           </div>
-          <button 
-            onClick={() => setShowPreview(!showPreview)}
-            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
-          >
-            {showPreview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            <span className="text-sm font-medium">{showPreview ? 'Hide Preview' : 'Show Preview'}</span>
-          </button>
         </div>
 
         {/* Doctor Profile Summary */}
@@ -226,34 +185,33 @@ const CreateAppointmentSlots = () => {
           <div className="bg-white border border-gray-200 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Slot</h3>
             <div className="space-y-4">
-              {/* Time Range Selection */}
+              {/* Service Type */}
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">Time Range (Bulk)</label>
-                <select
-                  value={timeRange}
-                  onChange={(e) => setTimeRange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-full text-gray-900 focus:ring-2 focus:ring-green-600 outline-none"
-                >
-                  <option value="">Select range for multiple slots</option>
-                  <option value="1">1 hour (2 slots)</option>
-                  <option value="2">2 hours (4 slots)</option>
-                  <option value="3">3 hours (6 slots)</option>
-                </select>
-              </div>
-
-              {/* Start Time */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">Start Time</label>
-                <select
-                  value={currentSlot.startTime}
-                  onChange={(e) => setCurrentSlot({...currentSlot, startTime: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-full text-gray-900 focus:ring-2 focus:ring-green-600 outline-none"
-                >
-                  <option value="">Select start time</option>
-                  {timeSlots.map(time => (
-                    <option key={time} value={time}>{formatTime(time)}</option>
-                  ))}
-                </select>
+                <label className="block text-sm font-medium text-gray-900 mb-2">Service Type</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setCurrentSlot({...currentSlot, serviceType: 'private'})}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      currentSlot.serviceType === 'private'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-white border border-gray-200 text-gray-900 hover:bg-green-50'
+                    }`}
+                  >
+                    Private Doctor
+                  </button>
+                  {doctorProfile.workingWithAngill && (
+                    <button
+                      onClick={() => setCurrentSlot({...currentSlot, serviceType: 'angill'})}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                        currentSlot.serviceType === 'angill'
+                          ? 'bg-green-500 text-white'
+                          : 'bg-white border border-gray-200 text-gray-900 hover:bg-green-50'
+                      }`}
+                    >
+                      Angill Doctor
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Consultation Type */}
@@ -283,33 +241,40 @@ const CreateAppointmentSlots = () => {
                 </div>
               </div>
 
-              {/* Service Type */}
+              {/* Start Time */}
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">Service Type</label>
-                <div className="grid grid-cols-1 gap-2">
-                  <button
-                    onClick={() => setCurrentSlot({...currentSlot, serviceType: 'private'})}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      currentSlot.serviceType === 'private'
-                        ? 'bg-green-500 text-white'
-                        : 'bg-white border border-gray-200 text-gray-900 hover:bg-green-50'
-                    }`}
-                  >
-                    Private Doctor
-                  </button>
-                  {doctorProfile.workingWithAngill && currentSlot.type === 'online' && (
-                    <button
-                      onClick={() => setCurrentSlot({...currentSlot, serviceType: 'angill'})}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                        currentSlot.serviceType === 'angill'
-                          ? 'bg-green-500 text-white'
-                          : 'bg-white border border-gray-200 text-gray-900 hover:bg-green-50'
-                      }`}
+                <label className="block text-sm font-medium text-gray-900 mb-2">Start Time</label>
+                <select
+                  value={currentSlot.startTime}
+                  onChange={(e) => setCurrentSlot({...currentSlot, startTime: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-full text-gray-900 focus:ring-2 focus:ring-green-600 outline-none"
+                >
+                  <option value="">Select start time</option>
+                  {timeSlots.map(time => (
+                    <option key={time} value={time}>{formatTime(time)}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* End Time */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">End Time</label>
+                <select
+                  value={currentSlot.endTime}
+                  onChange={(e) => setCurrentSlot({...currentSlot, endTime: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-full text-gray-900 focus:ring-2 focus:ring-green-600 outline-none"
+                >
+                  <option value="">Select end time</option>
+                  {timeSlots.map(time => (
+                    <option 
+                      key={time} 
+                      value={time}
+                      disabled={currentSlot.startTime && time <= currentSlot.startTime}
                     >
-                      Angill Doctor
-                    </button>
-                  )}
-                </div>
+                      {formatTime(time)}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Location for Physical */}
@@ -326,23 +291,14 @@ const CreateAppointmentSlots = () => {
                 </div>
               )}
 
-              {/* Add Buttons */}
-              <div className="flex gap-2">
-                <button
-                  onClick={addSingleSlot}
-                  disabled={!currentSlot.startTime}
-                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-full text-sm font-medium hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                >
-                  <Plus className="w-4 h-4 inline mr-2" /> Add Single Slot
-                </button>
-                <button
-                  onClick={addTimeRangeSlots}
-                  disabled={!timeRange || !currentSlot.startTime}
-                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-full text-sm font-medium hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                >
-                  <Plus className="w-4 h-4 inline mr-2" /> Add Range Slots
-                </button>
-              </div>
+              {/* Add Button */}
+              <button
+                onClick={addSlots}
+                disabled={!currentSlot.startTime || !currentSlot.endTime}
+                className="w-full px-4 py-2 bg-green-500 text-white rounded-full text-sm font-medium hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                <Plus className="w-4 h-4 inline mr-2" /> Add Slots
+              </button>
             </div>
           </div>
 
@@ -395,36 +351,34 @@ const CreateAppointmentSlots = () => {
         </div>
 
         {/* Schedule Preview */}
-        {showPreview && (
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Weekly Schedule Preview</h3>
-            <div className="grid grid-cols-7 gap-2">
-              {getDaysOfWeek().map((day) => {
-                const daySlots = slots.filter(slot => slot.date === day.date);
-                return (
-                  <div key={day.date} className="border border-gray-200 rounded-lg p-2">
-                    <div className="text-center text-sm font-medium text-gray-900">
-                      {day.day} {day.dayNum}
-                    </div>
-                    <div className="mt-2 space-y-1">
-                      {daySlots.length === 0 ? (
-                        <p className="text-xs text-gray-600 text-center">No slots</p>
-                      ) : (
-                        daySlots
-                          .sort((a, b) => a.startTime.localeCompare(b.startTime))
-                          .map((slot) => (
-                            <div key={slot.id} className="text-xs text-green-600">
-                              {formatTime(slot.startTime)} - {slot.type === 'online' ? 'Online' : 'Physical'}
-                            </div>
-                          ))
-                      )}
-                    </div>
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Weekly Schedule Preview</h3>
+          <div className="grid grid-cols-7 gap-2">
+            {getDaysOfWeek().map((day) => {
+              const daySlots = slots.filter(slot => slot.date === day.date);
+              return (
+                <div key={day.date} className="border border-gray-200 rounded-lg p-2">
+                  <div className="text-center text-sm font-medium text-gray-900">
+                    {day.day} {day.dayNum}
                   </div>
-                );
-              })}
-            </div>
+                  <div className="mt-2 space-y-1">
+                    {daySlots.length === 0 ? (
+                      <p className="text-xs text-gray-600 text-center">No slots</p>
+                    ) : (
+                      daySlots
+                        .sort((a, b) => a.startTime.localeCompare(b.startTime))
+                        .map((slot) => (
+                          <div key={slot.id} className="text-xs text-green-600">
+                            {formatTime(slot.startTime)} - {slot.type === 'online' ? 'Online' : 'Physical'}
+                          </div>
+                        ))
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

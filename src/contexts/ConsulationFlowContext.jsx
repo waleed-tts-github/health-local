@@ -10,6 +10,11 @@ export const ConsultationFlowProvider = ({ children }) => {
   const [cameFromAddDependent, setCameFromAddDependent] = useState(false);
   const [isBookingThroughClinic,setIsBookingThroughClinic] = useState(false)
 
+  //consulation flow for doctor
+
+  const [showDoctorMeetingModel,setShowDoctorMeetingModel] = useState(false)
+  const [showPatientHealthProfileAndComplaintModel ,setShowPatientHealthProfileAndComplaintModel] = useState(false)
+
   const handleServiceSelect = (service) => {
     setSelectedService(service);
     setCurrentStep(2);
@@ -85,6 +90,10 @@ export const ConsultationFlowProvider = ({ children }) => {
         handleServiceSelect,
         handleConsultationClick,
         resetFlow,
+        showDoctorMeetingModel,
+        showPatientHealthProfileAndComplaintModel,
+        setShowDoctorMeetingModel,
+        setShowPatientHealthProfileAndComplaintModel,
         isBookingThroughClinic,
         setIsBookingThroughClinic,
         goBack,

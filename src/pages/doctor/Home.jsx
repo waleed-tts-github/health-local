@@ -11,8 +11,17 @@ import {
   Activity,
   Star
 } from 'lucide-react';
+import DoctorMeetingModel from '../../components/doctor/MeetingModel';
+import PatientHealthComplaintModal from '../../components/doctor/HealthComplaintAndProfileModel';
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const DoctorHome = () => {
+  const { 
+    showDoctorMeetingModel, 
+    setShowDoctorMeetingModel, 
+    showPatientHealthProfileAndComplaintModel, 
+    setShowPatientHealthProfileAndComplaintModel 
+  } = useConsultationFlow();
   const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -124,6 +133,14 @@ const DoctorHome = () => {
     return `${minutes}m`;
   };
 
+  const closeDoctorMeetingModel = () => {
+    setShowDoctorMeetingModel(false);
+  };
+
+  const closePatientProfileAndHealthComplaintModel = () => {
+    setShowPatientHealthProfileAndComplaintModel(false);
+  };
+
   const todayAppointments = appointments.filter(apt => apt.date === '2025-08-08');
   const completedToday = 3;
   const todayEarnings = 450;
@@ -132,11 +149,11 @@ const DoctorHome = () => {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-gray-600 text-sm sm:text-base mt-1">
                 {currentTime.toLocaleDateString('en-US', { 
                   weekday: 'long', 
                   year: 'numeric', 
@@ -145,7 +162,7 @@ const DoctorHome = () => {
                 })}
               </p>
             </div>
-            <div className="flex items-center space-x-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
               {/* Doctor Status Toggle */}
               <div className="flex items-center space-x-3">
                 <span className="text-sm font-medium text-gray-700">Status:</span>
@@ -159,7 +176,7 @@ const DoctorHome = () => {
               
               {/* Current Time */}
               <div className="text-right">
-                <div className="text-2xl font-bold text-gray-900">
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">
                   {currentTime.toLocaleTimeString('en-US', { 
                     hour: '2-digit', 
                     minute: '2-digit'
@@ -172,49 +189,49 @@ const DoctorHome = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
           
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="flex-1 space-y-6 sm:space-y-8">
             
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+              <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm font-medium">Today's Appointments</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{todayAppointments.length}</p>
-                    <p className="text-green-500 text-sm mt-1 font-medium">Completed: {completedToday}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm font-medium">Today's Appointments</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{todayAppointments.length}</p>
+                    <p className="text-green-500 text-xs sm:text-sm mt-1 font-medium">Completed: {completedToday}</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-green-500" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm font-medium">Today's Earnings</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">${todayEarnings}</p>
-                    <p className="text-green-500 text-sm mt-1 font-medium">+12% from yesterday</p>
+                    <p className="text-gray-600 text-xs sm:text-sm font-medium">Today's Earnings</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">${todayEarnings}</p>
+                    <p className="text-green-500 text-xs sm:text-sm mt-1 font-medium">+12% from yesterday</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
-                    <DollarSign className="w-6 h-6 text-green-500" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                    <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm font-medium">Patient Rating</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">4.9</p>
-                    <p className="text-green-500 text-sm mt-1 font-medium">127 reviews</p>
+                    <p className="text-gray-600 text-xs sm:text-sm font-medium">Patient Rating</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">4.9</p>
+                    <p className="text-green-500 text-xs sm:text-sm mt-1 font-medium">127 reviews</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
-                    <Star className="w-6 h-6 text-green-500" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                    <Star className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
                   </div>
                 </div>
               </div>
@@ -223,26 +240,26 @@ const DoctorHome = () => {
             {/* Appointments Section */}
             <div className="bg-white border border-gray-200 rounded-xl">
               <div 
-                className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 sm:p-6 cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setAppointmentsExpanded(!appointmentsExpanded)}
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-5 h-5 text-white" />
+                <div className="flex items-center space-x-3 sm:space-x-4">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">Today's Appointments</h2>
-                    <p className="text-gray-600 text-sm">{todayAppointments.length} scheduled appointments</p>
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">Today's Appointments</h2>
+                    <p className="text-gray-600 text-xs sm:text-sm">{todayAppointments.length} scheduled appointments</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <span className="bg-green-50 text-green-600 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold">
                     {todayAppointments.length}
                   </span>
                   {appointmentsExpanded ? (
-                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                    <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                    <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                   )}
                 </div>
               </div>
@@ -250,21 +267,21 @@ const DoctorHome = () => {
               {appointmentsExpanded && (
                 <div className="border-t border-gray-100">
                   {todayAppointments.map((appointment, index) => (
-                    <div key={appointment.id} className="p-6 border-b border-gray-50 last:border-b-0">
-                      <div className="flex justify-between items-start">
-                        <div className="flex items-center space-x-4">
+                    <div key={appointment.id} className="p-4 sm:p-6 border-b border-gray-50 last:border-b-0">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                        <div className="flex items-center space-x-3 sm:space-x-4 flex-1">
                           <div className="relative">
-                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                              <span className="text-gray-700 font-semibold">{appointment.avatar}</span>
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <span className="text-gray-700 font-semibold text-xs sm:text-sm">{appointment.avatar}</span>
                             </div>
                             {appointment.status === 'in-progress' && (
-                              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                              <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"></div>
                             )}
                           </div>
                           
                           <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <h3 className="text-lg font-semibold text-gray-900">{appointment.patientName}</h3>
+                            <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                              <h3 className="text-base sm:text-lg font-semibold text-gray-900">{appointment.patientName}</h3>
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 appointment.provider === 'Private' 
                                   ? 'bg-gray-100 text-gray-700' 
@@ -274,55 +291,56 @@ const DoctorHome = () => {
                               </span>
                             </div>
                             
-                            <p className="text-gray-600 mb-3">{appointment.reason}</p>
+                            <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-3">{appointment.reason}</p>
                             
-                            <div className="flex flex-wrap items-center gap-4">
-                              <div className="flex items-center text-sm text-gray-600">
-                                <Clock className="w-4 h-4 mr-2" />
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                              <div className="flex items-center text-xs sm:text-sm text-gray-600">
+                                <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                 {appointment.time} - {appointment.endTime}
                               </div>
                               
-                              <div className="flex items-center text-sm font-medium text-green-600">
-                                <Activity className="w-4 h-4 mr-2" />
+                              <div className="flex items-center text-xs sm:text-sm font-medium text-green-600">
+                                <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                 In {calculateTimeUntilAppointment(appointment.date, appointment.time)}
                               </div>
                               
-                              <div className="flex items-center text-sm text-gray-600">
+                              <div className="flex items-center text-xs sm:text-sm text-gray-600">
                                 {appointment.type === 'online' ? (
                                   <>
-                                    <Video className="w-4 h-4 mr-2" />
+                                    <Video className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                     Video Call
                                   </>
                                 ) : (
                                   <>
-                                    <MapPin className="w-4 h-4 mr-2" />
+                                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                     In-Person
                                   </>
                                 )}
                               </div>
                               
-                              <div className="text-sm font-semibold text-gray-900">
+                              <div className="text-xs sm:text-sm font-semibold text-gray-900">
                                 ${appointment.fee}
                               </div>
                             </div>
                           </div>
                         </div>
                         
-                        <div>
+                        <div className="w-full sm:w-36">
                           {appointment.type === 'online' ? (
                             <button
-                              className={`w-40 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                              onClick={() => setShowDoctorMeetingModel(true)}
+                              className={`w-full px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                                 appointment.status === 'in-progress'
                                   ? 'bg-green-500 text-white hover:bg-green-600'
                                   : 'bg-green-500 text-white hover:bg-green-600'
                               }`}
                             >
-                              <Video className="w-4 h-4 inline mr-2" />
+                              <Video className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
                               {appointment.status === 'in-progress' ? 'Join Now' : 'Start Call'}
                             </button>
                           ) : (
-                            <button className="w-40 px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors">
-                              <Check className="w-4 h-4 inline mr-2" />
+                            <button className="w-full px-3 py-2 bg-green-500 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-green-600 transition-colors">
+                              <Check className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
                               Mark Present
                             </button>
                           )}
@@ -336,14 +354,14 @@ const DoctorHome = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="w-full lg:w-80 space-y-6">
             
             {/* Invitations */}
             <div className="bg-white border border-gray-200 rounded-xl">
-              <div className="p-6 border-b border-gray-100">
+              <div className="p-4 sm:p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-gray-900">Invitations</h3>
-                  <span className="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm font-semibold">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900">Invitations</h3>
+                  <span className="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs sm:text-sm font-semibold">
                     {invitations.length}
                   </span>
                 </div>
@@ -353,13 +371,13 @@ const DoctorHome = () => {
                 {invitations.map((invitation) => (
                   <div key={invitation.id} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center relative">
-                        <span className="text-gray-700 font-medium text-sm">{invitation.avatar}</span>
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></div>
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-lg flex items-center justify-center relative">
+                        <span className="text-gray-700 font-medium text-xs sm:text-sm">{invitation.avatar}</span>
+                        <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
                       </div>
                       
                       <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 text-sm">{invitation.patientName}</h4>
+                        <h4 className="font-semibold text-sm sm:text-base text-gray-900">{invitation.patientName}</h4>
                         <p className="text-xs text-gray-600 mb-2">{invitation.reason}</p>
                         
                         <div className="space-y-1 mb-3">
@@ -402,26 +420,35 @@ const DoctorHome = () => {
             </div>
 
             {/* Weekly Overview */}
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">This Week</h3>
+            <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4">This Week</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Appointments</span>
-                  <span className="text-sm font-semibold text-gray-900">24</span>
+                  <span className="text-xs sm:text-sm text-gray-600">Appointments</span>
+                  <span className="text-xs sm:text-sm font-semibold text-gray-900">24</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Earnings</span>
-                  <span className="text-sm font-semibold text-gray-900">$3,200</span>
+                  <span className="text-xs sm:text-sm text-gray-600">Earnings</span>
+                  <span className="text-xs sm:text-sm font-semibold text-gray-900">$3,200</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">New Patients</span>
-                  <span className="text-sm font-semibold text-green-600">+8</span>
+                  <span className="text-xs sm:text-sm text-gray-600">New Patients</span>
+                  <span className="text-xs sm:text-sm font-semibold text-green-600">+8</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <DoctorMeetingModel 
+        isOpen={showDoctorMeetingModel} 
+        onClose={closeDoctorMeetingModel}
+      />
+      <PatientHealthComplaintModal 
+        isOpen={showPatientHealthProfileAndComplaintModel} 
+        onClose={closePatientProfileAndHealthComplaintModel}
+      />
     </div>
   );
 };
