@@ -3,7 +3,7 @@ import { ChevronDown, ChevronUp, Eye, ArrowLeft } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const PatientHealthComplaintModal = ({ isOpen, onClose }) => {
-  const {setShowPatientHealthProfileAndComplaintModel} = useConsultationFlow()
+  const {setShowWritePrescriptionModel} = useConsultationFlow()
   const [expandedSections, setExpandedSections] = useState({
     familyHistory: false
   });
@@ -268,6 +268,9 @@ const PatientHealthComplaintModal = ({ isOpen, onClose }) => {
               <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 sm:p-6">
                 <div className="flex gap-4 sm:gap-6">
                   <button
+                  onClick={()=>{
+                    setShowWritePrescriptionModel(true)
+                  }}
                     className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-all duration-200"
                   >
                     Prescription

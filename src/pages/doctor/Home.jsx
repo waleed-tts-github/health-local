@@ -14,13 +14,16 @@ import {
 import DoctorMeetingModel from '../../components/doctor/MeetingModel';
 import PatientHealthComplaintModal from '../../components/doctor/HealthComplaintAndProfileModel';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+import WritePrescriptionModal from '../../components/doctor/WritePrescriptionModel';
 
 const DoctorHome = () => {
   const { 
     showDoctorMeetingModel, 
-    setShowDoctorMeetingModel, 
+    setShowDoctorMeetingModel,
+    showWritePrescriptionModel, 
+    setShowWritePrescriptionModel,
     showPatientHealthProfileAndComplaintModel, 
-    setShowPatientHealthProfileAndComplaintModel 
+    setShowPatientHealthProfileAndComplaintModel,
   } = useConsultationFlow();
   const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -139,6 +142,16 @@ const DoctorHome = () => {
 
   const closePatientProfileAndHealthComplaintModel = () => {
     setShowPatientHealthProfileAndComplaintModel(false);
+  };
+
+  const closeWritePrescriptionModel = () => {
+    setShowWritePrescriptionModel(false);
+  };
+
+  const handleSavePrescription = (prescriptionData) => {
+    // Mock save functionality (e.g., send to backend or update state)
+    console.log('Saving prescription:', prescriptionData);
+    setShowWritePrescriptionModel(false);
   };
 
   const todayAppointments = appointments.filter(apt => apt.date === '2025-08-08');
@@ -448,6 +461,11 @@ const DoctorHome = () => {
       <PatientHealthComplaintModal 
         isOpen={showPatientHealthProfileAndComplaintModel} 
         onClose={closePatientProfileAndHealthComplaintModel}
+      />
+      <WritePrescriptionModal 
+        isOpen={showWritePrescriptionModel}
+        onClose={closeWritePrescriptionModel}
+        onSave={handleSavePrescription}
       />
     </div>
   );

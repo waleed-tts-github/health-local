@@ -14,6 +14,7 @@ export const ConsultationFlowProvider = ({ children }) => {
 
   const [showDoctorMeetingModel,setShowDoctorMeetingModel] = useState(false)
   const [showPatientHealthProfileAndComplaintModel ,setShowPatientHealthProfileAndComplaintModel] = useState(false)
+  const [showWritePrescriptionModel,setShowWritePrescriptionModel] = useState(false)
 
   const handleServiceSelect = (service) => {
     setSelectedService(service);
@@ -89,6 +90,8 @@ export const ConsultationFlowProvider = ({ children }) => {
         cameFromAddDependent,
         handleServiceSelect,
         handleConsultationClick,
+        showWritePrescriptionModel,
+        setShowWritePrescriptionModel,
         resetFlow,
         showDoctorMeetingModel,
         showPatientHealthProfileAndComplaintModel,
