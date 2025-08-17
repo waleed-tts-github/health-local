@@ -3,7 +3,7 @@ import { X, PhoneOff, FileText, Mic, MicOff,Phone } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const DoctorMeetingModel = ({ isOpen, onClose }) => {
-  const { setShowPatientHealthProfileAndComplaintModel } = useConsultationFlow();
+  const { setShowPatientComplaintWithMedicalAndVisitHistoryModel } = useConsultationFlow();
   const [sessionTime, setSessionTime] = useState(1830); // 30:30 starting time
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(true);
@@ -56,7 +56,7 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
   };
 
   const handleVisitClick = () => {
-    setShowPatientHealthProfileAndComplaintModel(true);
+    setShowPatientComplaintWithMedicalAndVisitHistoryModel(true)
   };
 
   if (!isOpen) return null;

@@ -12,18 +12,21 @@ import {
   Star
 } from 'lucide-react';
 import DoctorMeetingModel from '../../components/doctor/MeetingModel';
-import PatientHealthComplaintModal from '../../components/doctor/HealthComplaintAndProfileModel';
+import PatientComplaintAndMedicalAndVisitHistoryModel from '../../components/doctor/PatientComplaintWithMedicalAndVisitHistory';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import WritePrescriptionModal from '../../components/doctor/WritePrescriptionModel';
-
+import WriteLabTestModal from '../../components/doctor/WriteLabTestModel';
+import PatientComplaintWithMedicalAndVisitHistoryModel from '../../components/doctor/PatientComplaintWithMedicalAndVisitHistory';
 const DoctorHome = () => {
   const { 
     showDoctorMeetingModel, 
     setShowDoctorMeetingModel,
     showWritePrescriptionModel, 
     setShowWritePrescriptionModel,
-    showPatientHealthProfileAndComplaintModel, 
-    setShowPatientHealthProfileAndComplaintModel,
+    showWriteLabTestModel,
+    setShowWriteLabTestModel,
+    showPatientComplaintWithMedicalAndVisitHistoryModel, 
+    setShowPatientComplaintWithMedicalAndVisitHistoryModel,
   } = useConsultationFlow();
   const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -140,20 +143,26 @@ const DoctorHome = () => {
     setShowDoctorMeetingModel(false);
   };
 
-  const closePatientProfileAndHealthComplaintModel = () => {
-    setShowPatientHealthProfileAndComplaintModel(false);
+  const closePatientComplaintWithMedicalAndVisitHistoryModel = () => {
+    setShowPatientComplaintWithMedicalAndVisitHistoryModel(false)
   };
+
 
   const closeWritePrescriptionModel = () => {
     setShowWritePrescriptionModel(false);
   };
+  const closeWriteLabTestModel = ()=>{
+    setShowWriteLabTestModel(false)
+  }
 
   const handleSavePrescription = (prescriptionData) => {
     // Mock save functionality (e.g., send to backend or update state)
     console.log('Saving prescription:', prescriptionData);
     setShowWritePrescriptionModel(false);
   };
-
+  const handleSaveLabTest = (labTest)=>{
+    setShowWriteLabTestModel(false)
+  }
   const todayAppointments = appointments.filter(apt => apt.date === '2025-08-08');
   const completedToday = 3;
   const todayEarnings = 450;
@@ -458,15 +467,16 @@ const DoctorHome = () => {
         isOpen={showDoctorMeetingModel} 
         onClose={closeDoctorMeetingModel}
       />
-      <PatientHealthComplaintModal 
-        isOpen={showPatientHealthProfileAndComplaintModel} 
-        onClose={closePatientProfileAndHealthComplaintModel}
+      <PatientComplaintWithMedicalAndVisitHistoryModel 
+        isOpen={showPatientComplaintWithMedicalAndVisitHistoryModel} 
+        onClose={closePatientComplaintWithMedicalAndVisitHistoryModel}
       />
       <WritePrescriptionModal 
         isOpen={showWritePrescriptionModel}
         onClose={closeWritePrescriptionModel}
         onSave={handleSavePrescription}
       />
+      <WriteLabTestModal isOpen={showWriteLabTestModel} onClose={closeWriteLabTestModel} onSave={handleSaveLabTest}/>
     </div>
   );
 };

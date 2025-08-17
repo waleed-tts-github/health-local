@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { User, Calendar, Droplets, Heart, Pill, Users, Stethoscope, Shield } from 'lucide-react';
+import { User, Calendar, Droplets, Heart, Pill, Users, Stethoscope, Shield, Cigarette } from 'lucide-react';
 import BackButton from '../../components/BackButton';
 
-const HealthProfile = () => {
-
+const MedicalHistory = () => {
   const [firstName, setFirstName] = useState('');
   const [fullName, setFullName] = useState('');
   const [gender, setGender] = useState('');
@@ -14,7 +13,8 @@ const HealthProfile = () => {
   const [familyHistory, setFamilyHistory] = useState('');
   const [surgicalHistory, setSurgicalHistory] = useState('');
   const [drugAllergySecond, setDrugAllergySecond] = useState('');
-  const [hideProfileToggle, setHideProfileToggle] = useState(false);
+  const [addiction, setAddiction] = useState('');
+  const [hideMedicalHistoryToggle, setHideMedicalHistoryToggle] = useState(false);
   const [isGenderOpen, setIsGenderOpen] = useState(false);
   const [isBloodGroupOpen, setIsBloodGroupOpen] = useState(false);
   const [isMedicalConditionOpen, setIsMedicalConditionOpen] = useState(false);
@@ -22,6 +22,7 @@ const HealthProfile = () => {
   const [isFamilyHistoryOpen, setIsFamilyHistoryOpen] = useState(false);
   const [isSurgicalHistoryOpen, setIsSurgicalHistoryOpen] = useState(false);
   const [isDrugAllergySecondOpen, setIsDrugAllergySecondOpen] = useState(false);
+  const [isAddictionOpen, setIsAddictionOpen] = useState(false);
 
   const genderOptions = ['Male', 'Female', 'Other', 'Prefer not to say'];
   const bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -71,9 +72,19 @@ const HealthProfile = () => {
     'Cosmetic Surgery',
     'Other'
   ];
+  const addictionOptions = [
+    'None',
+    'Smoking',
+    'Alcohol',
+    'Marijuana',
+    'Opioids',
+    'Cocaine',
+    'Methamphetamine',
+    'Other'
+  ];
 
-  const handleHideProfileToggle = () => {
-    setHideProfileToggle(prev => !prev);
+  const handleHideMedicalHistoryToggle = () => {
+    setHideMedicalHistoryToggle(prev => !prev);
   };
 
   return (
@@ -82,23 +93,23 @@ const HealthProfile = () => {
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Complete Your Health Profile</h2>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Complete Your Medical History</h2>
               <p className="text-xs sm:text-sm text-gray-600">Help us provide you with personalized healthcare services</p>
             </div>
             <button
-              onClick={handleHideProfileToggle}
+              onClick={handleHideMedicalHistoryToggle}
               className="flex items-center space-x-2 px-3 sm:px-4 py-2 sm:py-3 bg-white text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200 border border-gray-200"
-              aria-label="Toggle health profile form"
+              aria-label="Toggle medical history form"
             >
-              <div className={`relative w-8 sm:w-10 h-4 sm:h-5 rounded-full transition-all duration-300 ${hideProfileToggle ? 'bg-green-500' : 'bg-gray-300'}`}>
-                <div className={`absolute top-0.5 w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-white shadow-sm transform transition-all duration-300 ${hideProfileToggle ? 'translate-x-4 sm:translate-x-5' : 'translate-x-0.5'}`} />
+              <div className={`relative w-8 sm:w-10 h-4 sm:h-5 rounded-full transition-all duration-300 ${hideMedicalHistoryToggle ? 'bg-green-500' : 'bg-gray-300'}`}>
+                <div className={`absolute top-0.5 w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-white shadow-sm transform transition-all duration-300 ${hideMedicalHistoryToggle ? 'translate-x-4 sm:translate-x-5' : 'translate-x-0.5'}`} />
               </div>
-              <span className="text-xs sm:text-sm font-medium">Hide Health Profile</span>
+              <span className="text-xs sm:text-sm font-medium">Hide Medical History</span>
             </button>
           </div>
         </div>
 
-        
+        {!hideMedicalHistoryToggle && (
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 lg:p-8">
             <div className="flex items-center justify-center w-12 sm:w-16 h-12 sm:h-16 bg-emerald-100 rounded-full mx-auto mb-4 sm:mb-6">
               <User className="w-6 sm:w-8 h-6 sm:h-8 text-emerald-600" />
@@ -426,21 +437,61 @@ const HealthProfile = () => {
                   </div>
                 </div>
               </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Addiction History</label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddictionOpen(!isAddictionOpen)}
+                      className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm pr-12 h-12 flex items-center border-gray-200 focus:border-green-500 pl-9"
+                      aria-label="Select Addiction History"
+                    >
+                      <span className={addiction ? 'text-gray-800' : 'text-gray-500'}>
+                        {addiction || 'Select an option'}
+                      </span>
+                      <svg className={`w-5 h-5 text-gray-400 transition-transform absolute right-3 top-1/2 -translate-y-1/2 ${isAddictionOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                      <div className="absolute left-2 top-1/2 -translate-y-1/2">
+                        <Cigarette className="w-5 h-5 text-gray-400" />
+                      </div>
+                    </button>
+                    {isAddictionOpen && (
+                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                        {addictionOptions.map((option, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => {
+                              setAddiction(option);
+                              setIsAddictionOpen(false);
+                            }}
+                            className="w-full px-4 py-2 text-sm text-left text-gray-800 hover:bg-green-50 focus:bg-green-50 focus:outline-none transition duration-200 first:rounded-t-lg last:rounded-b-lg"
+                          >
+                            {option}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div className="pt-4 sm:pt-6">
                 <button
-                  onClick={() => console.log('Health profile saved:', { firstName, fullName, gender, dob, bloodGroup, medicalCondition, drugAllergy, familyHistory, surgicalHistory, drugAllergySecond })}
-                  className="w-full bg-green-500  text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
-                  aria-label="Save Health Profile"
+                  onClick={() => console.log('Medical history saved:', { firstName, fullName, gender, dob, bloodGroup, medicalCondition, drugAllergy, familyHistory, surgicalHistory, drugAllergySecond, addiction })}
+                  className="w-full bg-green-500 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-sm"
+                  aria-label="Save Medical History"
                 >
-                  Save Health Profile
+                  Save Medical History
                 </button>
               </div>
             </div>
           </div>
-        
+        )}
       </div>
     </div>
   );
 };
 
-export default HealthProfile;
+export default MedicalHistory;

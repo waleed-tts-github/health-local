@@ -47,9 +47,10 @@ const Layout = ({ children }) => {
       icon: FileText,
       subItems: [
         { name: 'Appointment Record', icon: Calendar, path: '/patient/appointments' },
+        { name: 'Visits', icon: Calendar, path: '/patient/visits' },
         { name: 'Prescriptions', icon: FileText, path: '/patient/prescriptions' },
         { name: 'Lab Reports', icon: TestTube, path: '/patient/lab-reports' },
-        { name: 'Health Profile', icon: User, path: '/patient/health-profile' },
+        { name: 'Medical History', icon: User, path: '/patient/medical-history' },
       ],
     },
     {
@@ -61,6 +62,7 @@ const Layout = ({ children }) => {
       ],
     },
     { name: 'Virtual Wallet', icon: Wallet, path: '/patient/virtual-wallet' },
+    { name: 'Dependents', icon: Users, path: '/patient/dependents' },
     {
       name: 'Need Help',
       icon: HelpCircle,

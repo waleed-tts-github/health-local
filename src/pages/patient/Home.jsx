@@ -8,7 +8,9 @@ import AngillCyberClinics from '../../components/patient/CyberClinics';
 import ServiceSelection from '../../components/patient/ServiceSelection';
 import PatientSelection from '../../components/patient/PatientSelection';
 import SelectedServiceInfo from '../../components/patient/SelectedServiceInfo';
+import { useNavigate } from 'react-router-dom';
 const Home = () => {
+  const navigate = useNavigate()
   const {
     currentStep,
     selectedService,
@@ -18,6 +20,7 @@ const Home = () => {
     setCurrentStep,
     setIsBookingThroughClinic,
     isBookingThroughClinic,
+    cameFromManageDependents
   
   } = useConsultationFlow();
 
@@ -62,12 +65,18 @@ const Home = () => {
     <div className="min-h-screen bg-white">
       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-sm border border-gray-100 p-3 sm:p-4">
         <div className="flex items-center max-w-4xl mx-auto relative">
-          <button
-            onClick={goBack}
-            className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-          </button>
+         <button
+  onClick={() => {
+    if (cameFromManageDependents) {
+      navigate(-1);
+    } else {
+      goBack();
+    }
+  }}
+  className="absolute left-0 p-2 bg-green-100 rounded-full hover:bg-green-200 transition-colors"
+>
+  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+</button>
           <div className="flex-1 text-center">
             <h1 className="text-base sm:text-lg font-bold text-green-700">Add Dependent</h1>
             <p className="text-gray-600 text-xs sm:text-sm mt-1">Add a new dependent for medical consultations</p>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { User, Phone, MapPin, Upload, AlertCircle, Hand } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+import { useNavigate } from 'react-router-dom';
 
 const OtpModal = ({ isOpen, onClose, onVerify, phoneNumber, error }) => {
   const [otp, setOtp] = useState('');
@@ -80,7 +81,8 @@ const OtpModal = ({ isOpen, onClose, onVerify, phoneNumber, error }) => {
 };
 
 const AddDependent = () => {
-  const { handleAddDependentSubmit } = useConsultationFlow();
+  const { handleAddDependentSubmit,cameFromManageDependents } = useConsultationFlow();
+  const navigate = useNavigate()
 
   // Separate state variables for each field
   const [guardianName, setGuardianName] = useState('');
@@ -168,8 +170,18 @@ const AddDependent = () => {
         dateOfBirth,
         profileImage,
       };
-      await handleAddDependentSubmit(formData);
+      if(cameFromManageDependents)
+      {
+        navigate("/patient/dependents",{replace:true})
       setIsOtpModalOpen(false);
+
+      }
+      else{
+        await handleAddDependentSubmit(formData);
+      setIsOtpModalOpen(false);
+
+      }
+      
       // Optionally, show a success message or redirect
     } catch (err) {
       setOtpError('Failed to add dependent. Please try again.');

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Plus, Trash2, Edit3, Printer } from 'lucide-react';
-import logo from '../../assets/Group.png';
+
+import logo from '../../assets/Group.png'
 
 const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
   const [patientInfo, setPatientInfo] = useState({
@@ -14,7 +15,8 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
     medicine: '',
     type: '',
     frequency: '',
-    duration: ''
+    duration: '',
+    instructions: ''
   });
 
   const [instructions, setInstructions] = useState('');
@@ -54,7 +56,7 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
         name: currentMedicine.medicine,
         dosage: currentMedicine.type
       }]);
-      setCurrentMedicine({ medicine: '', type: '', frequency: '', duration: '' });
+      setCurrentMedicine({ medicine: '', type: '', frequency: '', duration: '', instructions: '' });
       setShowAddForm(false);
     }
   };
@@ -69,7 +71,7 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
         patientName: patientInfo.name,
         age: parseInt(patientInfo.age),
         address: patientInfo.address,
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString(),
         doctorName: "DR. AZFAR HUSSAIN",
         specialty: "DOCTOR (CONSULTANT) (ENT)",
         qualification: "MBBS, FCPS (ENT)",
@@ -86,13 +88,16 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDateTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
+    return date.toLocaleString('en-GB', {
       year: 'numeric',
-    });
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).replace(',', '');
   };
 
   if (showPreview) {
@@ -100,7 +105,7 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
       patientName: patientInfo.name,
       age: parseInt(patientInfo.age),
       address: patientInfo.address,
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString(),
       doctorName: "DR. AZFAR HUSSAIN",
       specialty: "DOCTOR (CONSULTANT) (ENT)",
       qualification: "MBBS, FCPS (ENT)",
@@ -118,28 +123,34 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
         <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible border border-gray-200">
           <div className="relative z-10 flex flex-col h-full">
             {/* Header Section */}
-            <div className="flex items-center justify-between p-4 pb-3 border-b border-gray-200">
-              <div className="flex flex-col flex-1">
-                <h2 className="text-base font-bold text-green-600">{prescription.doctorName}</h2>
-                <p className="text-gray-600 text-xs font-medium">{prescription.qualification}</p>
-              </div>
-              <div className="w-[4px] h-15 bg-black mx-4"></div>
-              <div className="flex items-center flex-1 justify-end">
-                <div className="w-10 h-10 bg-green-500 rounded-sm sm:rounded-sm flex items-center justify-center mr-3">
-                  <img src={logo} className="w-10 h-10 p-1" alt="Angill Logo" />
+            <div className="bg-gradient-to-r from-green-50 to-white p-4 border-b border-gray-200 shadow-sm">
+              <div className="flex items-center justify-between space-x-2 relative">
+                <div className="flex items-center space-x-2">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 shadow-md">
+                    <img src={logo} className="h-6 w-6" alt="Angill Logo" />
+                  </div>
+                  <div>
+                    <h1 className="text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      Angill
+                    </h1>
+                    <p className="text-green-600 text-xs font-medium">
+                      Healthcare
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-gray-700">{prescription.hospitalName}</h3>
-                  <p className="text-gray-500 text-xs font-normal">Every illness deserves an Angill</p>
+                <div className="flex flex-col text-right mr-[15px]">
+                  <h2 className="text-sm font-semibold text-gray-800">{prescription.doctorName}</h2>
+                  <p className="text-gray-600 text-xs font-medium">{prescription.specialty}</p>
+                  <p className="text-gray-600 text-xs font-medium">{prescription.qualification}</p>
                 </div>
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-[-15px] right-[-15px]"
+                  aria-label="Back to edit"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-2 right-2"
-                aria-label="Back to edit"
-              >
-                <X className="w-5 h-5" />
-              </button>
             </div>
 
             {/* Doctor and Patient Info */}
@@ -154,39 +165,34 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
                     <span className="text-gray-700 font-normal">Age:</span>
                     <span className="ml-2 text-gray-800 font-medium">{prescription.age}</span>
                   </div>
-                  <div className="flex items-center min-w-[80px]">
-                    <span className="text-gray-700 font-normal">Date:</span>
-                    <span className="ml-2 text-gray-800 font-medium">{formatDate(prescription.date)}</span>
+                  <div className="flex items-center min-w-[120px]">
+                    <span className="text-gray-700 font-normal">Date & Time:</span>
+                    <span className="ml-2 text-gray-800 font-medium">{formatDateTime(prescription.date)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Prescription Content */}
               <div className="flex-1 overflow-y-auto relative">
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-                  <div className="w-40 h-40 border-4 border-green-200 rounded-full flex items-center justify-center">
-                    <span className="text-4xl font-normal text-green-200">Rx</span>
-                  </div>
-                </div>
                 <div className="relative z-10 space-y-2 h-full">
                   <div className="flex h-full">
-                    <div className="w-12 pr-3 flex flex-col items-center border-r-8 border-gray-300">
-                      <span className="text-green-600 font-medium text-xs mb-4">Rx</span>
-                      <span className="text-green-600 font-medium text-xs mb-2">D/E</span>
-                      <div className="flex-1"></div>
-                      <span className="text-green-600 font-medium text-xs mb-3">BP=</span>
-                    </div>
-                    <div className="flex-1 pl-3">
-                      {prescription.medicines.map((medicine, index) => (
-                        <div key={index} className="text-xs text-gray-800 leading-relaxed font-normal mb-1">
-                          <p>{medicine.name} - {medicine.dosage} - {medicine.frequency} - {medicine.duration}</p>
-                        </div>
-                      ))}
-                      {prescription.instructions && (
-                        <div className="text-xs text-gray-800 leading-relaxed font-normal mt-4">
-                          <p><strong>Other Instructions:</strong> {prescription.instructions}</p>
-                        </div>
-                      )}
+                    <div className="relative">
+                      <span className="absolute top-0 left-0 text-2xl font-bold text-green-600  px-2 py-1 rounded-md">Rx</span>
+                      <div className="flex-1 pl-3 pt-9">
+                        {prescription.medicines.map((medicine, index) => (
+                          <div key={index} className="text-xs text-gray-800 leading-relaxed font-normal mb-2">
+                            <p><strong>{medicine.name} - {medicine.dosage} - {medicine.frequency} - {medicine.duration}</strong></p>
+                            {medicine.instructions && (
+                              <p className="mt-1 italic">{medicine.instructions}</p>
+                            )}
+                          </div>
+                        ))}
+                        {prescription.instructions && (
+                          <div className="text-xs text-gray-800 leading-relaxed font-normal mt-4">
+                            <p><strong>Other Instructions:</strong> {prescription.instructions}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -215,7 +221,7 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
               </div>
             </div>
 
-            <style jsx>{`
+            <style>{`
               .h-[98vh] {
                 scrollbar-width: thin;
                 scrollbar-color: #10b981 #e5e7eb;
@@ -255,28 +261,34 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
       <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible border border-gray-200 relative">
         <div className="relative z-10 flex flex-col h-full">
           {/* Header Section */}
-          <div className="flex items-center justify-between p-4 pb-3 border-b border-gray-200">
-            <div className="flex flex-col flex-1">
-              <h2 className="text-base font-bold text-green-600">Write Prescription</h2>
-              <p className="text-gray-600 text-xs font-medium">Add medicines and patient details</p>
-            </div>
-            <div className="w-[4px] h-15 bg-black mx-4"></div>
-            <div className="flex items-center flex-1 justify-end">
-              <div className="w-10 h-10 bg-green-500 rounded-sm sm:rounded-sm flex items-center justify-center mr-3">
-                <img src={logo} className="w-10 h-10 p-1" alt="Angill Logo" />
+          <div className="bg-gradient-to-r from-green-50 to-white p-4 border-b border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between space-x-2 relative">
+              <div className="flex items-center space-x-2">
+                <div className="p-1.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 shadow-md">
+                  <img src={logo} className="h-6 w-6" alt="Angill Logo" />
+                </div>
+                <div>
+                  <h1 className="text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    Angill
+                  </h1>
+                  <p className="text-green-600 text-xs font-medium">
+                    Healthcare
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-gray-700">ANGILL CLINIC</h3>
-                <p className="text-gray-500 text-xs font-normal">Every illness deserves an Angill</p>
+              <div className="flex flex-col text-right mr-[20px]">
+                <h2 className="text-sm font-semibold text-gray-800">DR. AZFAR HUSSAIN</h2>
+                <p className="text-gray-600 text-xs font-medium">DOCTOR (CONSULTANT) (ENT)</p>
+                <p className="text-gray-600 text-xs font-medium">MBBS, FCPS (ENT)</p>
               </div>
+              <button
+                onClick={onClose}
+                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-[-15px] right-[-15px]"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <button
-              onClick={onClose}
-              className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-2 right-2"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
           </div>
 
           {/* Content */}
@@ -292,9 +304,9 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
                   <span className="text-gray-700 font-normal">Age:</span>
                   <span className="ml-2 text-gray-800 font-medium">{patientInfo.age}</span>
                 </div>
-                <div className="flex items-center min-w-[80px]">
-                  <span className="text-gray-700 font-normal">Date:</span>
-                  <span className="ml-2 text-gray-800 font-medium">{formatDate(new Date())}</span>
+                <div className="flex items-center min-w-[120px]">
+                  <span className="text-gray-700 font-normal">Date & Time:</span>
+                  <span className="ml-2 text-gray-800 font-medium">{formatDateTime(new Date())}</span>
                 </div>
               </div>
             </div>
@@ -349,6 +361,12 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
                       <option key={dur} value={dur}>{dur}</option>
                     ))}
                   </select>
+                  <textarea
+                    value={currentMedicine.instructions}
+                    onChange={(e) => setCurrentMedicine({...currentMedicine, instructions: e.target.value})}
+                    placeholder="Enter specific instructions for this medicine (e.g., take with food)"
+                    className="w-full h-16 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500 resize-none"
+                  />
                   <div className="flex gap-2">
                     <button
                       onClick={() => setShowAddForm(false)}
@@ -375,10 +393,13 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
                   <h3 className="text-xs font-medium text-green-600 mb-2">Added Medicines</h3>
                   <div className="space-y-2 max-h-40 overflow-y-auto">
                     {prescriptionData.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
-                        <span className="text-xs text-gray-800 flex-1">
-                          {item.name} - {item.dosage} - {item.frequency} - {item.duration}
-                        </span>
+                      <div key={item.id} className="flex items-start justify-between p-2 bg-gray-50 rounded-md">
+                        <div className="text-xs text-gray-800 flex-1">
+                          <p><strong>{item.name} - {item.dosage} - {item.frequency} - {item.duration}</strong></p>
+                          {item.instructions && (
+                            <p className="mt-1 italic">{item.instructions}</p>
+                          )}
+                        </div>
                         <button
                           onClick={() => handleRemoveMedicine(item.id)}
                           className="text-red-400 hover:text-red-600 p-1 ml-2"
@@ -432,7 +453,16 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
             </div>
           </div>
 
-          <style jsx>{`
+          {!showAddForm && (
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="absolute bottom-14 left-4 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors z-50"
+            >
+              <Plus className="w-6 h-6" />
+            </button>
+          )}
+
+          <style>{`
             .h-[98vh] {
               scrollbar-width: thin;
               scrollbar-color: #10b981 #e5e7eb;
@@ -461,14 +491,6 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
             }
           `}</style>
         </div>
-        {!showPreview && (
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="absolute bottom-14 left-4 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors z-50"
-          >
-            <Plus className="w-6 h-6" />
-          </button>
-        )}
       </div>
     </div>
   );

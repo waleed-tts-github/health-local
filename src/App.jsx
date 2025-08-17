@@ -27,8 +27,11 @@ import DoctorFinancialAccount from './pages/doctor/FinancialAccount';
 import DoctorPatientRecord from './pages/doctor/PatientRecord';
 import WorkWithAngill from './pages/doctor/WorkWithAngill';
 
-import PatientHealthComplaint from './components/doctor/HealthComplaintAndProfileModel';
+import PatientHealthComplaint from './components/doctor/PatientComplaintWithMedicalAndVisitHistory';
 import DoctorReviews from './pages/doctor/Reviews';
+import Visits from './pages/patient/Visits';
+import MedicalHistory from './pages/patient/HealthProfile';
+import Dependents from './pages/patient/Dependents';
 
 const App = () => {
   return (
@@ -51,11 +54,13 @@ const App = () => {
                       <Route path="profile" element={<div>Profile Page</div>} />
                       <Route path="prescriptions" element={<Prescriptions />} />
                       <Route path="lab-reports" element={<LabReports />} />
-                      <Route path='health-profile' element={<HealthProfile/>}></Route>
+                      <Route path='medical-history' element={<MedicalHistory/>}></Route>
+                      <Route path='visits' element={<Visits/>}></Route>
                       <Route path='blood-volunteers' element={<BloodVolunteers/>}></Route>
                       <Route path='blood-donations' element={<BloodDonations/>}></Route>
                       <Route path='virtual-wallet' element={<VirtualWallet/>}></Route>
                       <Route path='profile/edit' element={<PatientEditProfile/>}></Route>
+                      <Route path='dependents' element={<Dependents/>}></Route>
 
                     </Routes>
                   </Layout>

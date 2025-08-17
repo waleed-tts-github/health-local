@@ -9,12 +9,15 @@ export const ConsultationFlowProvider = ({ children }) => {
   const [showAddDependent, setShowAddDependent] = useState(false);
   const [cameFromAddDependent, setCameFromAddDependent] = useState(false);
   const [isBookingThroughClinic,setIsBookingThroughClinic] = useState(false)
+  const [cameFromManageDependents,setCameFromManageDependents] = useState(false)
+
 
   //consulation flow for doctor
 
   const [showDoctorMeetingModel,setShowDoctorMeetingModel] = useState(false)
-  const [showPatientHealthProfileAndComplaintModel ,setShowPatientHealthProfileAndComplaintModel] = useState(false)
+  const [showPatientComplaintWithMedicalAndVisitHistoryModel ,setShowPatientComplaintWithMedicalAndVisitHistoryModel] = useState(false)
   const [showWritePrescriptionModel,setShowWritePrescriptionModel] = useState(false)
+  const [showWriteLabTestModel,setShowWriteLabTestModel] = useState(false)
 
   const handleServiceSelect = (service) => {
     setSelectedService(service);
@@ -94,15 +97,19 @@ export const ConsultationFlowProvider = ({ children }) => {
         setShowWritePrescriptionModel,
         resetFlow,
         showDoctorMeetingModel,
-        showPatientHealthProfileAndComplaintModel,
+        showPatientComplaintWithMedicalAndVisitHistoryModel,
         setShowDoctorMeetingModel,
-        setShowPatientHealthProfileAndComplaintModel,
+        setShowPatientComplaintWithMedicalAndVisitHistoryModel,
+        showWriteLabTestModel,
+        setShowWriteLabTestModel,
         isBookingThroughClinic,
         setIsBookingThroughClinic,
         goBack,
         handleAddDependentClick,
         handleDependentSelect,
         handleAddDependentSubmit,
+        cameFromManageDependents,
+        setCameFromManageDependents
       }}
     >
       {children}
