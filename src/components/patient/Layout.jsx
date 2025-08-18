@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, 
   FileText, 
@@ -26,7 +26,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
-import logo from '../../assets/Group.png'
+import logo from '../../assets/Group.png';
 
 const Layout = ({ children }) => {
   const { setCurrentStep } = useConsultationFlow();
@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef(null);
   const navigate = useNavigate();
-
+  const location = useLocation();
 
   const menuItems = [
     { name: 'Home', icon: Home, path: '/patient' },
@@ -78,6 +78,41 @@ const Layout = ({ children }) => {
     { name: 'Refer A Friend', icon: UserPlus, path: '/patient/refer' },
     { name: 'Logout', icon: LogOut, path: '/logout' },
   ];
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    // Find the matching menu item or sub-item
+    let matchedItem = null;
+    let parentItemName = null;
+
+    for (const item of menuItems) {
+      if (item.path === currentPath) {
+        matchedItem = item.name;
+        break;
+      }
+      if (item.subItems) {
+        const matchedSubItem = item.subItems.find(subItem => subItem.path === currentPath);
+        if (matchedSubItem) {
+          matchedItem = matchedSubItem.name;
+          parentItemName = item.name;
+          break;
+        }
+      }
+    }
+
+    // Set active item and open parent dropdown if a sub-item is matched
+    if (matchedItem) {
+      setActiveItem(matchedItem);
+      if (parentItemName) {
+        setOpenDropdown(parentItemName);
+      }
+    } else {
+      // Default to 'Home' if no match is found
+      setActiveItem('Home');
+      setOpenDropdown(null);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

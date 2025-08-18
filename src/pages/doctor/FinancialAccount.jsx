@@ -11,7 +11,7 @@ import {
 
 const DoctorFinancialAccount = () => {
   const [activeTab, setActiveTab] = useState('all');
-  const [privateSubTab, setPrivateSubTab] = useState('online');
+  const [privateSubTab, setPrivateSubTab] = useState('all');
   const [dateRange, setDateRange] = useState('30');
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,12 +19,20 @@ const DoctorFinancialAccount = () => {
   // Mock data
   const financialSummary = {
     totalEarnings: 45680,
+    totalAppointments: 456,
     thisMonthEarnings: 12450,
+    thisMonthAppointments: 124,
     todayEarnings: {
       all: 650,
       angill: 200,
       privateOnline: 300,
       privatePhysical: 150
+    },
+    todayAppointments: {
+      all: 13,
+      angill: 4,
+      privateOnline: 6,
+      privatePhysical: 3
     }
   };
 
@@ -117,9 +125,10 @@ const DoctorFinancialAccount = () => {
       matchesType = transaction.consultationType.includes('Angill');
     } else if (activeTab === 'private') {
       matchesType = transaction.consultationType.includes('Private') && 
-                   (privateSubTab === 'online' ? 
-                    transaction.consultationType.includes('Online') : 
-                    transaction.consultationType.includes('Physical'));
+                   (privateSubTab === 'all' || 
+                    (privateSubTab === 'online' ? 
+                     transaction.consultationType.includes('Online') : 
+                     transaction.consultationType.includes('Physical')));
     }
     const matchesSearch = transaction.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          transaction.consultationType.toLowerCase().includes(searchQuery.toLowerCase());
@@ -167,15 +176,34 @@ const DoctorFinancialAccount = () => {
     if (activeTab === 'all') return financialSummary.todayEarnings.all;
     if (activeTab === 'angill') return financialSummary.todayEarnings.angill;
     if (activeTab === 'private') {
-      return privateSubTab === 'online' 
-        ? financialSummary.todayEarnings.privateOnline 
-        : financialSummary.todayEarnings.privatePhysical;
+      if (privateSubTab === 'all') {
+        return financialSummary.todayEarnings.privateOnline + financialSummary.todayEarnings.privatePhysical;
+      } else if (privateSubTab === 'online') {
+        return financialSummary.todayEarnings.privateOnline;
+      } else {
+        return financialSummary.todayEarnings.privatePhysical;
+      }
+    }
+    return 0;
+  };
+
+  const getTodayAppointments = () => {
+    if (activeTab === 'all') return financialSummary.todayAppointments.all;
+    if (activeTab === 'angill') return financialSummary.todayAppointments.angill;
+    if (activeTab === 'private') {
+      if (privateSubTab === 'all') {
+        return financialSummary.todayAppointments.privateOnline + financialSummary.todayAppointments.privatePhysical;
+      } else if (privateSubTab === 'online') {
+        return financialSummary.todayAppointments.privateOnline;
+      } else {
+        return financialSummary.todayAppointments.privatePhysical;
+      }
     }
     return 0;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
+    <div className="min-h-screen bg-white p-4 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
@@ -212,7 +240,7 @@ const DoctorFinancialAccount = () => {
           </div>
           {activeTab === 'private' && (
             <div className="flex mt-2">
-              {['online', 'physical'].map(subTab => (
+              {['all', 'online', 'physical'].map(subTab => (
                 <button
                   key={subTab}
                   className={`px-4 py-2 font-medium capitalize ${
@@ -238,6 +266,7 @@ const DoctorFinancialAccount = () => {
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   ${financialSummary.totalEarnings.toLocaleString()}
                 </p>
+                <p className="text-sm text-gray-600 mt-1">{financialSummary.totalAppointments} appointments</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-green-500" />
@@ -257,6 +286,7 @@ const DoctorFinancialAccount = () => {
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   ${financialSummary.thisMonthEarnings.toLocaleString()}
                 </p>
+                <p className="text-sm text-gray-600 mt-1">{financialSummary.thisMonthAppointments} appointments</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <Calendar className="w-6 h-6 text-blue-500" />
@@ -276,6 +306,7 @@ const DoctorFinancialAccount = () => {
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   ${getTodayEarnings().toLocaleString()}
                 </p>
+                <p className="text-sm text-gray-600 mt-1">{getTodayAppointments()} appointments</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-green-500" />

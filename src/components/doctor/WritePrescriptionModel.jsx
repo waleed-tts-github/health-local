@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { X, Plus, Trash2, Edit3, Printer } from 'lucide-react';
-
-import logo from '../../assets/Group.png'
+import { X, Plus, Trash2, Printer } from 'lucide-react';
+import logo from '../../assets/Group.png';
 
 const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
   const [patientInfo, setPatientInfo] = useState({
@@ -65,7 +64,7 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
     setPrescriptionData(prescriptionData.filter(item => item.id !== id));
   };
 
-  const handleSave = () => {
+  const handleSend = () => {
     if (prescriptionData.length > 0) {
       const fullPrescription = {
         patientName: patientInfo.name,
@@ -177,7 +176,7 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
                 <div className="relative z-10 space-y-2 h-full">
                   <div className="flex h-full">
                     <div className="relative">
-                      <span className="absolute top-0 left-0 text-2xl font-bold text-green-600  px-2 py-1 rounded-md">Rx</span>
+                      <span className="absolute top-0 left-0 text-2xl font-bold text-green-600 px-2 py-1 rounded-md">Rx</span>
                       <div className="flex-1 pl-3 pt-9">
                         {prescription.medicines.map((medicine, index) => (
                           <div key={index} className="text-xs text-gray-800 leading-relaxed font-normal mb-2">
@@ -212,11 +211,11 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
                   Back to Edit
                 </button>
                 <button
-                  onClick={handleSave}
+                  onClick={handleSend}
                   className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all flex items-center justify-center"
                 >
                   <Printer className="w-4 h-4 mr-2" />
-                  Save & Print
+                  Send
                 </button>
               </div>
             </div>
@@ -311,117 +310,129 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
               </div>
             </div>
 
-            {/* Add Medicine Section (shown on button click) */}
-            {showAddForm && (
-              <div className="border border-gray-200 rounded-xl p-3 mb-4">
-                <h3 className="text-xs font-medium text-green-600 mb-2 flex items-center">
-                  <Plus className="w-3 h-3 mr-1" />
-                  Add Medicine
-                </h3>
-                <div className="space-y-2">
-                  <select
-                    value={currentMedicine.medicine}
-                    onChange={(e) => setCurrentMedicine({...currentMedicine, medicine: e.target.value})}
-                    className="w-full text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
-                  >
-                    <option value="">Select Medicine</option>
-                    {medicineOptions.map(med => (
-                      <option key={med} value={med}>{med}</option>
-                    ))}
-                  </select>
-                  <div className="flex gap-2">
-                    <select
-                      value={currentMedicine.type}
-                      onChange={(e) => setCurrentMedicine({...currentMedicine, type: e.target.value})}
-                      className="flex-1 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
-                    >
-                      <option value="">Dosage</option>
-                      {typeOptions.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                      ))}
-                    </select>
-                    <select
-                      value={currentMedicine.frequency}
-                      onChange={(e) => setCurrentMedicine({...currentMedicine, frequency: e.target.value})}
-                      className="flex-1 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
-                    >
-                      <option value="">Frequency</option>
-                      {frequencyOptions.map(freq => (
-                        <option key={freq} value={freq}>{freq}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <select
-                    value={currentMedicine.duration}
-                    onChange={(e) => setCurrentMedicine({...currentMedicine, duration: e.target.value})}
-                    className="w-full text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
-                  >
-                    <option value="">Duration</option>
-                    {durationOptions.map(dur => (
-                      <option key={dur} value={dur}>{dur}</option>
-                    ))}
-                  </select>
-                  <textarea
-                    value={currentMedicine.instructions}
-                    onChange={(e) => setCurrentMedicine({...currentMedicine, instructions: e.target.value})}
-                    placeholder="Enter specific instructions for this medicine (e.g., take with food)"
-                    className="w-full h-16 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500 resize-none"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setShowAddForm(false)}
-                      className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 rounded-md text-xs font-medium transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleAddMedicine}
-                      disabled={!currentMedicine.medicine || !currentMedicine.type || !currentMedicine.frequency || !currentMedicine.duration}
-                      className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2 rounded-md text-xs font-medium transition-colors"
-                    >
-                      Add
-                    </button>
+            {/* Prescription Content */}
+            <div className="flex-1 overflow-y-auto relative">
+              <div className="relative z-10 space-y-2 h-full">
+                <div className="flex h-full">
+                  <div className="relative">
+                    <span className="absolute top-0 left-0 text-2xl font-bold text-green-600 px-2 py-1 rounded-md">Rx</span>
+                    <div className="flex-1 pl-3 pt-9">
+                      {/* Add Medicine Section (shown on button click) */}
+                      {showAddForm && (
+                        <div className="border border-gray-200 rounded-xl p-3 mb-4">
+                          <h3 className="text-xs font-medium text-green-600 mb-2 flex items-center">
+                            <Plus className="w-3 h-3 mr-1" />
+                            Add Medicine
+                          </h3>
+                          <div className="space-y-2">
+                            <select
+                              value={currentMedicine.medicine}
+                              onChange={(e) => setCurrentMedicine({...currentMedicine, medicine: e.target.value})}
+                              className="w-full text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                            >
+                              <option value="">Select Medicine</option>
+                              {medicineOptions.map(med => (
+                                <option key={med} value={med}>{med}</option>
+                              ))}
+                            </select>
+                            <div className="flex gap-2">
+                              <select
+                                value={currentMedicine.type}
+                                onChange={(e) => setCurrentMedicine({...currentMedicine, type: e.target.value})}
+                                className="flex-1 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                              >
+                                <option value="">Dosage</option>
+                                {typeOptions.map(type => (
+                                  <option key={type} value={type}>{type}</option>
+                                ))}
+                              </select>
+                              <select
+                                value={currentMedicine.frequency}
+                                onChange={(e) => setCurrentMedicine({...currentMedicine, frequency: e.target.value})}
+                                className="flex-1 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                              >
+                                <option value="">Frequency</option>
+                                {frequencyOptions.map(freq => (
+                                  <option key={freq} value={freq}>{freq}</option>
+                                ))}
+                              </select>
+                            </div>
+                            <select
+                              value={currentMedicine.duration}
+                              onChange={(e) => setCurrentMedicine({...currentMedicine, duration: e.target.value})}
+                              className="w-full text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                            >
+                              <option value="">Duration</option>
+                              {durationOptions.map(dur => (
+                                <option key={dur} value={dur}>{dur}</option>
+                              ))}
+                            </select>
+                            <textarea
+                              value={currentMedicine.instructions}
+                              onChange={(e) => setCurrentMedicine({...currentMedicine, instructions: e.target.value})}
+                              placeholder="Enter specific instructions for this medicine (e.g., take with food)"
+                              className="w-full h-16 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500 resize-none"
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setShowAddForm(false)}
+                                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 rounded-md text-xs font-medium transition-colors"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={handleAddMedicine}
+                                disabled={!currentMedicine.medicine || !currentMedicine.type || !currentMedicine.frequency || !currentMedicine.duration}
+                                className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2 rounded-md text-xs font-medium transition-colors"
+                              >
+                                Add
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Medicine List and Instructions (shown only if medicines exist and not in add form) */}
+                      {prescriptionData.length > 0 && !showAddForm && (
+                        <>
+                          <div className="border border-gray-200 rounded-xl p-3 mb-4">
+                            <h3 className="text-xs font-medium text-green-600 mb-2">Added Medicines</h3>
+                            <div className="space-y-2 max-h-40 overflow-y-auto">
+                              {prescriptionData.map((item) => (
+                                <div key={item.id} className="flex items-start justify-between p-2 bg-gray-50 rounded-md">
+                                  <div className="text-xs text-gray-800 flex-1">
+                                    <p><strong>{item.name} - {item.dosage} - {item.frequency} - {item.duration}</strong></p>
+                                    {item.instructions && (
+                                      <p className="mt-1 italic">{item.instructions}</p>
+                                    )}
+                                  </div>
+                                  <button
+                                    onClick={() => handleRemoveMedicine(item.id)}
+                                    className="text-red-400 hover:text-red-600 p-1 ml-2"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="border border-gray-200 rounded-xl p-3 mb-4">
+                            <h3 className="text-xs font-medium text-green-600 mb-2">Other Instructions</h3>
+                            <textarea
+                              value={instructions}
+                              onChange={(e) => setInstructions(e.target.value)}
+                              placeholder="Enter additional instructions, things to avoid, dietary advice, etc."
+                              className="w-full h-24 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500 resize-none"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
-
-            {/* Medicine List and Instructions (shown only if medicines exist and not in add form) */}
-            {prescriptionData.length > 0 && !showAddForm && (
-              <>
-                <div className="border border-gray-200 rounded-xl p-3 mb-4 flex-1">
-                  <h3 className="text-xs font-medium text-green-600 mb-2">Added Medicines</h3>
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {prescriptionData.map((item) => (
-                      <div key={item.id} className="flex items-start justify-between p-2 bg-gray-50 rounded-md">
-                        <div className="text-xs text-gray-800 flex-1">
-                          <p><strong>{item.name} - {item.dosage} - {item.frequency} - {item.duration}</strong></p>
-                          {item.instructions && (
-                            <p className="mt-1 italic">{item.instructions}</p>
-                          )}
-                        </div>
-                        <button
-                          onClick={() => handleRemoveMedicine(item.id)}
-                          className="text-red-400 hover:text-red-600 p-1 ml-2"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border border-gray-200 rounded-xl p-3 mb-4">
-                  <h3 className="text-xs font-medium text-green-600 mb-2">Other Instructions</h3>
-                  <textarea
-                    value={instructions}
-                    onChange={(e) => setInstructions(e.target.value)}
-                    placeholder="Enter additional instructions, things to avoid, dietary advice, etc."
-                    className="w-full h-24 text-xs p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500 resize-none"
-                  />
-                </div>
-              </>
-            )}
+            </div>
           </div>
 
           {/* Footer */}
@@ -433,22 +444,13 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
               >
                 Cancel
               </button>
-              {prescriptionData.length > 0 && (
-                <button
-                  onClick={() => setShowPreview(true)}
-                  className="flex-1 bg-green-100 hover:bg-green-200 text-green-600 py-2.5 rounded-xl font-medium text-xs transition-all flex items-center justify-center"
-                >
-                  <Edit3 className="w-3 h-3 mr-1" />
-                  Preview
-                </button>
-              )}
               <button
-                onClick={handleSave}
+                onClick={handleSend}
                 disabled={prescriptionData.length === 0}
                 className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2.5 rounded-xl font-medium text-xs transition-all flex items-center justify-center"
               >
-                <Printer className="w-4 h-4 mr-2" />
-                Save
+                
+                Send
               </button>
             </div>
           </div>

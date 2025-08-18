@@ -3,11 +3,11 @@ import { ChevronDown, ChevronUp, Eye, ArrowLeft, Calendar, MapPin, Video, User, 
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) => {
-  const { setShowWritePrescriptionModel,setShowWriteLabTestModel } = useConsultationFlow();
+  const { setShowWritePrescriptionModel, setShowWriteLabTestModel } = useConsultationFlow();
   const [expandedSections, setExpandedSections] = useState({
     patientInfo: false,
     familyHistory: false,
-    healthComplaint: false,
+    healthComplaint: true, // Health Complaint section open by default
     visitHistory: false
   });
 
@@ -39,7 +39,8 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
     address: 'Street ABC, House 123, NY, USA',
     gender: 'Male',
     emergencyContact: '+92 300 1234567',
-    email: 'waseem.hassan@email.com'
+    email: 'waseem.hassan@email.com',
+    healthComplaint: 'I have been suffering from fever and body aches for the past 3 days.'
   };
 
   // Mock visit history data
@@ -97,7 +98,7 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-100">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
       <div className="min-h-screen max-w-6xl mx-auto px-4 sm:px-4 lg:px-8 py-2 sm:py-4">
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 sm:p-8">
           {/* Header */}
@@ -352,9 +353,6 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                 </button>
                 {expandedSections.healthComplaint && (
                   <div className="p-4 sm:p-6 border-t border-gray-100 space-y-6">
-                    <div className="flex items-center justify-end">
-                      <span className="bg-emerald-100 text-emerald-600 px-3 py-1 rounded-lg text-sm font-medium">EHR</span>
-                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Temperature (°C)</label>
@@ -413,6 +411,14 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                           View
                         </button>
                       </div>
+                    </div>
+
+                    {/* Patient's Health Complaint */}
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-700 mb-2">Patient's Health Complaint</h4>
+                      <p className="text-sm text-gray-800 bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        {patientData.healthComplaint}
+                      </p>
                     </div>
                   </div>
                 )}

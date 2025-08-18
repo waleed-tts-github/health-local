@@ -55,7 +55,7 @@ function Landing() {
         {/* Center Content */}
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-slate-800 mb-2">
-            ANGILL Redefining Access to Care
+            Redefining Access to Care
           </h2>
           <p className="text-slate-600 text-sm max-w-2xl mx-auto leading-relaxed">
             We make medical access simpler, faster, and more inclusive — blending advanced technology, trusted providers, and community support into one seamless ecosystem.

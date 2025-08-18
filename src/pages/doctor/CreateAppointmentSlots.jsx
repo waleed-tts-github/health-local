@@ -5,7 +5,6 @@ import {
   Clock, 
   MapPin, 
   Video, 
-  CheckCircle, 
   AlertCircle,
   ChevronDown,
   ChevronUp
@@ -24,8 +23,6 @@ const CreateAppointmentSlots = () => {
 
   // Mock doctor profile data
   const doctorProfile = {
-    name: 'Dr. Ahmed Hassan',
-    specialty: 'Cardiologist',
     clinicAddress: 'Ahmed Medical Center, 123 Gulberg Main Blvd, Lahore',
     workingWithAngill: true
   };
@@ -57,13 +54,11 @@ const CreateAppointmentSlots = () => {
       const slotStart = new Date(currentTime);
       const slotEnd = new Date(slotStart.getTime() + duration * 60000);
       
-      // Don't create slots that would go beyond the selected end time
       if (slotEnd > end) break;
 
       const startTimeStr = `${slotStart.getHours().toString().padStart(2, '0')}:${slotStart.getMinutes().toString().padStart(2, '0')}`;
       const endTimeStr = `${slotEnd.getHours().toString().padStart(2, '0')}:${slotEnd.getMinutes().toString().padStart(2, '0')}`;
 
-      // Check for overlaps
       const hasOverlap = slots.some(slot => 
         slot.date === selectedDate &&
         slot.serviceType !== currentSlot.serviceType &&
@@ -145,41 +140,6 @@ const CreateAppointmentSlots = () => {
           </div>
         </div>
 
-        {/* Doctor Profile Summary */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">{doctorProfile.name}</h2>
-              <p className="text-sm text-gray-600">{doctorProfile.specialty}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Date Selection */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Date</h3>
-          <div className="flex flex-wrap gap-2">
-            {getDaysOfWeek().map((day) => (
-              <button
-                key={day.date}
-                onClick={() => setSelectedDate(day.date)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedDate === day.date
-                    ? 'bg-green-500 text-white'
-                    : day.isToday
-                    ? 'bg-green-50 text-green-600 hover:bg-green-100'
-                    : 'bg-white border border-gray-200 text-gray-900 hover:bg-green-50'
-                }`}
-              >
-                {day.day} {day.dayNum}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Create New Slot */}
           <div className="bg-white border border-gray-200 rounded-lg p-4">
@@ -238,6 +198,28 @@ const CreateAppointmentSlots = () => {
                   >
                     <MapPin className="w-4 h-4 inline mr-2" /> Physical
                   </button>
+                </div>
+              </div>
+
+              {/* Date Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">Select Date</label>
+                <div className="flex flex-wrap gap-2">
+                  {getDaysOfWeek().map((day) => (
+                    <button
+                      key={day.date}
+                      onClick={() => setSelectedDate(day.date)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                        selectedDate === day.date
+                          ? 'bg-green-500 text-white'
+                          : day.isToday
+                          ? 'bg-green-50 text-green-600 hover:bg-green-100'
+                          : 'bg-white border border-gray-200 text-gray-900 hover:bg-green-50'
+                      }`}
+                    >
+                      {day.day} {day.dayNum}
+                    </button>
+                  ))}
                 </div>
               </div>
 

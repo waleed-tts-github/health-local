@@ -239,28 +239,34 @@ const WriteLabTestModal = ({ isOpen, onClose, onSave }) => {
         <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible border border-gray-200">
           <div className="relative z-10 flex flex-col h-full">
             {/* Header Section */}
-            <div className="flex items-center justify-between p-4 pb-3 border-b border-gray-200">
-              <div className="flex flex-col flex-1">
-                <h2 className="text-base font-bold text-green-600">{labOrder.doctorName}</h2>
-                <p className="text-gray-600 text-xs font-medium">{labOrder.qualification}</p>
-              </div>
-              <div className="w-[4px] h-15 bg-black mx-4"></div>
-              <div className="flex items-center flex-1 justify-end">
-                <div className="w-10 h-10 bg-green-500 rounded-sm sm:rounded-sm flex items-center justify-center mr-3">
-                  <img src={logo} className="w-10 h-10 p-1" alt="Angill Logo" />
+            <div className="bg-gradient-to-r from-green-50 to-white p-4 border-b border-gray-200 shadow-sm">
+              <div className="flex items-center justify-between space-x-2 relative">
+                <div className="flex items-center space-x-2">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 shadow-md">
+                    <img src={logo} className="h-6 w-6" alt="Angill Logo" />
+                  </div>
+                  <div>
+                    <h1 className="text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      Angill
+                    </h1>
+                    <p className="text-green-600 text-xs font-medium">
+                      Healthcare
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-gray-700">{labOrder.hospitalName}</h3>
-                  <p className="text-gray-500 text-xs font-normal">Every illness deserves an Angill</p>
+                <div className="flex flex-col text-right mr-[15px]">
+                  <h2 className="text-sm font-semibold text-gray-800">{labOrder.doctorName}</h2>
+                  <p className="text-gray-600 text-xs font-medium">{labOrder.specialty}</p>
+                  <p className="text-gray-600 text-xs font-medium">{labOrder.qualification}</p>
                 </div>
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-[-15px] right-[-15px]"
+                  aria-label="Back to edit"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-2 right-2"
-                aria-label="Back to edit"
-              >
-                <X className="w-5 h-5" />
-              </button>
             </div>
 
             {/* Doctor and Patient Info */}
@@ -337,8 +343,8 @@ const WriteLabTestModal = ({ isOpen, onClose, onSave }) => {
                   onClick={handleSave}
                   className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all flex items-center justify-center"
                 >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Save & Send
+                  
+                  Send
                 </button>
               </div>
             </div>
@@ -383,28 +389,34 @@ const WriteLabTestModal = ({ isOpen, onClose, onSave }) => {
       <div className="bg-white rounded-2xl max-w-md w-full h-[98vh] flex flex-col shadow-2xl overflow-y-auto sm:overflow-visible border border-gray-200 relative">
         <div className="relative z-10 flex flex-col h-full">
           {/* Header Section */}
-          <div className="flex items-center justify-between p-4 pb-3 border-b border-gray-200">
-            <div className="flex flex-col flex-1">
-              <h2 className="text-base font-bold text-green-600">Write Lab Tests</h2>
-              <p className="text-gray-600 text-xs font-medium">Order diagnostic tests and investigations</p>
-            </div>
-            <div className="w-[4px] h-15 bg-black mx-4"></div>
-            <div className="flex items-center flex-1 justify-end">
-              <div className="w-10 h-10 bg-green-500 rounded-sm sm:rounded-sm flex items-center justify-center mr-3">
-                <img src={logo} className="w-10 h-10 p-1" alt="Angill Logo" />
+          <div className="bg-gradient-to-r from-green-50 to-white p-4 border-b border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between space-x-2 relative">
+              <div className="flex items-center space-x-2">
+                <div className="p-1.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 shadow-md">
+                  <img src={logo} className="h-6 w-6" alt="Angill Logo" />
+                </div>
+                <div>
+                  <h1 className="text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    Angill
+                  </h1>
+                  <p className="text-green-600 text-xs font-medium">
+                    Healthcare
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-gray-700">ANGILL CLINIC</h3>
-                <p className="text-gray-500 text-xs font-normal">Every illness deserves an Angill</p>
+              <div className="flex flex-col text-right mr-[20px]">
+                <h2 className="text-sm font-semibold text-gray-800">DR. AZFAR HUSSAIN</h2>
+                <p className="text-gray-600 text-xs font-medium">DOCTOR (CONSULTANT) (ENT)</p>
+                <p className="text-gray-600 text-xs font-medium">MBBS, FCPS (ENT)</p>
               </div>
+              <button
+                onClick={onClose}
+                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-[-15px] right-[-15px]"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <button
-              onClick={onClose}
-              className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 absolute top-2 right-2"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
           </div>
 
           {/* Content */}
@@ -562,6 +574,15 @@ const WriteLabTestModal = ({ isOpen, onClose, onSave }) => {
             </div>
           </div>
 
+          {!showAddForm && (
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="absolute bottom-14 left-4 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors z-50"
+            >
+              <Plus className="w-6 h-6" />
+            </button>
+          )}
+
           <style jsx>{`
             .h-[98vh] {
               scrollbar-width: thin;
@@ -591,14 +612,6 @@ const WriteLabTestModal = ({ isOpen, onClose, onSave }) => {
             }
           `}</style>
         </div>
-        {!showPreview && (
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="absolute bottom-14 left-4 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors z-50"
-          >
-            <Plus className="w-6 h-6" />
-          </button>
-        )}
       </div>
     </div>
   );
