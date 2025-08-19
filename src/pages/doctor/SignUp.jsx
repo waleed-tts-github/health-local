@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, User, Phone, Calendar, Camera, Shield, Edit2, X } from 'lucide-react';
 import logo from '../../assets/Group.png';
 import { useNavigate } from 'react-router-dom';
+import MaskedInput from 'react-maskedinput';
 
 const DoctorSignup = () => {
   const navigate = useNavigate();
@@ -21,6 +22,9 @@ const DoctorSignup = () => {
   const [errors, setErrors] = useState({});
   const [showAgeErrorModal, setShowAgeErrorModal] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [dateInput, setDateInput] = useState('');
+  const [tempDate, setTempDate] = useState('');
+  const [isCalendarInput, setIsCalendarInput] = useState(false);
 
   // Get today's date in YYYY-MM-DD format for max date restriction
   const getTodayDate = () => {
@@ -39,6 +43,81 @@ const DoctorSignup = () => {
       age--;
     }
     return age;
+  };
+
+  // Validate age on date of birth change
+  useEffect(() => {
+    if (formData.dateOfBirth && !isCalendarInput) {
+      const age = calculateAge(formData.dateOfBirth);
+      setShowAgeErrorModal(age < 18);
+    } else {
+      setShowAgeErrorModal(false);
+    }
+  }, [formData.dateOfBirth, isCalendarInput]);
+
+  // Handle manual date input change
+  const handleDateInputChange = (e) => {
+    const value = e.target.value;
+    setDateInput(value);
+    setIsCalendarInput(false);
+
+    if (value.length === 10) {
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date format (DD/MM/YYYY)' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+        return;
+      }
+
+      const [day, month, year] = value.split('/').map(Number);
+      if (day < 1 || day > 31) {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Day must be between 01 and 31' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+        return;
+      }
+      if (month < 1 || month > 12) {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Month must be between 01 and 12' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+        return;
+      }
+      const date = new Date(year, month - 1, day);
+      if (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day &&
+        date <= new Date()
+      ) {
+        setFormData(prev => ({
+          ...prev,
+          dateOfBirth: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+        }));
+        setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+      } else {
+        setErrors(prev => ({ ...prev, dateOfBirth: 'Invalid date' }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+      }
+    } else {
+      setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+      setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+    }
+  };
+
+  // Handle calendar date picker change
+  const handleDatePickerChange = (e) => {
+    const value = e.target.value;
+    setTempDate(value);
+    setIsCalendarInput(true);
+    if (value) {
+      setFormData(prev => ({
+        ...prev,
+        dateOfBirth: value
+      }));
+      const [year, month, day] = value.split('-').map(Number);
+      setDateInput(`${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`);
+      setErrors(prev => ({ ...prev, dateOfBirth: '' }));
+    } else {
+      setDateInput('');
+      setErrors(prev => ({ ...prev, dateOfBirth: 'Date of birth is required' }));
+    }
   };
 
   // Handle input changes
@@ -120,6 +199,8 @@ const DoctorSignup = () => {
   const closeAgeErrorModal = () => {
     setShowAgeErrorModal(false);
     setFormData(prev => ({ ...prev, dateOfBirth: '' }));
+    setDateInput('');
+    setTempDate('');
   };
 
   // Handle logo click
@@ -170,7 +251,7 @@ const DoctorSignup = () => {
 
       {/* Form Section */}
       <div className="w-full md:w-4/5 lg:w-5/6 flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-lg sm:max-w-xl lg:max-w-3xl bg-white rounded-lg shadow-lg border border-gray-200 p-6 sm:p-8 lg:p-10 relative">
+        <div className="w-full max-w-lg sm:max-w-xl lg:max-w-5xl xl:max-w-6xl bg-white rounded-lg shadow-lg border border-gray-200 p-6 sm:p-8 lg:p-10 relative">
           {!isSubmitted ? (
             <>
               <div className="text-center mb-6 sm:mb-8">
@@ -207,13 +288,13 @@ const DoctorSignup = () => {
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700 block">First Name</label>
                     <div className="relative">
-                      <User className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
+                      <User className="absolute left-2.5 top-3.5 w-5 h-5 text-gray-400" />
                       <input
                         type="text"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className={`w-full pl-12 pr-5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
+                        className={`w-full pl-10 pr-5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
                           errors.firstName ? 'border-red-400' : ''
                         }`}
                         placeholder="Enter your first name"
@@ -225,13 +306,13 @@ const DoctorSignup = () => {
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700 block">Last Name</label>
                     <div className="relative">
-                      <User className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
+                      <User className="absolute left-2.5 top-3.5 w-5 h-5 text-gray-400" />
                       <input
                         type="text"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className={`w-full pl-12 pr-5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
+                        className={`w-full pl-10 pr-5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
                           errors.lastName ? 'border-red-400' : ''
                         }`}
                         placeholder="Enter your last name"
@@ -244,13 +325,13 @@ const DoctorSignup = () => {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 block">Phone Number</label>
                   <div className="relative">
-                    <Phone className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
+                    <Phone className="absolute left-2.5 top-3.5 w-5 h-5 text-gray-400" />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className={`w-full pl-12 pr-5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
+                      className={`w-full pl-10 pr-5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
                         errors.phone ? 'border-red-400' : ''
                       }`}
                       placeholder="03001234567"
@@ -262,17 +343,25 @@ const DoctorSignup = () => {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 block">Date of Birth</label>
                   <div className="relative">
-                    <Calendar className="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" />
+                    <MaskedInput
+                      mask="11/11/1111"
+                      name="dateInput"
+                      value={dateInput}
+                      onChange={handleDateInputChange}
+                      className={`w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md ${
+                        errors.dateOfBirth ? 'border-red-400' : ''
+                      }`}
+                      placeholder="DD/MM/YYYY"
+                    />
                     <input
                       type="date"
                       name="dateOfBirth"
-                      value={formData.dateOfBirth}
-                      onChange={handleInputChange}
+                      value={tempDate}
+                      onChange={handleDatePickerChange}
                       max={getTodayDate()}
-                      className={`w-full pl-12 pr-5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-green-500 focus:outline-none transition-all duration-300 text-gray-900 shadow-sm hover:shadow-md ${
-                        errors.dateOfBirth ? 'border-red-400' : ''
-                      }`}
+                      className="absolute right-3.5 top-3.5 opacity-0 w-8 cursor-pointer"
                     />
+                    <Calendar className="absolute right-3.5 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
                   </div>
                   {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
                 </div>

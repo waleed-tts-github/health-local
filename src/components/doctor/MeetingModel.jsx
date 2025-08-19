@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, PhoneOff, FileText, Mic, MicOff,Phone } from 'lucide-react';
+import { X, PhoneOff, FileText, Mic, MicOff, Phone } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 
 const DoctorMeetingModel = ({ isOpen, onClose }) => {
@@ -8,6 +8,7 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(true);
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [hasPatientJoined, setHasPatientJoined] = useState(false); // New state for patient join status
 
   const currentPatient = {
     name: 'Robert Thompson',
@@ -46,7 +47,6 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
 
   const confirmEndMeeting = () => {
     setIsCallActive(false);
-
     setShowConfirmPopup(false);
     onClose();
   };
@@ -56,7 +56,7 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
   };
 
   const handleVisitClick = () => {
-    setShowPatientComplaintWithMedicalAndVisitHistoryModel(true)
+    setShowPatientComplaintWithMedicalAndVisitHistoryModel(true);
   };
 
   if (!isOpen) return null;
@@ -99,11 +99,22 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
 
             {/* Main Patient Video */}
             <div className="relative aspect-video bg-white rounded-xl overflow-hidden shadow-lg border border-gray-200">
-              <img
-                src={currentPatient.image}
-                alt="Patient"
-                className="w-full h-full object-cover"
-              />
+              {hasPatientJoined ? (
+                <>
+                  <img
+                    src={currentPatient.image}
+                    alt="Patient"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3 bg-green-500 text-white rounded-full px-3 py-1 text-xs font-semibold">
+                    Patient Is In The Meeting
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                  <p className="text-gray-600 font-semibold text-sm">Waiting For Patient</p>
+                </div>
+              )}
               {/* Visit Button - Egg shaped */}
               <button
                 onClick={handleVisitClick}
@@ -121,7 +132,7 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
             </div>
             
             {/* Doctor Picture-in-Picture */}
-            <div className="relative w-\/sm:w-28 h-16 sm:h-20 bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 self-end">
+            <div className="relative w-24 sm:w-28 h-16 sm:h-20 bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 self-end">
               <img
                 src={currentDoctor.image}
                 alt="Doctor"
@@ -161,7 +172,7 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
                   className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-xl font-medium text-xs transition-all"
                 >
                   <div className="flex items-center justify-center space-x-1">
-                    <Phone VoxIconPlus className="w-4 h-4" />
+                    <PhoneOff className="w-4 h-4" />
                     <span>End Call</span>
                   </div>
                 </button>

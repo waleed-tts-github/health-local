@@ -30,6 +30,8 @@ const DoctorHome = () => {
   } = useConsultationFlow();
   const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
   const [showInvitationsModal, setShowInvitationsModal] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+  const [adjustedTimes, setAdjustedTimes] = useState({});
 
   // Mock data for appointments
   const [appointments] = useState([
@@ -115,6 +117,30 @@ const DoctorHome = () => {
     }
   ]);
 
+  const timeToMinutes = (timeStr) => {
+    const [time, ampm] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (ampm === 'PM' && hours !== 12) hours += 12;
+    if (ampm === 'AM' && hours === 12) hours = 0;
+    return hours * 60 + minutes;
+  };
+
+  const minutesToTime = (mins) => {
+    const hours = Math.floor(mins / 60);
+    const minutes = mins % 60;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const h = hours % 12 || 12;
+    return `${h}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  };
+
+  useEffect(() => {
+    const initial = {};
+    invitations.forEach((inv) => {
+      initial[inv.id] = timeToMinutes(inv.requestedTime);
+    });
+    setAdjustedTimes(initial);
+  }, [invitations]);
+
   const calculateTimeUntilAppointment = (date, time) => {
     const appointmentDateTime = new Date(`${date} ${time}`);
     const now = new Date();
@@ -171,19 +197,27 @@ const DoctorHome = () => {
             <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
               {/* View Invitations Button for Small Devices */}
               <button 
-                className="sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
+                className="relative sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
                 onClick={() => setShowInvitationsModal(true)}
               >
                 View Invitations
+                {invitations.length > 0 && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
+                )}
               </button>
               {/* Doctor Status Toggle */}
               <div className="flex items-center space-x-3">
                 <span className="text-sm font-medium text-gray-700">Status:</span>
                 <div className="flex items-center">
-                  <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-green-500 transition-colors focus:outline-none">
-                    <span className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
+                  <button
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isOnline ? 'bg-green-500' : 'bg-gray-300'}`}
+                    onClick={() => setIsOnline(!isOnline)}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isOnline ? 'translate-x-6' : 'translate-x-0'}`} />
                   </button>
-                  <span className="ml-2 text-sm font-medium text-green-600">Online</span>
+                  <span className={`ml-2 text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}`}>
+                    {isOnline ? 'Online' : 'Offline'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -363,6 +397,22 @@ const DoctorHome = () => {
                             {invitation.requestedTime}
                           </div>
                         </div>
+
+                        <div className="mt-3">
+                          <p className="text-xs font-medium text-gray-700 mb-1">Adjust Time:</p>
+                          <input
+                            type="range"
+                            min={480}
+                            max={1200}
+                            step={20}
+                            value={adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime)}
+                            onChange={(e) => setAdjustedTimes((prev) => ({ ...prev, [invitation.id]: Number(e.target.value) }))}
+                            className="w-full h-1 bg-green-100 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-green-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white"
+                          />
+                          <p className="text-center text-xs text-gray-600 mt-1">
+                            {minutesToTime(adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime))}
+                          </p>
+                        </div>
                         
                         <div className="flex items-center justify-between mb-3">
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -430,6 +480,22 @@ const DoctorHome = () => {
                           <Clock className="w-3 h-3 mr-1" />
                           {invitation.requestedTime}
                         </div>
+                      </div>
+
+                      <div className="mt-3">
+                        <p className="text-xs font-medium text-gray-700 mb-1">Adjust Time:</p>
+                        <input
+                          type="range"
+                          min={480}
+                          max={1200}
+                          step={20}
+                          value={adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime)}
+                          onChange={(e) => setAdjustedTimes((prev) => ({ ...prev, [invitation.id]: Number(e.target.value) }))}
+                          className="w-full h-1 bg-green-100 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-green-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white"
+                        />
+                        <p className="text-center text-xs text-gray-600 mt-1">
+                          {minutesToTime(adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime))}
+                        </p>
                       </div>
                       
                       <div className="flex items-center justify-between mb-3">
