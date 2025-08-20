@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  DollarSign, 
+  Currency, 
   TrendingUp, 
   Calendar, 
   Search,
@@ -16,17 +16,17 @@ const DoctorFinancialAccount = () => {
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mock data
+  // Mock data with amounts in PKR (assuming $1 ≈ PKR 100)
   const financialSummary = {
-    totalEarnings: 45680,
+    totalEarnings: 4568000, // $45680 * 100
     totalAppointments: 456,
-    thisMonthEarnings: 12450,
+    thisMonthEarnings: 1245000, // $12450 * 100
     thisMonthAppointments: 124,
     todayEarnings: {
-      all: 650,
-      angill: 200,
-      privateOnline: 300,
-      privatePhysical: 150
+      all: 65000, // $650 * 100
+      angill: 20000, // $200 * 100
+      privateOnline: 30000, // $300 * 100
+      privatePhysical: 15000 // $150 * 100
     },
     todayAppointments: {
       all: 13,
@@ -41,7 +41,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN001',
       type: 'consultation',
       patientName: 'Sarah Johnson',
-      amount: 150,
+      amount: 15000, // $150 * 100
       status: 'completed',
       date: '2024-01-30T14:30:00',
       consultationType: 'Private - Physical',
@@ -51,7 +51,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN002',
       type: 'consultation',
       patientName: 'Ahmed Khan',
-      amount: 50,
+      amount: 5000, // $50 * 100
       status: 'completed',
       date: '2024-01-30T11:15:00',
       consultationType: 'Angill - Online',
@@ -61,7 +61,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN003',
       type: 'withdrawal',
       patientName: 'Bank Transfer',
-      amount: -5000,
+      amount: -500000, // -$5000 * 100
       status: 'pending',
       date: '2024-01-29T16:00:00',
       consultationType: 'Withdrawal to Account',
@@ -71,7 +71,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN004',
       type: 'consultation',
       patientName: 'Maria Garcia',
-      amount: 120,
+      amount: 12000, // $120 * 100
       status: 'completed',
       date: '2024-01-29T09:45:00',
       consultationType: 'Private - Online',
@@ -81,7 +81,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN005',
       type: 'consultation',
       patientName: 'Hassan Ali',
-      amount: 50,
+      amount: 5000, // $50 * 100
       status: 'completed',
       date: '2024-01-28T15:20:00',
       consultationType: 'Angill - Online',
@@ -91,7 +91,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN006',
       type: 'bonus',
       patientName: 'Performance Bonus',
-      amount: 500,
+      amount: 50000, // $500 * 100
       status: 'completed',
       date: '2024-01-28T00:00:00',
       consultationType: 'Monthly Performance',
@@ -101,7 +101,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN007',
       type: 'consultation',
       patientName: 'Fatima Sheikh',
-      amount: 180,
+      amount: 18000, // $180 * 100
       status: 'failed',
       date: '2024-01-27T13:10:00',
       consultationType: 'Private - Physical',
@@ -111,7 +111,7 @@ const DoctorFinancialAccount = () => {
       id: 'TXN008',
       type: 'consultation',
       patientName: 'John Doe',
-      amount: 50,
+      amount: 5000, // $50 * 100
       status: 'completed',
       date: '2024-01-27T10:30:00',
       consultationType: 'Angill - Online',
@@ -158,7 +158,7 @@ const DoctorFinancialAccount = () => {
       case 'consultation': return <ArrowUpRight className="w-4 h-4 text-green-500" />;
       case 'withdrawal': return <ArrowDownLeft className="w-4 h-4 text-red-500" />;
       case 'bonus': return <TrendingUp className="w-4 h-4 text-blue-500" />;
-      default: return <DollarSign className="w-4 h-4 text-gray-500" />;
+      default: return <Currency className="w-4 h-4 text-gray-500" />;
     }
   };
 
@@ -264,12 +264,12 @@ const DoctorFinancialAccount = () => {
               <div>
                 <p className="text-gray-600 text-sm font-medium">Total Earnings</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  ${financialSummary.totalEarnings.toLocaleString()}
+                  PKR {financialSummary.totalEarnings.toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-600 mt-1">{financialSummary.totalAppointments} appointments</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-500" />
+                <Currency className="w-6 h-6 text-green-500" />
               </div>
             </div>
             <div className="flex items-center mt-4 text-sm">
@@ -284,7 +284,7 @@ const DoctorFinancialAccount = () => {
               <div>
                 <p className="text-gray-600 text-sm font-medium">This Month</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  ${financialSummary.thisMonthEarnings.toLocaleString()}
+                  PKR {financialSummary.thisMonthEarnings.toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-600 mt-1">{financialSummary.thisMonthAppointments} appointments</p>
               </div>
@@ -304,12 +304,12 @@ const DoctorFinancialAccount = () => {
               <div>
                 <p className="text-gray-600 text-sm font-medium">Today</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  ${getTodayEarnings().toLocaleString()}
+                  PKR {getTodayEarnings().toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-600 mt-1">{getTodayAppointments()} appointments</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-500" />
+                <Currency className="w-6 h-6 text-green-500" />
               </div>
             </div>
             <div className="flex items-center mt-4 text-sm">
@@ -412,7 +412,7 @@ const DoctorFinancialAccount = () => {
                     </td>
                     <td className="p-4">
                       <span className={`font-semibold ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {transaction.amount > 0 ? '+' : ''}${Math.abs(transaction.amount)}
+                        {transaction.amount > 0 ? '+' : ''}PKR {Math.abs(transaction.amount).toLocaleString()}
                       </span>
                     </td>
                     <td className="p-4">

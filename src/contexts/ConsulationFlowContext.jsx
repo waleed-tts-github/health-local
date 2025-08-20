@@ -8,16 +8,8 @@ export const ConsultationFlowProvider = ({ children }) => {
   const [selectedDependent, setSelectedDependent] = useState(null);
   const [showAddDependent, setShowAddDependent] = useState(false);
   const [cameFromAddDependent, setCameFromAddDependent] = useState(false);
-  const [isBookingThroughClinic,setIsBookingThroughClinic] = useState(false)
-  const [cameFromManageDependents,setCameFromManageDependents] = useState(false)
-
-
-  //consulation flow for doctor
-
-  const [showDoctorMeetingModel,setShowDoctorMeetingModel] = useState(false)
-  const [showPatientComplaintWithMedicalAndVisitHistoryModel ,setShowPatientComplaintWithMedicalAndVisitHistoryModel] = useState(false)
-  const [showWritePrescriptionModel,setShowWritePrescriptionModel] = useState(false)
-  const [showWriteLabTestModel,setShowWriteLabTestModel] = useState(false)
+  const [isBookingThroughClinic, setIsBookingThroughClinic] = useState(false);
+  const [cameFromManageDependents, setCameFromManageDependents] = useState(false);
 
   const handleServiceSelect = (service) => {
     setSelectedService(service);
@@ -27,9 +19,10 @@ export const ConsultationFlowProvider = ({ children }) => {
   const handleConsultationClick = () => {
     setCurrentStep(3);
   };
-  const handleShowHealthComplaint=()=>{
-    setCurrentStep(5)
-  }
+
+  const handleShowHealthComplaint = () => {
+    setCurrentStep(5);
+  };
 
   const resetFlow = () => {
     setCurrentStep(1);
@@ -37,6 +30,8 @@ export const ConsultationFlowProvider = ({ children }) => {
     setSelectedDependent(null);
     setShowAddDependent(false);
     setCameFromAddDependent(false);
+    setIsBookingThroughClinic(false);
+    setCameFromManageDependents(false);
   };
 
   const goBack = () => {
@@ -57,17 +52,16 @@ export const ConsultationFlowProvider = ({ children }) => {
     }
   };
 
-
-
   const handleAddDependentClick = () => {
     setShowAddDependent(true);
     setCurrentStep(4);
     setCameFromAddDependent(true);
   };
-  const handleShowCyberClinics = ()=>{
-    setSelectedService("cyber")
-    setCurrentStep(2)
-  }
+
+  const handleShowCyberClinics = () => {
+    setSelectedService("cyber");
+    setCurrentStep(2);
+  };
 
   const handleDependentSelect = (dependent) => {
     setSelectedDependent(dependent);
@@ -93,15 +87,7 @@ export const ConsultationFlowProvider = ({ children }) => {
         cameFromAddDependent,
         handleServiceSelect,
         handleConsultationClick,
-        showWritePrescriptionModel,
-        setShowWritePrescriptionModel,
         resetFlow,
-        showDoctorMeetingModel,
-        showPatientComplaintWithMedicalAndVisitHistoryModel,
-        setShowDoctorMeetingModel,
-        setShowPatientComplaintWithMedicalAndVisitHistoryModel,
-        showWriteLabTestModel,
-        setShowWriteLabTestModel,
         isBookingThroughClinic,
         setIsBookingThroughClinic,
         goBack,

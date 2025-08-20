@@ -32,6 +32,7 @@ import DoctorReviews from './pages/doctor/Reviews';
 import Visits from './pages/patient/Visits';
 import MedicalHistory from './pages/patient/HealthProfile';
 import Dependents from './pages/patient/Dependents';
+import DoctorTermsAndConditions from './pages/DoctorTermsAndConditions';
 
 const App = () => {
   return (
@@ -103,6 +104,7 @@ const App = () => {
           }
         />
         <Route path="/" element={<Landing/>} />
+        <Route path='/doctor/terms-and-conditions' element={<DoctorTermsAndConditions/>}></Route>
          <Route path='/verify-otp' element={<OTPPage/>}></Route>
       </Routes>
     </BrowserRouter>

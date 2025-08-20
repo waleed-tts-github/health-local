@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { X, Plus, Trash2, Printer, Edit2 } from 'lucide-react';
 import logo from '../../assets/Group.png';
+import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+import { useDoctorConsultation } from '../../contexts/DoctorConsultationContext';
 
-const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
+const WritePrescriptionModal = ({ isOpen, onClose}) => {
+  const {setShowWritePrescriptionModel,setShowPatientComplaintWithMedicalAndVisitHistoryModel,setIsAppointmentCompleted} = useDoctorConsultation()
   const [patientInfo, setPatientInfo] = useState({
     name: 'MR. NAIZ ZARDARI',
     age: '54',
@@ -124,10 +127,15 @@ const WritePrescriptionModal = ({ isOpen, onClose, onSave }) => {
         instructions: instructions,
         followUp: followUp,
       };
-      onSave && onSave(fullPrescription);
-      onClose();
+      setIsAppointmentCompleted(true)
+      setShowWritePrescriptionModel(false)
+      setShowPatientComplaintWithMedicalAndVisitHistoryModel(false)
+      
     }
   };
+
+
+  //PatientConsulationContext  //DoctorConsulationContext
 
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);

@@ -7,11 +7,12 @@ const DoctorReviews = () => {
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mock data for reviews
+  // Mock data for reviews with MRN
   const reviews = [
     {
       id: 'REV001',
       patientName: 'Sarah Johnson',
+      mrn: 'MRN-1001',
       rating: 5,
       comment: 'Excellent consultation, very thorough and caring doctor!',
       date: '2024-01-30T14:30:00',
@@ -19,6 +20,7 @@ const DoctorReviews = () => {
     {
       id: 'REV002',
       patientName: 'Ahmed Khan',
+      mrn: 'MRN-1002',
       rating: 4,
       comment: 'Good experience, but the wait time was a bit long.',
       date: '2024-01-29T11:15:00',
@@ -26,6 +28,7 @@ const DoctorReviews = () => {
     {
       id: 'REV003',
       patientName: 'Maria Garcia',
+      mrn: 'MRN-1003',
       rating: 5,
       comment: 'Dr. John was amazing, highly recommend!',
       date: '2024-01-28T09:45:00',
@@ -33,6 +36,7 @@ const DoctorReviews = () => {
     {
       id: 'REV004',
       patientName: 'Hassan Ali',
+      mrn: 'MRN-1004',
       rating: 3,
       comment: 'Decent consultation, but expected more detailed advice.',
       date: '2024-01-27T15:20:00',
@@ -40,6 +44,7 @@ const DoctorReviews = () => {
     {
       id: 'REV005',
       patientName: 'Fatima Sheikh',
+      mrn: 'MRN-1005',
       rating: 5,
       comment: 'Very professional and attentive, best doctor I’ve seen!',
       date: '2024-01-26T13:10:00',
@@ -47,6 +52,7 @@ const DoctorReviews = () => {
     {
       id: 'REV006',
       patientName: 'John Doe',
+      mrn: 'MRN-1006',
       rating: 2,
       comment: 'Not satisfied with the consultation, felt rushed.',
       date: '2024-01-25T10:30:00',
@@ -57,7 +63,8 @@ const DoctorReviews = () => {
   const filteredReviews = reviews.filter(review => {
     const matchesRating = filterRating === 'all' || review.rating === parseInt(filterRating);
     const matchesSearch = review.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         review.comment.toLowerCase().includes(searchQuery.toLowerCase());
+                         review.comment.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         review.mrn.toLowerCase().includes(searchQuery.toLowerCase());
     
     let matchesDate = true;
     if (dateRange === 'custom' && customDateRange.start && customDateRange.end) {
@@ -119,7 +126,7 @@ const DoctorReviews = () => {
                 <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search reviews..."
+                  placeholder="Search reviews by name, MRN, or comment..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full text-gray-900 focus:ring-2 focus:ring-green-600 outline-none"
@@ -202,8 +209,9 @@ const DoctorReviews = () => {
                         <p className="font-medium text-gray-900">{review.patientName}</p>
                         <div>{renderStars(review.rating)}</div>
                       </div>
+                      <p className="mt-1 text-[10px] text-gray-500">MRN: {review.mrn}</p>
                       <p className="mt-2 text-sm text-gray-600">{review.comment}</p>
-                      <div className="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                      <div className="mt-2 text-[10px] text-gray-500 flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {formatDate(review.date)}
                       </div>

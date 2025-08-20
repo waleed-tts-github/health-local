@@ -8,14 +8,16 @@ import {
   Activity, 
   ChevronDown, 
   ChevronUp,
-  DollarSign,
-  X
+  Currency,
+  X,
+  User
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import DoctorMeetingModel from '../../components/doctor/MeetingModel';
 import PatientComplaintAndMedicalAndVisitHistoryModel from '../../components/doctor/PatientComplaintWithMedicalAndVisitHistory';
-import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import WritePrescriptionModal from '../../components/doctor/WritePrescriptionModel';
-import WriteLabTestModal from '../../components/doctor/WriteLabTestModel';
+import WriteLabTestModal from '../../components/doctor/WriteLabTestModel'
+import { useDoctorConsultation } from '../../contexts/DoctorConsultationContext';
 
 const DoctorHome = () => {
   const { 
@@ -27,13 +29,15 @@ const DoctorHome = () => {
     setShowWriteLabTestModel,
     showPatientComplaintWithMedicalAndVisitHistoryModel, 
     setShowPatientComplaintWithMedicalAndVisitHistoryModel,
-  } = useConsultationFlow();
+    setIsAppointmentCompleted
+  } = useDoctorConsultation();
   const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
   const [showInvitationsModal, setShowInvitationsModal] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [adjustedTimes, setAdjustedTimes] = useState({});
+  const navigate = useNavigate();
 
-  // Mock data for appointments
+  // Mock data for appointments with fees in PKR
   const [appointments] = useState([
     {
       id: 1,
@@ -46,7 +50,7 @@ const DoctorHome = () => {
       reason: 'Regular Checkup',
       avatar: 'SJ',
       provider: 'Private',
-      fee: 150
+      fee: 15000
     },
     {
       id: 2,
@@ -59,7 +63,7 @@ const DoctorHome = () => {
       reason: 'Consultation',
       avatar: 'AA',
       provider: 'Angill',
-      fee: 200
+      fee: 20000
     },
     {
       id: 3,
@@ -72,7 +76,7 @@ const DoctorHome = () => {
       reason: 'Follow-up',
       avatar: 'MG',
       provider: 'Private',
-      fee: 120
+      fee: 12000
     },
     {
       id: 4,
@@ -85,11 +89,11 @@ const DoctorHome = () => {
       reason: 'Emergency Consultation',
       avatar: 'JS',
       provider: 'Angill',
-      fee: 300
+      fee: 30000
     }
   ]);
 
-  // Mock data for invitations
+  // Mock data for invitations with fees in PKR
   const [invitations] = useState([
     {
       id: 1,
@@ -101,7 +105,7 @@ const DoctorHome = () => {
       timestamp: '2 hours ago',
       avatar: 'DW',
       provider: 'Private',
-      estimatedFee: 180
+      estimatedFee: 18000
     },
     {
       id: 2,
@@ -113,7 +117,7 @@ const DoctorHome = () => {
       timestamp: '5 hours ago',
       avatar: 'LC',
       provider: 'Angill',
-      estimatedFee: 250
+      estimatedFee: 25000
     }
   ]);
 
@@ -157,6 +161,15 @@ const DoctorHome = () => {
     return `${minutes}m`;
   };
 
+  const handleAppointmentClick = (appointment) => {
+    setIsAppointmentCompleted(false);
+    if (appointment.type === 'online') {
+      setShowDoctorMeetingModel(true);
+    } else {
+      // For physical appointments, mark as present
+    }
+  };
+
   const closeDoctorMeetingModel = () => {
     setShowDoctorMeetingModel(false);
   };
@@ -183,7 +196,7 @@ const DoctorHome = () => {
   };
 
   const todayAppointments = appointments.filter(apt => apt.date === '2025-08-08');
-  const todayEarnings = 450;
+  const todayEarnings = 45000;
 
   return (
     <div className="min-h-screen bg-white">
@@ -191,19 +204,36 @@ const DoctorHome = () => {
       <div className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
-            </div>
-            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
+            <div className="flex flex-col w-full sm:w-auto">
+              <div className="flex items-center justify-between w-full sm:w-auto">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+                <button
+                  onClick={() => navigate('/doctor/profile/complete')}
+                  className="sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex items-center"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Complete Profile
+                </button>
+              </div>
               {/* View Invitations Button for Small Devices */}
               <button 
-                className="relative sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
+                className="sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors relative mt-2 w-fit"
                 onClick={() => setShowInvitationsModal(true)}
               >
                 View Invitations
                 {invitations.length > 0 && (
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
                 )}
+              </button>
+            </div>
+            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
+              {/* Complete Profile Button for Larger Devices */}
+              <button
+                onClick={() => navigate('/doctor/profile/complete')}
+                className="hidden sm:flex px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors items-center"
+              >
+                <User className="w-4 h-4 mr-2" />
+                Complete Profile
               </button>
               {/* Doctor Status Toggle */}
               <div className="flex items-center space-x-3">
@@ -229,17 +259,17 @@ const DoctorHome = () => {
         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
           {/* Main Content */}
           <div className="flex-1 space-y-4">
-            {/* Stats Grid - Only Today's Earnings */}
+            {/* Stats Grid - Today's Earnings in PKR */}
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-white border border-gray-200 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-600 text-xs font-medium">Today's Earnings</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-1">${todayEarnings}</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-1">PKR {todayEarnings.toLocaleString()}</p>
                     <p className="text-green-500 text-xs mt-1 font-medium">+12% from yesterday</p>
                   </div>
                   <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                    <DollarSign className="w-5 h-5 text-green-500" />
+                    <Currency className="w-5 h-5 text-green-500" />
                   </div>
                 </div>
               </div>
@@ -327,7 +357,7 @@ const DoctorHome = () => {
                               </div>
                               
                               <div className="text-xs font-semibold text-gray-900">
-                                ${appointment.fee}
+                                PKR {appointment.fee.toLocaleString()}
                               </div>
                             </div>
                           </div>
@@ -336,7 +366,7 @@ const DoctorHome = () => {
                         <div className="w-full sm:w-36">
                           {appointment.type === 'online' ? (
                             <button
-                              onClick={() => setShowDoctorMeetingModel(true)}
+                              onClick={() => handleAppointmentClick(appointment)}
                               className={`w-full px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                                 appointment.status === 'in-progress'
                                   ? 'bg-green-500 text-white hover:bg-green-600'
@@ -347,7 +377,10 @@ const DoctorHome = () => {
                               {appointment.status === 'in-progress' ? 'Join Now' : 'Start Call'}
                             </button>
                           ) : (
-                            <button className="w-full px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
+                            <button 
+                              onClick={() => handleAppointmentClick(appointment)}
+                              className="w-full px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors"
+                            >
                               <Check className="w-3 h-3 inline mr-1" />
                               Mark Present
                             </button>
@@ -423,7 +456,7 @@ const DoctorHome = () => {
                             {invitation.provider}
                           </span>
                           <span className="text-xs font-semibold text-gray-900">
-                            ${invitation.estimatedFee}
+                            PKR {invitation.estimatedFee.toLocaleString()}
                           </span>
                         </div>
                         
@@ -503,11 +536,11 @@ const DoctorHome = () => {
                           invitation.provider === 'Private' 
                             ? 'bg-gray-100 text-gray-700' 
                             : 'bg-green-50 text-green-600'
-                        }`}>
+                          }`}>
                           {invitation.provider}
                         </span>
                         <span className="text-xs font-semibold text-gray-900">
-                          ${invitation.estimatedFee}
+                          PKR {invitation.estimatedFee.toLocaleString()}
                         </span>
                       </div>
                       

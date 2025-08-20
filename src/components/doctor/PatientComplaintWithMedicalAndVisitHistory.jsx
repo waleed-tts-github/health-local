@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Eye, ArrowLeft, Calendar, MapPin, Video, User, FileText, Activity } from 'lucide-react';
 import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
+import { useDoctorConsultation } from '../../contexts/DoctorConsultationContext';
 
 const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) => {
-  const { setShowWritePrescriptionModel, setShowWriteLabTestModel } = useConsultationFlow();
+  const { setShowWritePrescriptionModel, setShowWriteLabTestModel } = useDoctorConsultation();
   const [expandedSections, setExpandedSections] = useState({
     patientInfo: false,
     familyHistory: false,
     healthComplaint: true, // Health Complaint section open by default
     visitHistory: false
   });
-
   const [expandedVisits, setExpandedVisits] = useState({});
+  const [examination, setExamination] = useState('');
+  const [diagnosisType, setDiagnosisType] = useState('Provisional/Final');
+  const [diagnosisDetails, setDiagnosisDetails] = useState('');
 
   const toggleSection = (section) => {
     setExpandedSections((prev) => ({
@@ -29,6 +32,18 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
 
   const handleEHRClick = () => {
     alert('Accessing Electronic Health Record...');
+  };
+
+  const handleSave = () => {
+    alert('Diagnosis and Examination saved successfully!');
+    // Here you would typically make an API call to save the examination and diagnosis data
+    console.log({
+      examination,
+      diagnosis: {
+        type: diagnosisType,
+        details: diagnosisDetails
+      }
+    });
   };
 
   // Mock patient data
@@ -353,6 +368,32 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                 </button>
                 {expandedSections.healthComplaint && (
                   <div className="p-4 sm:p-6 border-t border-gray-100 space-y-6">
+                    {/* Patient's Health Complaint */}
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-700 mb-2">Patient's Health Complaint</h4>
+                      <p className="text-sm text-gray-800 bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        {patientData.healthComplaint}
+                      </p>
+                    </div>
+
+                    {/* File Upload Section */}
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h4 className="text-sm font-bold text-gray-700 mb-3">Medical Files</h4>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-100 flex items-center justify-center">
+                            <span className="text-emerald-600 font-medium text-xs">WH</span>
+                          </div>
+                          <span className="text-sm text-gray-600">Medical_Report.pdf</span>
+                        </div>
+                        <button className="flex items-center gap-2 px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-all duration-200">
+                          <Eye className="w-4 h-4" />
+                          View
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Vital Signs */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Temperature (°C)</label>
@@ -395,31 +436,6 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                         />
                       </div>
                     </div>
-
-                    {/* File Upload Section - Inside Health Complaint */}
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="text-sm font-bold text-gray-700 mb-3">Medical Files</h4>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-100 flex items-center justify-center">
-                            <span className="text-emerald-600 font-medium text-xs">WH</span>
-                          </div>
-                          <span className="text-sm text-gray-600">Medical_Report.pdf</span>
-                        </div>
-                        <button className="flex items-center gap-2 px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-all duration-200">
-                          <Eye className="w-4 h-4" />
-                          View
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Patient's Health Complaint */}
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-700 mb-2">Patient's Health Complaint</h4>
-                      <p className="text-sm text-gray-800 bg-gray-50 rounded-lg p-3 border border-gray-200">
-                        {patientData.healthComplaint}
-                      </p>
-                    </div>
                   </div>
                 )}
               </div>
@@ -429,6 +445,8 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                 <h3 className="text-sm font-bold text-gray-700 mb-2">Examination</h3>
                 <textarea
                   placeholder="Physical examination findings..."
+                  value={examination}
+                  onChange={(e) => setExamination(e.target.value)}
                   className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
                   rows="3"
                 />
@@ -440,7 +458,11 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                   <h3 className="text-sm font-bold text-gray-700">Diagnosis</h3>
                   <ChevronDown className="w-5 h-5 text-gray-400" />
                 </div>
-                <select className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500">
+                <select 
+                  value={diagnosisType}
+                  onChange={(e) => setDiagnosisType(e.target.value)}
+                  className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
+                >
                   <option>Provisional/Final</option>
                   <option>Provisional</option>
                   <option>Final</option>
@@ -448,10 +470,22 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                 </select>
                 <textarea
                   placeholder="Enter diagnosis details..."
+                  value={diagnosisDetails}
+                  onChange={(e) => setDiagnosisDetails(e.target.value)}
                   className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500 mt-3"
                   rows="2"
                 />
                 <p className="text-xs text-gray-600 mt-1">For e.g., Diabetes, Hypertension...</p>
+              </div>
+
+              {/* Save Button */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 sm:p-6">
+                <button
+                  onClick={handleSave}
+                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-all duration-200"
+                >
+                  Save Diagnosis & Examination
+                </button>
               </div>
 
               {/* Action Buttons */}
@@ -471,7 +505,7 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                     }}
                     className="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-all duration-200"
                   >
-                    Lab Test
+                    Investigation
                   </button>
                 </div>
               </div>
