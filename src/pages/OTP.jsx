@@ -4,14 +4,14 @@ import logo from '../assets/Group.png';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const OTPPage = ({ role = 'patient' }) => {
+const OTPPage = () => {
   const navigate = useNavigate()
   const [otp, setOtp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [error, setError] = useState('');
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
-  const {OTPContext,setCurrentStep,setIsVerified} = useContext(AuthContext)
+  const {OTPContext,setCurrentStep,setIsVerified,userType} = useContext(AuthContext)
 
   // Timer for OTP expiry
   useEffect(() => {
@@ -27,21 +27,32 @@ const OTPPage = ({ role = 'patient' }) => {
       return;
     }
 
+    console.log(userType)
+    console.log(OTPContext)
+
     setIsSubmitting(true);
     setError('');
     // Simulate API call to verify OTP
     try {
      
-      if(OTPContext=="Sign Up")
+      if(OTPContext=="Sign Up" && userType=="patient")
       {
        
         navigate("/patient/sign-up")
-         setIsVerified(true)
+        setIsVerified(true)
         setCurrentStep(2)
       }
-      else if(OTPContext=="ForgotPassword")
+      else if(OTPContext=="Sign Up" && userType=="doctor")
+      {
+        navigate("/doctor")
+      }
+      else if(OTPContext=="ForgotPassword" && userType=="patient")
       {
         navigate("/patient/reset-password")
+      }
+      else if(OTPContext=="ForgotPassword" && userType=="doctor")
+      {
+        navigate("/doctor/reset-password")
       }
     } catch (err) {
       setIsSubmitting(false);
@@ -104,19 +115,12 @@ const OTPPage = ({ role = 'patient' }) => {
       {/* Right Section */}
       <div className="w-full md:w-5/6 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Back to Login */}
-          <button
-            onClick={handleBackToLogin}
-            className="flex items-center text-gray-600 hover:text-green-600 mb-8 transition duration-200"
-          >
-            <ArrowLeft size={20} className="mr-2" />
-            Back to Login
-          </button>
+        
 
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Verify OTP</h2>
             <p className="text-gray-600">
-              Enter the 6-digit code sent to your {role === 'patient' ? 'phone/email' : 'registered email'}.
+              Enter the 6-digit code sent to your {userType === 'patient' ? 'phone/email' : 'registered email'}.
             </p>
             <p className="text-gray-500 text-sm mt-2">Code expires in {formatTime(timer)}</p>
           </div>

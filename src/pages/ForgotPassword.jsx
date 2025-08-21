@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ArrowLeft, Mail, Check } from 'lucide-react';
-import logo from '../../assets/Group.png';
+import logo from '../assets/Group.png'
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
-const PatientForgotPassword = () => {
+const ForgotPassword = () => {
+  const {userType} = useContext(AuthContext)  
   const navigate = useNavigate()
   const [email, setEmail] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const handleSubmit = async () => {
     if (!email) return;
@@ -22,7 +25,15 @@ const PatientForgotPassword = () => {
 
   const handleBackToLogin = () => {
     // Navigate back to login - you can implement your navigation logic here
+    if(userType=="patient")
+    {
     navigate("/patient/login",{replace:true})
+
+    }
+    else{
+    navigate("/doctor/sign-in",{replace:true})
+
+    }
   };
 
   const closePopup = () => {
@@ -156,4 +167,4 @@ const PatientForgotPassword = () => {
   );
 };
 
-export default PatientForgotPassword;
+export default ForgotPassword;

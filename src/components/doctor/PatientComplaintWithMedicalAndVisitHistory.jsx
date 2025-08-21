@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Eye, ArrowLeft, Calendar, MapPin, Video, User, FileText, Activity } from 'lucide-react';
-import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import { useDoctorConsultation } from '../../contexts/DoctorConsultationContext';
 
 const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) => {
   const { setShowWritePrescriptionModel, setShowWriteLabTestModel } = useDoctorConsultation();
   const [expandedSections, setExpandedSections] = useState({
-    patientInfo: false,
+    patientInfo: true, // Patient Info open by default on all devices
+    healthComplaint: true, // Health Complaint open by default
     familyHistory: false,
-    healthComplaint: true, // Health Complaint section open by default
     visitHistory: false
   });
   const [expandedVisits, setExpandedVisits] = useState({});
@@ -36,7 +35,6 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
 
   const handleSave = () => {
     alert('Diagnosis and Examination saved successfully!');
-    // Here you would typically make an API call to save the examination and diagnosis data
     console.log({
       examination,
       diagnosis: {
@@ -152,31 +150,66 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Name</label>
-                        <p className="text-gray-800 text-sm">{patientData.name}</p>
+                        <input
+                          type="text"
+                          value={patientData.name}
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Age</label>
-                        <p className="text-gray-800 text-sm">{patientData.age}</p>
+                        <input
+                          type="text"
+                          value={patientData.age}
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Gender</label>
-                        <p className="text-gray-800 text-sm">{patientData.gender}</p>
+                        <input
+                          type="text"
+                          value={patientData.gender}
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                        <p className="text-gray-800 text-sm">{patientData.phone}</p>
+                        <input
+                          type="text"
+                          value={patientData.phone}
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
                       </div>
                       <div className="sm:col-span-2">
                         <label className="block text-sm font-bold text-gray-700 mb-2">Email</label>
-                        <p className="text-gray-800 text-sm">{patientData.email}</p>
+                        <input
+                          type="text"
+                          value={patientData.email}
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
                       </div>
                       <div className="sm:col-span-2">
                         <label className="block text-sm font-bold text-gray-700 mb-2">Address</label>
-                        <p className="text-gray-800 text-sm">{patientData.address}</p>
+                        <input
+                          type="text"
+                          value={patientData.address}
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
                       </div>
                       <div className="sm:col-span-2">
                         <label className="block text-sm font-bold text-gray-700 mb-2">Emergency Contact</label>
-                        <p className="text-gray-800 text-sm">{patientData.emergencyContact}</p>
+                        <input
+                          type="text"
+                          value={patientData.emergencyContact}
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
                       </div>
                     </div>
                     <div className="mt-6">
@@ -187,6 +220,101 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                         <Eye className="w-5 h-5" />
                         Access Full EHR
                       </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Health Complaint - Collapsible */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-100">
+                <button
+                  onClick={() => toggleSection('healthComplaint')}
+                  className="w-full flex items-center justify-between p-4 sm:p-6 text-gray-900 font-bold text-base hover:bg-green-50 transition-all duration-200"
+                >
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-green-600" />
+                    <span>Health Complaint</span>
+                  </div>
+                  {expandedSections.healthComplaint ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                  )}
+                </button>
+                {expandedSections.healthComplaint && (
+                  <div className="p-4 sm:p-6 border-t border-gray-100 space-y-6">
+                    {/* Patient's Health Complaint */}
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-700 mb-2">Patient's Health Complaint</h4>
+                      <p className="text-sm text-gray-800 bg-gray-100 rounded-lg p-3 border border-gray-200">
+                        {patientData.healthComplaint}
+                      </p>
+                    </div>
+
+                    {/* File Upload Section */}
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h4 className="text-sm font-bold text-gray-700 mb-3">Medical Files</h4>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-100 flex items-center justify-center">
+                            <span className="text-emerald-600 font-medium text-xs">WH</span>
+                          </div>
+                          <span className="text-sm text-gray-600">Medical_Report.pdf</span>
+                        </div>
+                        <button className="flex items-center gap-2 px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-all duration-200">
+                          <Eye className="w-4 h-4" />
+                          View
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Vital Signs */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Temperature (°C)</label>
+                        <input
+                          type="text"
+                          defaultValue="100"
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Blood Pressure (mmHg)</label>
+                        <input
+                          type="text"
+                          defaultValue="120/80"
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Pulse (bpm)</label>
+                        <input
+                          type="text"
+                          defaultValue="73"
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Weight (kg)</label>
+                        <input
+                          type="text"
+                          defaultValue="50"
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Height (cm)</label>
+                        <input
+                          type="text"
+                          defaultValue="170"
+                          readOnly
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -213,7 +341,10 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Blood Group</label>
-                        <select className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500">
+                        <select 
+                          disabled
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        >
                           <option>AB+</option>
                           <option>A+</option>
                           <option>A-</option>
@@ -226,7 +357,10 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Health Conditions</label>
-                        <select className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500">
+                        <select 
+                          disabled
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        >
                           <option>Cancer/Cardiac</option>
                           <option>Diabetes</option>
                           <option>Hypertension</option>
@@ -235,7 +369,10 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Drug Allergy</label>
-                        <select className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500">
+                        <select 
+                          disabled
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        >
                           <option>Penicillin</option>
                           <option>Aspirin</option>
                           <option>None</option>
@@ -243,7 +380,10 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Family History</label>
-                        <select className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500">
+                        <select 
+                          disabled
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        >
                           <option>Diabetic</option>
                           <option>Hypertension</option>
                           <option>Cancer</option>
@@ -252,7 +392,10 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Operation History</label>
-                        <select className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500">
+                        <select 
+                          disabled
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        >
                           <option>None</option>
                           <option>Appendectomy</option>
                           <option>Cardiac Surgery</option>
@@ -260,7 +403,10 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Addictions</label>
-                        <select className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500">
+                        <select 
+                          disabled
+                          className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
+                        >
                           <option>None</option>
                           <option>Smoking</option>
                           <option>Alcohol</option>
@@ -271,7 +417,8 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Current Medications</label>
                       <textarea
                         placeholder="List current medications..."
-                        className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
+                        readOnly
+                        className="w-full px-3 py-3 border rounded-lg bg-gray-100 text-gray-800 text-sm border-gray-200"
                         rows="3"
                       />
                     </div>
@@ -350,96 +497,6 @@ const PatientComplaintWithMedicalAndVisitHistoryModel = ({ isOpen, onClose }) =>
 
             {/* Right Column */}
             <div className="space-y-4 sm:space-y-6">
-              {/* Health Complaint / Examinations - Collapsible */}
-              <div className="bg-white rounded-xl shadow-md border border-gray-100">
-                <button
-                  onClick={() => toggleSection('healthComplaint')}
-                  className="w-full flex items-center justify-between p-4 sm:p-6 text-gray-900 font-bold text-base hover:bg-green-50 transition-all duration-200"
-                >
-                  <div className="flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-green-600" />
-                    <span>Health Complaint</span>
-                  </div>
-                  {expandedSections.healthComplaint ? (
-                    <ChevronUp className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
-                  )}
-                </button>
-                {expandedSections.healthComplaint && (
-                  <div className="p-4 sm:p-6 border-t border-gray-100 space-y-6">
-                    {/* Patient's Health Complaint */}
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-700 mb-2">Patient's Health Complaint</h4>
-                      <p className="text-sm text-gray-800 bg-gray-50 rounded-lg p-3 border border-gray-200">
-                        {patientData.healthComplaint}
-                      </p>
-                    </div>
-
-                    {/* File Upload Section */}
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="text-sm font-bold text-gray-700 mb-3">Medical Files</h4>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-100 flex items-center justify-center">
-                            <span className="text-emerald-600 font-medium text-xs">WH</span>
-                          </div>
-                          <span className="text-sm text-gray-600">Medical_Report.pdf</span>
-                        </div>
-                        <button className="flex items-center gap-2 px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-all duration-200">
-                          <Eye className="w-4 h-4" />
-                          View
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Vital Signs */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Temperature (°C)</label>
-                        <input
-                          type="text"
-                          defaultValue="100"
-                          className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Blood Pressure (mmHg)</label>
-                        <input
-                          type="text"
-                          defaultValue="120/80"
-                          className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Pulse (bpm)</label>
-                        <input
-                          type="text"
-                          defaultValue="73"
-                          className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Weight (kg)</label>
-                        <input
-                          type="text"
-                          defaultValue="50"
-                          className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Height (cm)</label>
-                        <input
-                          type="text"
-                          defaultValue="170"
-                          className="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-100 text-gray-800 text-sm border-gray-200 focus:border-green-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
               {/* Examination */}
               <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 sm:p-6">
                 <h3 className="text-sm font-bold text-gray-700 mb-2">Examination</h3>

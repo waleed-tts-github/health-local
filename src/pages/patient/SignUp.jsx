@@ -7,7 +7,7 @@ import MaskedInput from 'react-maskedinput';
 
 const PatientSignup = () => {
   const navigate = useNavigate();
-  const { formData, setFormData, currentStep, setCurrentStep, setOTPContext, isVerified } = useContext(AuthContext);
+  const { formData, setFormData, currentStep, setCurrentStep, setOTPContext, isVerified,setUserType } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -207,11 +207,7 @@ const PatientSignup = () => {
     return Object.keys(newErrors).length === 0 && !calendarAgeError;
   };
 
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
+
 
   const handlePrevious = () => {
     setCurrentStep(currentStep - 1);
@@ -482,6 +478,7 @@ const PatientSignup = () => {
                     if (isVerified) {
                       setCurrentStep(2);
                     } else {
+                      setUserType("patient")
                       setOTPContext("Sign Up");
                       navigate("/verify-otp");
                     }

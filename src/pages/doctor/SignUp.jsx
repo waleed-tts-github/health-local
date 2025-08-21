@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Eye, EyeOff, User, Phone, Calendar, Camera, Shield, Edit2, X } from 'lucide-react';
 import logo from '../../assets/Group.png';
 import { useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-maskedinput';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const DoctorSignup = () => {
+  const {setUserType,setOTPContext} = useContext(AuthContext)
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -190,7 +192,10 @@ const DoctorSignup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setIsSubmitted(true);
+     // setIsSubmitted(true);
+      setUserType("doctor") //setting the user type to doctor
+      setOTPContext("Sign Up")
+      navigate("/verify-otp")
       console.log('Form submitted:', formData);
     }
   };
@@ -461,7 +466,7 @@ const DoctorSignup = () => {
                   />
                   <label className="text-sm text-gray-700">
                     I agree to the{' '}
-                    <a href="/terms" className="text-green-600 font-medium hover:text-green-700">
+                    <a href="/doctor/terms-and-conditions" className="text-green-600 font-medium hover:text-green-700">
                       Terms and Conditions
                     </a>
                   </label>
@@ -508,7 +513,7 @@ const DoctorSignup = () => {
             <p className="text-gray-600 text-base">
               Already have an account?{' '}
               <a
-                onClick={() => navigate('/doctor/login')}
+                onClick={() => navigate('/doctor/sign-in')}
                 className="text-green-600 font-medium hover:text-green-700 transition-colors duration-200"
               >
                 Log in here

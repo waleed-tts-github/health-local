@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { X, Plus, Trash2, Printer, Edit2 } from 'lucide-react';
 import logo from '../../assets/Group.png';
-import { useConsultationFlow } from '../../contexts/ConsulationFlowContext';
 import { useDoctorConsultation } from '../../contexts/DoctorConsultationContext';
 
-const WritePrescriptionModal = ({ isOpen, onClose}) => {
-  const {setShowWritePrescriptionModel,setShowPatientComplaintWithMedicalAndVisitHistoryModel,setIsAppointmentCompleted} = useDoctorConsultation()
+const WritePrescriptionModal = ({ isOpen, onClose }) => {
+  const { setShowWritePrescriptionModel, setShowPatientComplaintWithMedicalAndVisitHistoryModel, setIsAppointmentCompleted } = useDoctorConsultation();
   const [patientInfo, setPatientInfo] = useState({
     name: 'MR. NAIZ ZARDARI',
     age: '54',
@@ -17,6 +16,7 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
     medicine: '',
     type: '',
     strength: '',
+    route: '',
     frequency: '',
     duration: '',
     instructions: '',
@@ -41,6 +41,11 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
     '5 mL', '10 mL', '0.1%', '1%', '2%',
   ];
 
+  const routeOptions = [
+    'Oral', 'Inhale', 'Intravenous', 'Intramuscular', 'Topical', 'Sublingual', 
+    'Rectal', 'Transdermal', 'Nasal', 'Ocular',
+  ];
+
   const frequencyOptions = [
     'Once Daily', 'Twice Daily', 'Three Times Daily', 'Four Times Daily',
     'Every 6 Hours', 'Every 8 Hours', 'As Needed',
@@ -52,16 +57,31 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
 
   if (!isOpen) return null;
 
+  const formatFrequency = (frequency) => {
+    switch (frequency) {
+      case 'Once Daily':
+        return '1X Daily';
+      case 'Twice Daily':
+        return '2X Daily';
+      case 'Three Times Daily':
+        return '3X Daily';
+      case 'Four Times Daily':
+        return '4X Daily';
+      default:
+        return frequency;
+    }
+  };
+
   const handleAddOrUpdateMedicine = () => {
     if (
       currentMedicine.medicine &&
       currentMedicine.type &&
       currentMedicine.strength &&
+      currentMedicine.route &&
       currentMedicine.frequency &&
       currentMedicine.duration
     ) {
       if (editingMedicineId) {
-        // Update existing medicine
         setPrescriptionData(
           prescriptionData.map((item) =>
             item.id === editingMedicineId ? { ...currentMedicine, id: editingMedicineId, name: currentMedicine.medicine } : item
@@ -69,7 +89,6 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
         );
         setEditingMedicineId(null);
       } else {
-        // Add new medicine
         setPrescriptionData([
           ...prescriptionData,
           {
@@ -83,6 +102,7 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
         medicine: '',
         type: '',
         strength: '',
+        route: '',
         frequency: '',
         duration: '',
         instructions: '',
@@ -96,6 +116,7 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
       medicine: medicine.name,
       type: medicine.type,
       strength: medicine.strength,
+      route: medicine.route,
       frequency: medicine.frequency,
       duration: medicine.duration,
       instructions: medicine.instructions,
@@ -127,15 +148,11 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
         instructions: instructions,
         followUp: followUp,
       };
-      setIsAppointmentCompleted(true)
-      setShowWritePrescriptionModel(false)
-      setShowPatientComplaintWithMedicalAndVisitHistoryModel(false)
-      
+      setIsAppointmentCompleted(true);
+      setShowWritePrescriptionModel(false);
+      setShowPatientComplaintWithMedicalAndVisitHistoryModel(false);
     }
   };
-
-
-  //PatientConsulationContext  //DoctorConsulationContext
 
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
@@ -226,12 +243,13 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
                   <div className="flex h-full">
                     <div className="relative">
                       <span className="absolute top-0 left-0 text-xl font-bold text-green-600 px-1 py-0.5 rounded-md">Rx</span>
-                      <div className="flex-1 pl-3 pt-7">
+                      <div className="absolute top-6 bottom-0 left-4 w-[2px] bg-gray-300"></div>
+                      <div className="flex-1 pl-10 pt-7">
                         {prescription.medicines.map((medicine, index) => (
                           <div key={index} className="text-[10px] text-gray-800 leading-relaxed font-normal mb-2">
                             <p>
                               <strong>
-                                {medicine.name} - {medicine.strength} - {medicine.type} - {medicine.frequency} - {medicine.duration}
+                                {medicine.name} - {medicine.type} - {medicine.strength} - {medicine.route} - {formatFrequency(medicine.frequency)} - {medicine.duration}
                               </strong>
                             </p>
                             {medicine.instructions && (
@@ -372,7 +390,8 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
                 <div className="flex h-full">
                   <div className="relative">
                     <span className="absolute top-0 left-0 text-xl font-bold text-green-600 px-1 py-0.5 rounded-md">Rx</span>
-                    <div className="flex-1 pl-3 pt-7">
+                    <div className="absolute top-6 bottom-0 left-4 w-[2px] bg-gray-300"></div>
+                    <div className="flex-1 pl-10 pt-7">
                       {/* Add/Edit Medicine Section (shown on button click) */}
                       {showAddForm && (
                         <div className="border border-gray-200 rounded-xl p-2 mb-3">
@@ -424,6 +443,20 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
                               ))}
                             </select>
                             <select
+                              value={currentMedicine.route}
+                              onChange={(e) =>
+                                setCurrentMedicine({ ...currentMedicine, route: e.target.value })
+                              }
+                              className="w-full text-[10px] p-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                            >
+                              <option value="">Select Route</option>
+                              {routeOptions.map((route) => (
+                                <option key={route} value={route}>
+                                  {route}
+                                </option>
+                              ))}
+                            </select>
+                            <select
                               value={currentMedicine.frequency}
                               onChange={(e) =>
                                 setCurrentMedicine({ ...currentMedicine, frequency: e.target.value })
@@ -468,6 +501,7 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
                                     medicine: '',
                                     type: '',
                                     strength: '',
+                                    route: '',
                                     frequency: '',
                                     duration: '',
                                     instructions: '',
@@ -483,6 +517,7 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
                                   !currentMedicine.medicine ||
                                   !currentMedicine.type ||
                                   !currentMedicine.strength ||
+                                  !currentMedicine.route ||
                                   !currentMedicine.frequency ||
                                   !currentMedicine.duration
                                 }
@@ -509,7 +544,7 @@ const WritePrescriptionModal = ({ isOpen, onClose}) => {
                                   <div className="text-[10px] text-gray-800 flex-1">
                                     <p>
                                       <strong>
-                                        {item.name} - {item.strength} - {item.type} - {item.frequency} - {item.duration}
+                                        {item.name} - {item.type} - {item.strength} - {item.route} - {formatFrequency(item.frequency)} - {item.duration}
                                       </strong>
                                     </p>
                                     {item.instructions && (

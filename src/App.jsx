@@ -6,14 +6,13 @@ import AppointmentRecord from './pages/patient/AppointmentRecord';
 import Prescriptions from './pages/patient/Prescriptions';
 import LabReports from './pages/patient/LabReports';
 import PatientSignup from './pages/patient/SignUp';
-import HealthProfile from './pages/patient/HealthProfile';
+import MedicalHistory from './pages/patient/MedicalHistory';
 import ScrollToTopCustom from './components/ScrollToTopCustom';
 import BloodVolunteers from './pages/patient/BloodVolunteers';
 import BloodDonations from './pages/patient/BloodDonations';
 import VirtualWallet from './pages/patient/VirtualWallet';
 import PatientEditProfile from './pages/patient/EditProfile';
 import PatientSignIn from './pages/patient/SignIn';
-import PatientForgotPassword from './pages/patient/ForgotPassword';
 import PatientResetPassword from './pages/patient/ResetPassword';
 import OTPPage from './pages/OTP';
 import DoctorSignup from './pages/doctor/SignUp';
@@ -30,9 +29,12 @@ import WorkWithAngill from './pages/doctor/WorkWithAngill';
 import PatientHealthComplaint from './components/doctor/PatientComplaintWithMedicalAndVisitHistory';
 import DoctorReviews from './pages/doctor/Reviews';
 import Visits from './pages/patient/Visits';
-import MedicalHistory from './pages/patient/HealthProfile';
+
 import Dependents from './pages/patient/Dependents';
 import DoctorTermsAndConditions from './pages/DoctorTermsAndConditions';
+import DoctorSignIn from './pages/doctor/SignIn';
+import ForgotPassword from './pages/ForgotPassword';
+import DoctorResetPassword from './pages/doctor/PasswordReset';
 
 const App = () => {
   return (
@@ -68,9 +70,9 @@ const App = () => {
                 }
               />
               <Route path="sign-up" element={<PatientSignup />} />
-                                    <Route path='login' element={<PatientSignIn/>}></Route>
-                                    <Route path='forgot-password' element={<PatientForgotPassword/>}></Route>
-                                    <Route path='reset-password' element={<PatientResetPassword/>}></Route>
+              <Route path='login' element={<PatientSignIn/>}></Route>
+            
+              <Route path='reset-password' element={<PatientResetPassword/>}></Route>
                                    
             </Routes>
           }
@@ -92,12 +94,14 @@ const App = () => {
                       <Route path='work-with-angill' element={<WorkWithAngill/>}></Route>
                       <Route path='reviews' element={<DoctorReviews/>}></Route>
                       
-                      <Route path='patient/health-complaint' element={<PatientHealthComplaint/>}></Route>
+                      
                     </Routes>
                   </DoctorLayout>
                 }
               />
               <Route path="sign-up" element={<DoctorSignup />} />
+              <Route path='sign-in' element={<DoctorSignIn/>}></Route>
+              <Route path='reset-password' element={<DoctorResetPassword/>}></Route>
 
                                    
             </Routes>
@@ -105,7 +109,8 @@ const App = () => {
         />
         <Route path="/" element={<Landing/>} />
         <Route path='/doctor/terms-and-conditions' element={<DoctorTermsAndConditions/>}></Route>
-         <Route path='/verify-otp' element={<OTPPage/>}></Route>
+        <Route path='/verify-otp' element={<OTPPage/>}></Route>
+        <Route path='/forgot-password' element={<ForgotPassword/>}></Route>
       </Routes>
     </BrowserRouter>
   );

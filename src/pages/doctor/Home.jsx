@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import DoctorMeetingModel from '../../components/doctor/MeetingModel';
 import PatientComplaintAndMedicalAndVisitHistoryModel from '../../components/doctor/PatientComplaintWithMedicalAndVisitHistory';
 import WritePrescriptionModal from '../../components/doctor/WritePrescriptionModel';
-import WriteLabTestModal from '../../components/doctor/WriteLabTestModel'
+import WriteLabTestModal from '../../components/doctor/WriteLabTestModel';
 import { useDoctorConsultation } from '../../contexts/DoctorConsultationContext';
 
 const DoctorHome = () => {
@@ -31,21 +31,33 @@ const DoctorHome = () => {
     setShowPatientComplaintWithMedicalAndVisitHistoryModel,
     setIsAppointmentCompleted
   } = useDoctorConsultation();
+  
   const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
   const [showInvitationsModal, setShowInvitationsModal] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [adjustedTimes, setAdjustedTimes] = useState({});
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [hasNewInvitations, setHasNewInvitations] = useState(true);
   const navigate = useNavigate();
 
-  // Mock data for appointments with fees in PKR
+  // Update current time every second for live countdown
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Mock data for appointments with fees in PKR - Updated to today's date
   const [appointments] = useState([
     {
       id: 1,
       patientName: 'Sarah Johnson',
       type: 'online',
-      date: '2025-08-08',
-      time: '10:00 AM',
-      endTime: '10:30 AM',
+      date: '2025-08-21',
+      time: '20:50:00', // 6:50 PM PKT
+      endTime: '21:20:00', // 7:20 PM PKT
       status: 'scheduled',
       reason: 'Regular Checkup',
       avatar: 'SJ',
@@ -56,9 +68,9 @@ const DoctorHome = () => {
       id: 2,
       patientName: 'Ahmed Ali',
       type: 'physical',
-      date: '2025-08-08',
-      time: '11:30 AM',
-      endTime: '12:00 PM',
+      date: '2025-08-21',
+      time: '19:00:00', // 7:00 PM PKT
+      endTime: '19:30:00', // 7:30 PM PKT
       status: 'in-progress',
       reason: 'Consultation',
       avatar: 'AA',
@@ -69,9 +81,9 @@ const DoctorHome = () => {
       id: 3,
       patientName: 'Maria Garcia',
       type: 'online',
-      date: '2025-08-08',
-      time: '02:00 PM',
-      endTime: '02:30 PM',
+      date: '2025-08-21',
+      time: '20:00:00', // 8:00 PM PKT
+      endTime: '20:30:00', // 8:30 PM PKT
       status: 'scheduled',
       reason: 'Follow-up',
       avatar: 'MG',
@@ -82,9 +94,9 @@ const DoctorHome = () => {
       id: 4,
       patientName: 'John Smith',
       type: 'physical',
-      date: '2025-08-08',
-      time: '03:30 PM',
-      endTime: '04:00 PM',
+      date: '2025-08-22',
+      time: '10:30:00', // 10:30 AM PKT
+      endTime: '11:00:00', // 11:00 AM PKT
       status: 'scheduled',
       reason: 'Emergency Consultation',
       avatar: 'JS',
@@ -98,8 +110,8 @@ const DoctorHome = () => {
     {
       id: 1,
       patientName: 'David Wilson',
-      requestedDate: '2025-08-09',
-      requestedTime: '10:00 AM',
+      requestedDate: '2025-08-22',
+      requestedTime: '10:00:00',
       type: 'online',
       reason: 'Skin consultation',
       timestamp: '2 hours ago',
@@ -110,8 +122,8 @@ const DoctorHome = () => {
     {
       id: 2,
       patientName: 'Lisa Chen',
-      requestedDate: '2025-08-09',
-      requestedTime: '02:30 PM',
+      requestedDate: '2025-08-22',
+      requestedTime: '14:30:00',
       type: 'physical',
       reason: 'Routine checkup',
       timestamp: '5 hours ago',
@@ -122,10 +134,7 @@ const DoctorHome = () => {
   ]);
 
   const timeToMinutes = (timeStr) => {
-    const [time, ampm] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    if (ampm === 'PM' && hours !== 12) hours += 12;
-    if (ampm === 'AM' && hours === 12) hours = 0;
+    const [hours, minutes] = timeStr.split(':').map(Number);
     return hours * 60 + minutes;
   };
 
@@ -135,6 +144,36 @@ const DoctorHome = () => {
     const ampm = hours >= 12 ? 'PM' : 'AM';
     const h = hours % 12 || 12;
     return `${h}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  };
+
+  // Check if appointment is today
+  const isToday = (date) => {
+    const today = new Date();
+    const appointmentDate = new Date(date);
+    return (
+      today.getDate() === appointmentDate.getDate() &&
+      today.getMonth() === appointmentDate.getMonth() &&
+      today.getFullYear() === appointmentDate.getFullYear()
+    );
+  };
+
+  // Get remaining time in HH:MM:SS format for today's appointments
+  const getRemainingTime = (date, time) => {
+    if (!isToday(date)) return null;
+
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+    const appointmentTime = new Date(currentTime);
+    appointmentTime.setHours(hours, minutes, seconds, 0);
+
+    const diff = appointmentTime - currentTime;
+
+    if (diff <= 0) return "Time's up!";
+
+    const diffHours = Math.floor(diff / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const diffSeconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return `${diffHours.toString().padStart(2, '0')}:${diffMinutes.toString().padStart(2, '0')}:${diffSeconds.toString().padStart(2, '0')}`;
   };
 
   useEffect(() => {
@@ -149,13 +188,13 @@ const DoctorHome = () => {
     const appointmentDateTime = new Date(`${date} ${time}`);
     const now = new Date();
     const diff = appointmentDateTime - now;
-    
+
     if (diff <= 0) return 'Now';
-    
+
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    
+
     if (days > 0) return `${days}d ${hours % 24}h`;
     if (hours > 0) return `${hours}h ${minutes % 60}m`;
     return `${minutes}m`;
@@ -166,8 +205,13 @@ const DoctorHome = () => {
     if (appointment.type === 'online') {
       setShowDoctorMeetingModel(true);
     } else {
-      // For physical appointments, mark as present
+      setShowPatientComplaintWithMedicalAndVisitHistoryModel(true);
     }
+  };
+
+  const handleViewInvitations = () => {
+    setHasNewInvitations(false);
+    setShowInvitationsModal(true);
   };
 
   const closeDoctorMeetingModel = () => {
@@ -192,11 +236,12 @@ const DoctorHome = () => {
   };
 
   const handleSaveLabTest = (labTest) => {
+    console.log('Saving lab test:', labTest);
     setShowWriteLabTestModel(false);
   };
 
-  const todayAppointments = appointments.filter(apt => apt.date === '2025-08-08');
-  const todayEarnings = 45000;
+  const todayAppointments = appointments.filter((apt) => isToday(apt.date));
+  const todayEarnings = todayAppointments.reduce((sum, apt) => sum + apt.fee, 0);
 
   return (
     <div className="min-h-screen bg-white">
@@ -215,14 +260,16 @@ const DoctorHome = () => {
                   Complete Profile
                 </button>
               </div>
-              {/* View Invitations Button for Small Devices */}
+              {/* View Invitations Button for Small Devices with Red Alert Badge */}
               <button 
                 className="sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors relative mt-2 w-fit"
-                onClick={() => setShowInvitationsModal(true)}
+                onClick={handleViewInvitations}
               >
                 View Invitations
-                {invitations.length > 0 && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
+                {hasNewInvitations && invitations.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
+                    {invitations.length}
+                  </span>
                 )}
               </button>
             </div>
@@ -304,7 +351,7 @@ const DoctorHome = () => {
 
               {appointmentsExpanded && (
                 <div className="border-t border-gray-100">
-                  {todayAppointments.map((appointment, index) => (
+                  {todayAppointments.map((appointment) => (
                     <div key={appointment.id} className="p-4 border-b border-gray-50 last:border-b-0">
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                         <div className="flex items-center space-x-3 flex-1">
@@ -333,16 +380,6 @@ const DoctorHome = () => {
                             
                             <div className="flex flex-wrap items-center gap-2">
                               <div className="flex items-center text-xs text-gray-600">
-                                <Clock className="w-3 h-3 mr-1" />
-                                {appointment.time} - {appointment.endTime}
-                              </div>
-                              
-                              <div className="flex items-center text-xs font-medium text-green-600">
-                                <Activity className="w-3 h-3 mr-1" />
-                                In {calculateTimeUntilAppointment(appointment.date, appointment.time)}
-                              </div>
-                              
-                              <div className="flex items-center text-xs text-gray-600">
                                 {appointment.type === 'online' ? (
                                   <>
                                     <Video className="w-3 h-3 mr-1" />
@@ -363,7 +400,7 @@ const DoctorHome = () => {
                           </div>
                         </div>
                         
-                        <div className="w-full sm:w-36">
+                        <div className="w-full sm:w-36 flex flex-col items-center gap-2">
                           {appointment.type === 'online' ? (
                             <button
                               onClick={() => handleAppointmentClick(appointment)}
@@ -381,9 +418,22 @@ const DoctorHome = () => {
                               onClick={() => handleAppointmentClick(appointment)}
                               className="w-full px-3 py-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors"
                             >
-                              <Check className="w-3 h-3 inline mr-1" />
-                              Mark Present
+                              Mark Arrived
                             </button>
+                          )}
+                          {/* Remaining Time Display */}
+                          {isToday(appointment.date) && (
+                            <div className="flex items-center text-lg font-bold text-black">
+                              <Activity className="w-3 h-3 mr-1" />
+                              {getRemainingTime(appointment.date, appointment.time)}
+                            </div>
+                          )}
+                          {/* Non-today appointment time indicator */}
+                          {!isToday(appointment.date) && (
+                            <div className="flex items-center text-xs font-bold text-green-600">
+                              <Activity className="w-3 h-3 mr-1" />
+                              In {calculateTimeUntilAppointment(appointment.date, appointment.time)}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -396,11 +446,18 @@ const DoctorHome = () => {
 
           {/* Sidebar - Hidden on Small Devices */}
           <div className="hidden lg:block w-full lg:w-80 space-y-6">
-            {/* Invitations */}
+            {/* Invitations with Red Alert Badge */}
             <div className="bg-white border border-gray-200 rounded-xl">
               <div className="p-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-bold text-gray-900">Invitations</h3>
+                  <div className="flex items-center relative">
+                    <h3 className="text-base font-bold text-gray-900">Invitations</h3>
+                    {hasNewInvitations && invitations.length > 0 && (
+                      <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                        {invitations.length}
+                      </span>
+                    )}
+                  </div>
                   <span className="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs font-semibold">
                     {invitations.length}
                   </span>
@@ -423,11 +480,11 @@ const DoctorHome = () => {
                         <div className="space-y-1 mb-3">
                           <div className="flex items-center text-xs text-gray-600">
                             <Calendar className="w-3 h-3 mr-1" />
-                            Aug 09, 2025
+                            {invitation.requestedDate}
                           </div>
                           <div className="flex items-center text-xs text-gray-600">
                             <Clock className="w-3 h-3 mr-1" />
-                            {invitation.requestedTime}
+                            {minutesToTime(adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime))}
                           </div>
                         </div>
 
@@ -483,12 +540,21 @@ const DoctorHome = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
           <div className="w-full h-full max-h-screen flex flex-col">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-900">Invitations</h3>
-              <button 
+              <div className="flex items-center">
+                <h3 className="text-lg font-bold text-gray-900">Invitations</h3>
+                {hasNewInvitations && invitations.length > 0 && (
+                  <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {invitations.length}
+                  </span>
+                )}
+              </div>
+              <button
                 onClick={() => setShowInvitationsModal(false)}
                 className="text-gray-600 hover:text-gray-900"
               >
-                <X className="w-6 h-6" />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
@@ -499,22 +565,23 @@ const DoctorHome = () => {
                       <span className="text-gray-700 font-medium text-xs">{invitation.avatar}</span>
                       <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>
-                    
                     <div className="flex-1">
                       <h4 className="font-semibold text-sm text-gray-900">{invitation.patientName}</h4>
                       <p className="text-xs text-gray-600 mb-2">{invitation.reason}</p>
-                      
                       <div className="space-y-1 mb-3">
                         <div className="flex items-center text-xs text-gray-600">
-                          <Calendar className="w-3 h-3 mr-1" />
-                          Aug 09, 2025
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {invitation.requestedDate}
                         </div>
                         <div className="flex items-center text-xs text-gray-600">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {invitation.requestedTime}
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {minutesToTime(adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime))}
                         </div>
                       </div>
-
                       <div className="mt-3">
                         <p className="text-xs font-medium text-gray-700 mb-1">Adjust Time:</p>
                         <input
@@ -530,20 +597,20 @@ const DoctorHome = () => {
                           {minutesToTime(adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime))}
                         </p>
                       </div>
-                      
                       <div className="flex items-center justify-between mb-3">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          invitation.provider === 'Private' 
-                            ? 'bg-gray-100 text-gray-700' 
-                            : 'bg-green-50 text-green-600'
-                          }`}>
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium ${
+                            invitation.provider === 'Private'
+                              ? 'bg-gray-100 text-gray-700'
+                              : 'bg-green-50 text-green-600'
+                          }`}
+                        >
                           {invitation.provider}
                         </span>
                         <span className="text-xs font-semibold text-gray-900">
                           PKR {invitation.estimatedFee.toLocaleString()}
                         </span>
                       </div>
-                      
                       <div className="flex space-x-2">
                         <button className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-300 transition-colors">
                           Decline
@@ -561,24 +628,35 @@ const DoctorHome = () => {
         </div>
       )}
 
-      <DoctorMeetingModel 
-        isOpen={showDoctorMeetingModel} 
-        onClose={closeDoctorMeetingModel}
-      />
-      <PatientComplaintAndMedicalAndVisitHistoryModel 
-        isOpen={showPatientComplaintWithMedicalAndVisitHistoryModel} 
-        onClose={closePatientComplaintWithMedicalAndVisitHistoryModel}
-      />
-      <WritePrescriptionModal 
-        isOpen={showWritePrescriptionModel}
-        onClose={closeWritePrescriptionModel}
-        onSave={handleSavePrescription}
-      />
-      <WriteLabTestModal 
-        isOpen={showWriteLabTestModel} 
-        onClose={closeWriteLabTestModel} 
-        onSave={handleSaveLabTest}
-      />
+      {/* Modals */}
+      <>
+        {showDoctorMeetingModel && (
+          <DoctorMeetingModel 
+            isOpen={showDoctorMeetingModel} 
+            onClose={closeDoctorMeetingModel} 
+          />
+        )}
+        {showPatientComplaintWithMedicalAndVisitHistoryModel && (
+          <PatientComplaintAndMedicalAndVisitHistoryModel 
+            isOpen={showPatientComplaintWithMedicalAndVisitHistoryModel} 
+            onClose={closePatientComplaintWithMedicalAndVisitHistoryModel} 
+          />
+        )}
+        {showWritePrescriptionModel && (
+          <WritePrescriptionModal 
+            isOpen={showWritePrescriptionModel} 
+            onClose={closeWritePrescriptionModel} 
+            onSave={handleSavePrescription}
+          />
+        )}
+        {showWriteLabTestModel && (
+          <WriteLabTestModal 
+            isOpen={showWriteLabTestModel} 
+            onClose={closeWriteLabTestModel} 
+            onSave={handleSaveLabTest}
+          />
+        )}
+      </>
     </div>
   );
 };

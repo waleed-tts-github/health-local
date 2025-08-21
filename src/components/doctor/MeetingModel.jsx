@@ -3,14 +3,14 @@ import { X, PhoneOff, FileText, Mic, MicOff, Phone, Video, VideoOff } from 'luci
 import { useDoctorConsultation } from '../../contexts/DoctorConsultationContext';
 
 const DoctorMeetingModel = ({ isOpen, onClose }) => {
-  const { setShowPatientComplaintWithMedicalAndVisitHistoryModel,isAppointmentCompleted } = useDoctorConsultation();
+  const { setShowPatientComplaintWithMedicalAndVisitHistoryModel, isAppointmentCompleted } = useDoctorConsultation();
   const [sessionTime, setSessionTime] = useState(1830); // 30:30 starting time
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(true);
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [hasPatientJoined, setHasPatientJoined] = useState(false);
-  
+  const [waitingTime, setWaitingTime] = useState(300); // 5 minutes in seconds
 
   const currentPatient = {
     name: 'Robert Thompson',
@@ -29,18 +29,29 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (!isOpen || !isCallActive) return;
 
-    const timer = setInterval(() => {
+    // Session timer
+    const sessionTimer = setInterval(() => {
       setSessionTime(prev => prev > 0 ? prev - 1 : 0);
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(sessionTimer);
   }, [isOpen, isCallActive]);
 
-  const formatSessionTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+  useEffect(() => {
+    if (!isOpen || hasPatientJoined || waitingTime <= 0) return;
+
+    // Waiting timer for patient
+    const waitingTimer = setInterval(() => {
+      setWaitingTime(prev => prev > 0 ? prev - 1 : 0);
+    }, 1000);
+
+    return () => clearInterval(waitingTimer);
+  }, [isOpen, hasPatientJoined, waitingTime]);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handleEndMeeting = () => {
@@ -59,6 +70,13 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
 
   const handleVisitClick = () => {
     setShowPatientComplaintWithMedicalAndVisitHistoryModel(true);
+  };
+
+  const handleReschedule = () => {
+    // Placeholder for rescheduling logic
+    console.log('Rescheduling appointment for', currentPatient.name);
+    // Optionally, you could add navigation or state update here
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -110,7 +128,7 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
                 sessionTime < 300 ? 'text-red-500' : 
                 sessionTime < 900 ? 'text-yellow-500' : 'text-green-600'
               }`}>
-                {formatSessionTime(sessionTime)}
+                {formatTime(sessionTime)}
               </p>
             </div>
 
@@ -128,8 +146,25 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
                   </div>
                 </>
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                  <p className="text-gray-600 font-semibold text-xs">Waiting For Patient</p>
+                <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 gap-2">
+                  {waitingTime > 0 ? (
+                    <>
+                      <p className="text-gray-600 font-semibold text-xs">Waiting For Patient</p>
+                      <p className="text-lg font-bold text-red-500 tabular-nums">
+                        {formatTime(waitingTime)}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-gray-600 font-semibold text-xs">Patient Did Not Join</p>
+                      <button
+                        onClick={handleReschedule}
+                        className="bg-green-500 hover:bg-green-600 text-white rounded-lg px-4 py-2 text-xs font-medium transition-all"
+                      >
+                        Reschedule Appointment
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
               {/* Visit Button - Egg shaped */}
@@ -280,7 +315,6 @@ const DoctorMeetingModel = ({ isOpen, onClose }) => {
           `}</style>
         </div>
       </div>
- 
     </div>
   );
 };

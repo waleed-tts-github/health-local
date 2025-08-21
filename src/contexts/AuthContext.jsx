@@ -21,8 +21,10 @@ export const AuthProvider = ({ children }) => {
   });
   const [OTPContext, setOTPContext] = useState("")
   const [isVerified,setIsVerified] = useState(false)
+  const [userType,setUserType] = useState("")
+
 
   const [currentStep,setCurrentStep] = useState(1)
 
-  return <AuthContext.Provider value={{currentStep,setCurrentStep,formData,setFormData,OTPContext,setOTPContext,isVerified,setIsVerified}}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{currentStep,setCurrentStep,formData,setFormData,OTPContext,setOTPContext,isVerified,setIsVerified,userType,setUserType}}>{children}</AuthContext.Provider>;
 };
