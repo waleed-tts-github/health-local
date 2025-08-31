@@ -3,7 +3,8 @@
     "default": "angil-test",
     "dev": "angil-dev-f5bfc",
     "staging": "angil-staging",
-    "production": "angil-production"
+    "production": "angil-production",
+    "local": "angil-local"
   },
   "targets": {},
   "etags": {}
