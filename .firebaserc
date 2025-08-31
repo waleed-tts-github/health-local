@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "angil-test",
+    "default": "angil-local",
     "dev": "angil-dev-f5bfc",
     "staging": "angil-staging",
     "production": "angil-production",
