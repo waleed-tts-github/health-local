@@ -55,7 +55,7 @@ const DoctorHome = () => {
       id: 1,
       patientName: 'Sarah Johnson',
       type: 'online',
-      date: '2025-08-21',
+      date: '2025-09-04',
       time: '20:50:00', // 6:50 PM PKT
       endTime: '21:20:00', // 7:20 PM PKT
       status: 'scheduled',
@@ -68,7 +68,7 @@ const DoctorHome = () => {
       id: 2,
       patientName: 'Ahmed Ali',
       type: 'physical',
-      date: '2025-08-21',
+      date: '2025-09-05',
       time: '19:00:00', // 7:00 PM PKT
       endTime: '19:30:00', // 7:30 PM PKT
       status: 'in-progress',
@@ -81,7 +81,7 @@ const DoctorHome = () => {
       id: 3,
       patientName: 'Maria Garcia',
       type: 'online',
-      date: '2025-08-21',
+      date: '2025-08-06',
       time: '20:00:00', // 8:00 PM PKT
       endTime: '20:30:00', // 8:30 PM PKT
       status: 'scheduled',
@@ -94,7 +94,7 @@ const DoctorHome = () => {
       id: 4,
       patientName: 'John Smith',
       type: 'physical',
-      date: '2025-08-22',
+      date: '2025-09-07',
       time: '10:30:00', // 10:30 AM PKT
       endTime: '11:00:00', // 11:00 AM PKT
       status: 'scheduled',
