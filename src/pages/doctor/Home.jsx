@@ -49,15 +49,41 @@ const DoctorHome = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Mock data for appointments with fees in PKR - Updated to today's date
+  // Mock data for appointments with fees in PKR - Updated with future appointments
   const [appointments] = useState([
     {
+      id: 3,
+      patientName: 'Maria Garcia',
+      type: 'online',
+      date: '2025-08-23', // Today
+      time: '22:15:00', // 9:15 PM PKT
+      endTime: '22:45:00', // 9:45 PM PKT
+      status: 'scheduled',
+      reason: 'Follow-up',
+      avatar: 'MG',
+      provider: 'Private',
+      fee: 12000
+    },
+    {  
+      id: 2,
+      patientName: 'Ahmed Ali',
+      type: 'physical',
+      date: '2025-08-23', // Today
+      time: '23:30:00', // 9:30 PM PKT
+      endTime: '24:00:00', // 10:00 PM PKT
+      status: 'in-progress',
+      reason: 'Consultation',
+      avatar: 'AA',
+      provider: 'Angill',
+      fee: 20000
+    },
+    { 
       id: 1,
       patientName: 'Sarah Johnson',
       type: 'online',
-      date: '2025-09-04',
-      time: '20:50:00', // 6:50 PM PKT
-      endTime: '21:20:00', // 7:20 PM PKT
+      date: '2025-08-23', // Today
+      time: '23:50:00', // 8:50 PM PKT
+      endTime: '24:20:00', // 9:20 PM PKT
       status: 'scheduled',
       reason: 'Regular Checkup',
       avatar: 'SJ',
@@ -65,36 +91,10 @@ const DoctorHome = () => {
       fee: 15000
     },
     {
-      id: 2,
-      patientName: 'Ahmed Ali',
-      type: 'physical',
-      date: '2025-09-05',
-      time: '19:00:00', // 7:00 PM PKT
-      endTime: '19:30:00', // 7:30 PM PKT
-      status: 'in-progress',
-      reason: 'Consultation',
-      avatar: 'AA',
-      provider: 'Angill',
-      fee: 20000
-    },
-    {
-      id: 3,
-      patientName: 'Maria Garcia',
-      type: 'online',
-      date: '2025-08-06',
-      time: '20:00:00', // 8:00 PM PKT
-      endTime: '20:30:00', // 8:30 PM PKT
-      status: 'scheduled',
-      reason: 'Follow-up',
-      avatar: 'MG',
-      provider: 'Private',
-      fee: 12000
-    },
-    {
       id: 4,
       patientName: 'John Smith',
       type: 'physical',
-      date: '2025-09-07',
+      date: '2025-08-24', // Tomorrow
       time: '10:30:00', // 10:30 AM PKT
       endTime: '11:00:00', // 11:00 AM PKT
       status: 'scheduled',
@@ -102,6 +102,19 @@ const DoctorHome = () => {
       avatar: 'JS',
       provider: 'Angill',
       fee: 30000
+    },
+    {
+      id: 5,
+      patientName: 'Emma Brown',
+      type: 'online',
+      date: '2025-08-25', // Two days from now
+      time: '8:00:00', // 2:00 PM PKT
+      endTime: '14:30:00', // 2:30 PM PKT
+      status: 'scheduled',
+      reason: 'Follow-up Checkup',
+      avatar: 'EB',
+      provider: 'Private',
+      fee: 18000
     }
   ]);
 
@@ -110,8 +123,8 @@ const DoctorHome = () => {
     {
       id: 1,
       patientName: 'David Wilson',
-      requestedDate: '2025-08-22',
-      requestedTime: '10:00:00',
+      requestedDate: '2025-08-24',
+      requestedTime: '6:00:00',
       type: 'online',
       reason: 'Skin consultation',
       timestamp: '2 hours ago',
@@ -122,8 +135,8 @@ const DoctorHome = () => {
     {
       id: 2,
       patientName: 'Lisa Chen',
-      requestedDate: '2025-08-22',
-      requestedTime: '14:30:00',
+      requestedDate: '2025-08-24',
+      requestedTime: '8:30:00',
       type: 'physical',
       reason: 'Routine checkup',
       timestamp: '5 hours ago',
@@ -251,38 +264,29 @@ const DoctorHome = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex flex-col w-full sm:w-auto">
               <div className="flex items-center justify-between w-full sm:w-auto">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 sm:text-center">Dashboard</h1>
                 <button
-                  onClick={() => navigate('/doctor/profile/complete')}
-                  className="sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex items-center"
+                  className="sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors relative mt-2 w-fit"
+                  onClick={handleViewInvitations}
                 >
-                  <User className="w-4 h-4 mr-2" />
-                  Complete Profile
+                  View Invitations
+                  {hasNewInvitations && invitations.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
+                      {invitations.length}
+                    </span>
+                  )}
                 </button>
               </div>
-              {/* View Invitations Button for Small Devices with Red Alert Badge */}
-              <button 
-                className="sm:hidden px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors relative mt-2 w-fit"
-                onClick={handleViewInvitations}
-              >
-                View Invitations
-                {hasNewInvitations && invitations.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
-                    {invitations.length}
-                  </span>
-                )}
-              </button>
+              <div className="mt-2 sm:text-center">
+                <button
+                  onClick={() => navigate('/doctor/profile/complete')}
+                  className="w-full lg:w-3/4 px-4 py-2 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition-colors transform hover:scale-105 shadow-md"
+                >
+                  Please complete your profile to verify your account and begin working as a Doctor on Angill. Your account is only temporarily active until verification is completed.
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
-              {/* Complete Profile Button for Larger Devices */}
-              <button
-                onClick={() => navigate('/doctor/profile/complete')}
-                className="hidden sm:flex px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors items-center"
-              >
-                <User className="w-4 h-4 mr-2" />
-                Complete Profile
-              </button>
-              {/* Doctor Status Toggle */}
+            <div className="flex items-end sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
               <div className="flex items-center space-x-3">
                 <span className="text-sm font-medium text-gray-700">Status:</span>
                 <div className="flex items-center">
@@ -299,6 +303,20 @@ const DoctorHome = () => {
               </div>
             </div>
           </div>
+          {/* Today's Earnings for Small Devices */}
+          <div className="lg:hidden mt-4 bg-white border border-gray-200 rounded-xl p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-xs font-medium">Today's Earnings</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">PKR {todayEarnings.toLocaleString()}</p>
+                <p className="text-gray-600 text-xs mt-1">{todayAppointments.length} appointments</p>
+                <p className="text-green-500 text-xs mt-1 font-medium">+12% from yesterday</p>
+              </div>
+              <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
+                <Currency className="w-4 h-4 text-green-500" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -306,22 +324,6 @@ const DoctorHome = () => {
         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
           {/* Main Content */}
           <div className="flex-1 space-y-4">
-            {/* Stats Grid - Today's Earnings in PKR */}
-            <div className="grid grid-cols-1 gap-4">
-              <div className="bg-white border border-gray-200 rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 text-xs font-medium">Today's Earnings</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-1">PKR {todayEarnings.toLocaleString()}</p>
-                    <p className="text-green-500 text-xs mt-1 font-medium">+12% from yesterday</p>
-                  </div>
-                  <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                    <Currency className="w-5 h-5 text-green-500" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Appointments Section */}
             <div className="bg-white border border-gray-200 rounded-xl">
               <div 
@@ -351,7 +353,7 @@ const DoctorHome = () => {
 
               {appointmentsExpanded && (
                 <div className="border-t border-gray-100">
-                  {todayAppointments.map((appointment) => (
+                  {appointments.map((appointment) => (
                     <div key={appointment.id} className="p-4 border-b border-gray-50 last:border-b-0">
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                         <div className="flex items-center space-x-3 flex-1">
@@ -423,8 +425,8 @@ const DoctorHome = () => {
                           )}
                           {/* Remaining Time Display */}
                           {isToday(appointment.date) && (
-                            <div className="flex items-center text-lg font-bold text-black">
-                              <Activity className="w-3 h-3 mr-1" />
+                            <div className="flex items-center text-lg font-bold text-black bg-gray-100 px-2 py-1 rounded">
+                              <Activity className="w-4 h-4 mr-1" />
                               {getRemainingTime(appointment.date, appointment.time)}
                             </div>
                           )}
@@ -446,6 +448,21 @@ const DoctorHome = () => {
 
           {/* Sidebar - Hidden on Small Devices */}
           <div className="hidden lg:block w-full lg:w-80 space-y-6">
+            {/* Today's Earnings Stat */}
+            <div className="bg-white border border-gray-200 rounded-xl p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-xs font-medium">Today's Earnings</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">PKR {todayEarnings.toLocaleString()}</p>
+                  <p className="text-gray-600 text-xs mt-1">{todayAppointments.length} appointments</p>
+                  <p className="text-green-500 text-xs mt-1 font-medium">+12% from yesterday</p>
+                </div>
+                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                  <Currency className="w-5 h-5 text-green-500" />
+                </div>
+              </div>
+            </div>
+
             {/* Invitations with Red Alert Badge */}
             <div className="bg-white border border-gray-200 rounded-xl">
               <div className="p-4 border-b border-gray-100">
@@ -552,12 +569,10 @@ const DoctorHome = () => {
                 onClick={() => setShowInvitationsModal(false)}
                 className="text-gray-600 hover:text-gray-900"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {invitations.map((invitation) => (
                 <div key={invitation.id} className="p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-start space-x-3">
@@ -570,15 +585,11 @@ const DoctorHome = () => {
                       <p className="text-xs text-gray-600 mb-2">{invitation.reason}</p>
                       <div className="space-y-1 mb-3">
                         <div className="flex items-center text-xs text-gray-600">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
+                          <Calendar className="w-3 h-3 mr-1" />
                           {invitation.requestedDate}
                         </div>
                         <div className="flex items-center text-xs text-gray-600">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
+                          <Clock className="w-3 h-3 mr-1" />
                           {minutesToTime(adjustedTimes[invitation.id] || timeToMinutes(invitation.requestedTime))}
                         </div>
                       </div>
